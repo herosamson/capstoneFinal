@@ -1,0 +1,339 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+
+}
+  
+#containerU {
+    display: flex;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+  
+#sidebarD {
+    width: 50px;
+    background-color: #740000 !important;;
+    color: #fff;
+    padding: 20px 10px;
+    transition: width 0.3s ease;
+    position: relative; /* Added position relative */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+  
+#sidebarD:hover {
+    width: 250px;
+}
+  
+#logoD {
+    width: 1px; /* Adjust width as needed */
+    height: 1px; /* Adjust height as needed */
+    align-items: center;
+}
+  
+#sidebarD h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    visibility: visible; /* Hide the text initially */
+    transition: visibility 0.3s; /* Delay visibility change to match width transition */
+}
+  
+#sidebarD:hover h2 {
+    visibility: visible; /* Show the text on hover */
+}
+  
+#sidebarD ul {
+    padding: 0;
+    list-style-type: none;
+}
+  
+#sidebarD ul li {
+    margin-bottom: 10px;
+    opacity: 0; /* Hide the text initially */
+    transition: opacity 0.3s ease;
+}
+  
+#sidebarD:hover ul li {
+    opacity: 1; /* Show the text on hover */
+}
+  
+#sidebarD ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+}
+  
+#sidebarD ul li a:hover {
+    background-color: #490000 !important;;
+    padding-left: 30px;
+}
+  
+#contentDInventory {
+    flex: 1;
+    padding: 20px;
+    max-height: 800px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+  
+#user-list {
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+ #user-list th,
+#user-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+#user-list th {
+    background-color: #333;
+    color: #fff;
+}
+  
+.menu-icon {
+    margin-right: 10px;
+  }
+
+  
+ /* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure the modal is on top */
+}
+
+.modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+  .close-icon {
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  .deleteBtni {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    margin-left: 5px;
+  }
+    .deleteBtni:hover {
+    background-color: darkred;
+    color: white;
+  }
+  .inventory-item:hover {
+    background-color: rgb(235, 235, 235);
+    color: rgb(0, 0, 0);
+  }
+  .item-formi .form-groupi {
+    margin-bottom: 15px;
+  }
+  
+  .item-formi .form-groupi label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  .consume-button {
+    background-color: #740000 !important;;
+  }
+  .item-formi .form-groupi input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+.filter-container select {
+    width: 100px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .form-groupinv select {
+    width: 400px;
+    padding: 7px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+  }
+
+  .modal-footer button{
+    margin-left: 290px;
+  }
+  .modal-body input,
+.modal-body select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+}
+
+.filters select, input {
+  width: 100px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+.inventory-table{
+  overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 600px;
+}
+.summary-section {
+  overflow-y: auto;
+    overflow-x: auto;
+    max-height: 650px;
+}
+.donated-to-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
+}
+.summary-item {
+  background-color: white;
+  width: 130px;
+  height: 100px;
+  color: black;
+}
+.summary-item p {
+margin-bottom: 5px;
+}
+.summary-column{
+  background-color: #740000;
+  color: white;
+  padding: 10px;
+ border-radius: 20px;
+ margin-left: 10px;
+}
+.summary-column h3{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+/* Summary Section */
+.summary-section {
+  margin-top: 40px;
+}
+
+.cabinet {
+  border: 1px solid #bdc3c7;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: #ecf0f1;
+}
+
+.columns {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.column {
+  border: 1px solid #95a5a6;
+  padding: 10px;
+  border-radius: 5px;
+  width: 300px;
+  background-color: #ffffff;
+}
+
+.rows {
+  margin-top: 10px;
+}
+
+.row {
+  border-top: 1px solid #bdc3c7;
+  padding: 10px 0;
+}
+
+.row p {
+  margin: 2px 0;
+}
+
+.print-report-button {
+
+  background-color: #4f0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.print-report-button:hover {
+  background-color: #380000;
+}
+.can {
+
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.can:hover {
+  background-color: darkred;
+}
+.fil select {
+  width: 100px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.cancel-buttoninv {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 10px;
+}
+.cancel-buttoninv:hover {
+  background-color: darkred;
+  color: white;
+}

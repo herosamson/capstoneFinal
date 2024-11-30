@@ -1,0 +1,275 @@
+#sidebar ul .dropdown-menuU {
+    background-color: #740000 !important;;
+    padding-left: 20px;
+  }
+  #sidebar ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+  
+#container {
+    display: flex;
+    height: 100vh;
+}
+  
+#sidebar {
+    width: 50px;
+    background-color: #740000 !important;;
+    color: #fff;
+    padding: 20px 10px;
+    transition: width 0.3s ease;
+    position: relative; /* Added position relative */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+  
+#sidebar:hover {
+    width: 250px;
+}
+  
+#logo {
+    width: 1px; /* Adjust width as needed */
+    height: 1px; /* Adjust height as needed */
+
+}
+  
+#sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    visibility: visible; /* Hide the text initially */
+    transition: visibility 0.3s; /* Delay visibility change to match width transition */
+}
+  
+#sidebar:hover h2 {
+    visibility: visible; /* Show the text on hover */
+}
+  
+#sidebar ul {
+    padding: 0;
+    list-style-type: none;
+}
+  
+#sidebar ul li {
+    margin-bottom: 10px;
+    opacity: 0; /* Hide the text initially */
+    transition: opacity 0.3s ease;
+}
+  
+#sidebar:hover ul li {
+    opacity: 1; /* Show the text on hover */
+}
+  
+#sidebar ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+}
+  
+#sidebar ul li a:hover {
+    background-color: #490000 !important;;
+    padding-left: 30px;
+}
+  
+#contentEvent {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#eventForm {
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  #eventForm .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between input fields */
+  }
+  #eventForm input[type="text"],
+  #eventForm input[type="date"],
+  #eventForm input[type="number"] {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: calc(25% - 20px); /* Adjust width to fit 4 in a row */
+    box-sizing: border-box;
+  }
+  
+  
+  #eventForm .materials-list span {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  #eventForm .materials-list label {
+    display: block;
+  }
+  
+
+  .eventsupdate {
+    background-color: rgb(29, 172, 0);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    margin-right: 5px;
+    font-size: 16px;
+    width: 300px;
+    margin-left: 150px;
+    padding: 10px;
+    margin-bottom: 5px;
+  }
+  .deleteevents {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    font-size: 16px;
+    width: 300px;
+    margin-left: 150px;
+    padding: 10px;
+  }
+  .deleteevents:hover {
+    background-color: darkred;
+    color: white;
+  }
+
+  .eventsupdate:hover {
+    background-color:darkgreen;
+    color: white;
+
+  }
+  
+  
+#user-list {
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+ #user-list th,
+#user-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+#user-list th {
+    background-color: #333;
+    color: #fff;
+}
+  
+.menu-icon {
+    margin-right: 10px;
+  }
+
+#eventsList {
+    flex: 1;
+    overflow-x: auto;
+    max-height: 400px;
+}
+
+.materials-list {
+    height: 60px; /* Fixed height */
+    overflow-y: auto;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px; /* Space between checkbox list and the next field */
+}
+#eventsList select {
+    width: 100px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  
+
+
+
+  #sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    visibility: visible; /* Hide the text initially */
+    transition: visibility 0.3s; /* Delay visibility change to match width transition */
+  }
+  
+  #sidebarU:hover h2 {
+    visibility: visible; /* Show the text on hover */
+  }
+  
+  #sidebarU ul {
+    padding: 0;
+    list-style-type: none;
+    width: 100%; 
+  }
+  
+  #sidebarU ul li {
+    margin-bottom: 10px;
+    opacity: 0; /* Hide the text initially */
+    transition: opacity 0.3s ease;
+  }
+  
+  #sidebarU:hover ul li {
+    opacity: 1; /* Show the text on hover */
+  }
+  
+  #sidebarU ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+  }
+  
+  #sidebarU ul li a:hover {
+    background-color: #490000 !important;
+    padding-left: 30px;
+  }
+  
+  #sidebarU ul .dropdown-toggle {
+    cursor: pointer;
+  }
+  
+  #sidebarU ul .dropdown-menu {
+    padding-left: 20px;
+  }
+  
+  #sidebarU ul .dropdown-menu li {
+    margin-bottom: 10px;
+  }
+  
+ 

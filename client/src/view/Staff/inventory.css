@@ -1,0 +1,133 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+  
+#containerD {
+    display: flex;
+    height: 100vh;
+}
+  
+#sidebarD {
+    width: 50px;
+    background-color: #740000 !important;;
+    color: #fff;
+    padding: 20px 10px;
+    transition: width 0.3s ease;
+    position: relative; /* Added position relative */
+}
+  
+#sidebarD:hover {
+    width: 250px;
+}
+  
+#logoD {
+    width: 1px; /* Adjust width as needed */
+    height: 1px; /* Adjust height as needed */
+    align-items: center;
+}
+  
+#sidebarD h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    visibility: visible; /* Hide the text initially */
+    transition: visibility 0.3s; /* Delay visibility change to match width transition */
+}
+  
+#sidebarD:hover h2 {
+    visibility: visible; /* Show the text on hover */
+}
+  
+#sidebarD ul {
+    padding: 0;
+    list-style-type: none;
+}
+  
+#sidebarD ul li {
+    margin-bottom: 10px;
+    opacity: 0; /* Hide the text initially */
+    transition: opacity 0.3s ease;
+}
+  
+#sidebarD:hover ul li {
+    opacity: 1; /* Show the text on hover */
+}
+  
+#sidebarD ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+}
+  
+#sidebarD ul li a:hover {
+    background-color: #490000 !important;;
+    padding-left: 30px;
+}
+  
+#contentD {
+    flex: 1;
+    padding: 20px;
+
+}
+  
+#user-list {
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+ #user-list th,
+#user-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+#user-list th {
+    background-color: #333;
+    color: #fff;
+}
+  
+.menu-icon {
+    margin-right: 10px;
+  }
+  
+  .inventorytable {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: auto;
+
+  }
+  #grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 115px;
+    margin-bottom: 20px;
+    padding: 10px;
+    height: 500px;
+  }
+  
+  .grid-item {
+    background-color: #fff; /* Optional background color */
+    border: 1px solid #ddd; /* Optional border */
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
+    border-radius: 5px; /* Optional rounded corners */
+    cursor: pointer;
+  }
+  
+  .grid-item:hover {
+    background-color: rgb(230, 230, 230);
+  }

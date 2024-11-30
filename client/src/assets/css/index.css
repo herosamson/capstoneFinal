@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .nav {
+        @apply duration-200 hover:text-green-500
+    }
+
+    .authContainer {
+        @apply w-full flex bg-white rounded-md border-2
+    }
+
+    .authFields {
+        @apply w-full py-3 text-sm px-3 bg-transparent border-0 outline-none
+    }
+
+    .authButton {
+        @apply w-full border-2 py-2.5 bg-[#4f0000] text-white text-sm my-3 rounded-md
+    }
+}
+
+
+@keyframes smooth-move {
+    from {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.flex-item-animate {
+    animation: smooth-move 0.3s ease-in-out;
+}

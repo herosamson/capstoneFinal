@@ -1,0 +1,139 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    overflow-x: auto;
+}
+  
+#container {
+    display: flex;
+    height: 100vh;
+}
+  
+#sidebar {
+    width: 50px;
+    background-color: #740000 !important;;
+    color: #fff;
+    padding: 20px 10px;
+    transition: width 0.3s ease;
+    position: relative; /* Added position relative */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+  
+#sidebar:hover {
+    width: 250px;
+}
+  
+#logo {
+    width: 1px; /* Adjust width as needed */
+    height: 1px; /* Adjust height as needed */
+
+}
+  
+#sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    visibility: visible; /* Hide the text initially */
+    transition: visibility 0.3s; /* Delay visibility change to match width transition */
+}
+  
+#sidebar:hover h2 {
+    visibility: visible; /* Show the text on hover */
+}
+  
+#sidebar ul {
+    padding: 0;
+    list-style-type: none;
+}
+  
+#sidebar ul li {
+    margin-bottom: 10px;
+    opacity: 0; /* Hide the text initially */
+    transition: opacity 0.3s ease;
+}
+.admin-table {
+    max-height: 800px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+  
+#sidebar:hover ul li {
+    opacity: 1; /* Show the text on hover */
+}
+  
+#sidebar ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+}
+  
+#sidebar ul li a:hover {
+    background-color: #490000 !important;;
+    padding-left: 30px;
+}
+  
+#content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 900px;
+    margin-left: 50px;
+}
+  
+#user-list {
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+ #user-list th,
+#user-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+#user-list th {
+    background-color: #333;
+    color: #fff;
+}
+  
+.menu-icon {
+    margin-right: 10px;
+  }
+  .delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    background-color: darkred;
+  }
+
+  .tnSA {
+    background-color: rgb(216, 170, 170);
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    width: 170px;
+    margin-right: 15px;
+    padding: 10px;
+    border-radius: 15px;
+    
+  }
+  .tnSA:hover {
+    background-color:  rgb(172, 133, 133);
+    color: rgb(0, 0, 0);
+  }

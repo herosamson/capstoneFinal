@@ -1,0 +1,194 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+  
+#containerD {
+    display: flex;
+    height: 100vh;
+}
+  
+#sidebarD {
+    width: 50px;
+    background-color: #740000 !important;;
+    color: #fff;
+    padding: 20px 10px;
+    transition: width 0.3s ease;
+    position: relative; /* Added position relative */
+}
+  
+#sidebarD:hover {
+    width: 250px;
+}
+  
+#logoD {
+    width: 1px; /* Adjust width as needed */
+    height: 1px; /* Adjust height as needed */
+
+}
+  
+#sidebarD h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    visibility: visible; /* Hide the text initially */
+    transition: visibility 0.3s; /* Delay visibility change to match width transition */
+}
+  
+#sidebarD:hover h2 {
+    visibility: visible; /* Show the text on hover */
+}
+  
+#sidebarD ul {
+    padding: 0;
+    list-style-type: none;
+}
+  
+#sidebarD ul li {
+    margin-bottom: 10px;
+    opacity: 0; /* Hide the text initially */
+    transition: opacity 0.3s ease;
+}
+  
+#sidebarD:hover ul li {
+    opacity: 1; /* Show the text on hover */
+}
+  
+#sidebarD ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+}
+  
+#sidebarD ul li a:hover {
+    background-color: #490000 !important;;
+    padding-left: 30px;
+}
+.logoD {
+    display: block;
+    margin: 0 auto; /* Center horizontally */
+    max-width: 100%;
+  }
+  
+#content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 900px;
+}
+  
+#user-list {
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+ #user-list th,
+#user-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+#user-list th {
+    background-color: #333;
+    color: #fff;
+}
+  
+.menu-icon {
+    margin-right: 10px;
+  }
+  
+.table-container{
+    max-height: 600px; 
+    overflow-y: auto;
+    margin: 20px 0;
+    width: 1250px;
+    overflow-x: auto;
+    position: absolute;
+    top: 90px;
+    right: 60px;
+    background-color: white;
+    padding: 20px;
+}
+
+.table-container h2 {
+    display:flex;
+    
+}
+.enable-button {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+.enable-button:disabled:hover, .disabled-button:disabled:hover {
+    background-color: darkred;
+    color: white;
+    cursor: not-allowed;
+  }
+  .enable-button:disabled, .disabled-button:disabled {
+    background-color: red;
+    color: white;
+    cursor: not-allowed;
+  }
+  
+.enable-button:enabled {
+    background-color: green;
+    color: white;
+  }
+  /* From Uiverse.io by mrhyddenn */ 
+.loader {
+    position: relative;
+    display: block;
+    width: 44px;
+    height: 44px;
+    font-size: 15px;
+    box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+  }
+  
+  .loader::before,
+  .loader::after {
+    content: '';
+    position: absolute;
+    display: block;
+  }
+  
+  .loader_bubble::before {
+    top: 10px;
+    left: 10px;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  
+  .loader_bubble {
+    background: linear-gradient(180deg, rgb(0, 91, 228) 10%, rgb(75, 127, 240) 100%);
+    border-radius: 50%;
+    transform-origin: 50% 50%;
+    animation: bubble7234 1200ms cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
+  }
+  
+  @keyframes bubble7234 {
+    0% {
+      transform: translate3d(0,0,0) rotate(0);
+    }
+  
+    100% {
+      transform: translate3d(0,0,0) rotate(360deg);
+    }
+  }
+  
+  .form-group select {
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }

@@ -1,0 +1,228 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+  
+#containerU {
+    display: flex;
+    height: 100vh;
+}
+  
+#sidebarU {
+    width: 50px;
+    background-color: #740000 !important;;
+    color: #fff;
+    padding: 20px 10px;
+    transition: width 0.3s ease;
+    position: relative; /* Added position relative */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+  
+#sidebarU:hover {
+    width: 250px;
+}
+  
+#logoU {
+    width: 1px; /* Adjust width as needed */
+    height: 1px; /* Adjust height as needed */
+
+}
+  
+#sidebarU h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    visibility: visible; /* Hide the text initially */
+    transition: visibility 0.3s; /* Delay visibility change to match width transition */
+}
+  
+#sidebarU:hover h2 {
+    visibility: visible; /* Show the text on hover */
+}
+  
+#sidebarU ul {
+    padding: 0;
+    list-style-type: none;
+}
+  
+#sidebarU ul li {
+    margin-bottom: 10px;
+    opacity: 0; /* Hide the text initially */
+    transition: opacity 0.3s ease;
+}
+  
+#sidebarU:hover ul li {
+    opacity: 1; /* Show the text on hover */
+}
+  
+#sidebarU ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+}
+  
+#sidebarU ul li a:hover {
+    background-color: #490000 !important;
+    padding-left: 30px;
+}
+
+#sidebarU ul .dropdown-toggle {
+  cursor: pointer;
+}
+  
+#sidebarU ul .dropdown-menuU {
+  background-color: #740000 !important;;
+  padding-left: 20px;
+}
+#contentU {
+    flex: 1;
+    padding: 20px;
+    max-height: 720px;
+    width: 1500px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+  
+#user-listU {
+    border-collapse: collapse;
+    width: 100%;
+}
+  
+ #user-list th,
+#user-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+#user-list th {
+    background-color: #333;
+    color: #fff;
+}
+  
+.menu-icon {
+    margin-right: 10px;
+  }
+  
+  /* userManagement.css */
+
+.deleteBtn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+  }
+  .deleteBtn1 {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    margin-left: 5px;
+  }
+  .sBtn {
+    background-color: rgb(0, 102, 255);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    width: 70px;
+    
+  }
+  .tn {
+    background-color: rgb(216, 170, 170);
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    width: 110px;
+    margin-right: 15px;
+    padding: 10px;
+    border-radius: 15px;
+    
+  }
+  
+  .addToStaffBtn {
+    background-color: rgb(29, 172, 0);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
+    margin-right: 5px;
+  }
+  .deleteBtn:hover {
+    background-color: darkred;
+    color: white;
+  }
+  .deleteBtn1:hover {
+    background-color: darkred;
+    color: white;
+  }
+  .sBtn:hover {
+    background-color: rgb(0, 58, 146);
+    color: white;
+  }
+  .tn:hover {
+    background-color:  rgb(172, 133, 133);
+    color: rgb(0, 0, 0);
+  }
+  .addToStaffBtn:hover {
+    background-color:darkgreen;
+    color: white;
+
+  }
+  
+  .modalAccounts {
+    width: 400px; /* Adjust width to your needs */
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+  }
+  
+  .modal-headerAccounts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-headerAccounts input {
+    margin-bottom: 10px;
+    padding: 10px;
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+  }
+
+  .modalAccounts span {
+    margin-left: 390px;
+
+  }
+  
+  .modal-overlayAccounts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
