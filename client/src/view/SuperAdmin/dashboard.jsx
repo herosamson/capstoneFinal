@@ -461,7 +461,7 @@ const validateAdminInput = () => {
                 <td className='px-10 py-2'>{user.address}</td>
                 <td className='px-10 py-2'>{user.email}</td>
                 <td className='px-10 py-2'>
-                  <button type="button" className="deleteBtn" onClick={() => deleteUser(user._id)}>Delete</button>
+                  <button type="button" className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2" onClick={() => deleteUser(user._id)}>Delete</button>
                 </td>
               </tr>
             ))}

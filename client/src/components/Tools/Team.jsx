@@ -12,7 +12,7 @@ const Team = () => {
                     
                     <div className="flex w-[36%] space-x-8 max-md:flex max-md:justify-center max-md:space-x-12 max-lg:w-[50%] max-md:w-[80%]">
                         <div className="w-1/2 max-md:w-[40%]">
-                            <img src={Dell} alt="" className='h-[38vh] w-full bg-[#d2e3d9] rounded-xl mb-4 max-lg:h-[30vh] max-md:h-[30vh]' />
+                            <img src={Dell} alt="" className='h-[38vh] w-full bg-[#e5dece] rounded-xl mb-4 max-lg:h-[30vh] max-md:h-[30vh]' />
                             <div>
                                 <p className="text-lg font-medium">Wendell Castro</p>
                                 <p>Project Manager</p>

@@ -436,7 +436,7 @@ function EventsA() {
           </div>
           <button className="eventsupdate duration-200 rounded-md" type="submit">{editingEventId ? 'Update Event' : 'Add Event'}</button>
 
-          {editingEventId && <button className="deleteevents" type="button" onClick={handleCancelEdit}>Cancel</button>}
+          {editingEventId && <button className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2" type="button" onClick={handleCancelEdit}>Cancel</button>}
         </form>
         <div id="eventsList">
          <table className='table-auto w-full'>
