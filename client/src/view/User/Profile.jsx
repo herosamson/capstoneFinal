@@ -284,7 +284,7 @@ const Profile = ({ username }) => {
           </div>
 
           <div className="overflow-x-auto overflow-y-auto max-h-[400px] max-lg:w-full border-2 shadow-md">
-            <h3 className='bg-red-800 text-white px-4 py-3 text-2xl '>Pending Item Donations</h3>
+            <h3 className='bg-red-800 text-white px-4 py-3 text-2xl '>For Receiving Donations of Items</h3>
             <table className='table-auto w-full'>
               <thead className='bg-gray-100'>
                 <tr>
@@ -313,7 +313,7 @@ const Profile = ({ username }) => {
               </tbody>
             </table>
             <div className="flex justify-end mt-4">
-              <button type="button" className="px-4 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md" onClick={handleViewItemsDonatedClick}>View Items Donated</button>
+              <button type="button" className="px-4 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md" onClick={handleViewItemsDonatedClick}>View Donated Items</button>
             </div>
             <br></br>
           </div>
@@ -322,7 +322,7 @@ const Profile = ({ username }) => {
         {isModalOpen && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
     <div className="bg-white rounded-lg shadow-lg p-6 w-[80vw] max-w-2xl">
-      <h2 className="text-xl font-semibold mb-4">Items Donated</h2>
+      <h2 className="text-xl font-semibold mb-4">Donated Items</h2>
       <div className="overflow-x-auto overflow-y-auto max-h-96">
         {pendingItems.length > 0 ? (
           <table className="table-auto w-full">

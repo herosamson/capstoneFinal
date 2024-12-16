@@ -192,3 +192,19 @@ body {
     margin-right: 10px;
     margin-bottom: 10px;
   }
+  .available-info {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
+  
+  .available-info ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .available-info li {
+    margin-bottom: 5px;
+  }
