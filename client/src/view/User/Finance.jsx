@@ -20,7 +20,7 @@ const Finance = () => {
     const [financialAssistance, setFinancialAssistance] = useState([]);
     const [error, setError] = useState('');
 
-
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const username = localStorage.getItem('username');
     const today = new Date().toISOString().split('T')[0];
 
@@ -90,6 +90,7 @@ const Finance = () => {
         };
 
         try {
+            setIsButtonDisabled(true);
             const response = await axios.post(`/routes/accounts/financial-assistance/add`, newRequest, {
                 headers: { username }
             });
@@ -109,7 +110,9 @@ const Finance = () => {
             console.error('Failed to add financial request:', error.response ? error.response.data : error.message);
             setError('Failed to add financial request. Please try again later.');
             alert('Failed to add financial request. Please try again later.');
-        }
+        } finally {
+            setIsButtonDisabled(false); // Re-enable the button after the submission attempt
+          }
     };
 
     const handleChange = (e) => {
@@ -253,7 +256,7 @@ const Finance = () => {
                             min={today}
                              className="read-only w-full p-2 border rounded-lg"
                         />
-                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addFinancialAssistance}>
+                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addFinancialAssistance} disabled={isButtonDisabled} >
                             { "Add Financial Request"}
                         </button>
                     </form>

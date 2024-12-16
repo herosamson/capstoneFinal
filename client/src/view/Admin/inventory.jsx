@@ -7,9 +7,25 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 function Inventory() {
-  // State Variables
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isDropdownOpenA, setIsDropdownOpenA] = useState(false);
+  const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
+  const [expiredItems, setExpiredItems] = useState([]);
+  const handleViewExpiredItems = () => {
+    const today = new Date();
+    const expired = donations.filter(donation => {
+      if (donation.expirationDate) {
+        const expirationDate = new Date(donation.expirationDate);
+        return expirationDate < today; // Filter expired items
+      }
+      return false;
+    });
+    setExpiredItems(expired);
+    setIsExpiredModalOpen(true); // Open the modal
+  };
+
+  const handleCloseExpiredModal = () => {
+    setIsExpiredModalOpen(false);
+  };
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -19,9 +35,9 @@ function Inventory() {
   const [legalAssistance, setLegalAssistance] = useState([]);
   const [foodAssistance, setFoodAssistance] = useState([]);
   const [disasterRelief, setDisasterRelief] = useState([]);
-  const [filterStatus, setFilterStatus] = useState('All'); // All, Consumed, Unconsumed
-  const [filterCategory, setFilterCategory] = useState('All'); // All, Food, Hygiene, Clothes, Others
-  const [filterExpiration, setFilterExpiration] = useState(''); // Date
+  const [filterStatus, setFilterStatus] = useState('All'); 
+  const [filterCategory, setFilterCategory] = useState('All'); 
+  const [filterExpiration, setFilterExpiration] = useState(''); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDonation, setCurrentDonation] = useState(null);
   const [consumeQuantity, setConsumeQuantity] = useState(1);
@@ -29,17 +45,9 @@ function Inventory() {
   const [customLocation, setCustomLocation] = useState('');
   const [isCustomLocation, setIsCustomLocation] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
-
-  // Dropdown Toggles
-  const toggleDropdownA = () => {
-    setIsDropdownOpenA(!isDropdownOpenA);
-  };
-
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-
-  // Logout Handler
   const handleLogout = async () => {
     const username = localStorage.getItem('username'); 
     const role = localStorage.getItem('userRole'); 
@@ -55,7 +63,6 @@ function Inventory() {
 
       if (response.ok) {
         alert("You have successfully logged out!");
-        // Clear localStorage
         localStorage.clear();
         window.location.href = '/'; 
       } else {
@@ -67,7 +74,6 @@ function Inventory() {
     }
   };
 
-  // Fetch Donations with Location
   useEffect(() => {
     const fetchDonations = async () => {
       try {
@@ -85,7 +91,6 @@ function Inventory() {
     fetchDonations();
   }, []);
 
-  // Fetch Assistance Requests and Events
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -146,7 +151,6 @@ function Inventory() {
       }
     };
 
-    // Fetch all data concurrently
     fetchEvents();
     fetchFinancialAssistance();
     fetchMedicalAssistance();
@@ -155,7 +159,6 @@ function Inventory() {
     fetchDisasterRelief();
   }, []);
 
-  // Open Consume Modal
   const handleOpenModal = (donation) => {
     setCurrentDonation(donation);
     setConsumeQuantity(1);
@@ -166,13 +169,11 @@ function Inventory() {
     setIsModalOpen(true);
   };
 
-  // Close Consume Modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentDonation(null);
   };
 
-  // Handle Category Selection in Modal
   const handleCategoryChange = (e) => {
     const value = e.target.value;
     setSelectedCategory(value);
@@ -192,7 +193,6 @@ function Inventory() {
     }
   };
 
-  // Handle Consume Form Submission
   const handleConsumeSubmit = async (e) => {
     e.preventDefault();
   
@@ -204,7 +204,6 @@ function Inventory() {
         return;
       }
     } else {
-      // Ensure both category and selection are available
       if (!selectedCategory || !consumeLocation) {
         alert('Please select both category and consumption location.');
         return;
@@ -225,12 +224,11 @@ function Inventory() {
     try {
       const response = await axios.put(`/routes/accounts/donations/consume/${currentDonation._id}`, {
         quantity: consumeQuantity,
-        donatedTo, // Now an array
+        donatedTo,
       });
   
       if (response.status === 200) {
         alert('Item consumed successfully.');
-        // Update the donations list with the updated donation data
         setDonations(donations.map(donation => 
           donation._id === currentDonation._id ? response.data.donation : donation
         ));
@@ -248,7 +246,6 @@ function Inventory() {
     }
   };
 
-  // Handle Filters
   const handleFilterStatusChange = (e) => {
     setFilterStatus(e.target.value);
   };
@@ -261,30 +258,20 @@ function Inventory() {
     setFilterExpiration(e.target.value);
   };
 
-  // Apply Filters to Donations
   const filteredDonations = useMemo(() => {
     return donations.filter(donation => {
-      // Exclude donations with 0 or less quantity
       if (donation.quantity <= 0) return false;
-
-      // Filter by Status
       if (filterStatus === 'Consumed' && (!donation.donatedTo || donation.donatedTo.length === 0)) return false;
       if (filterStatus === 'Unconsumed' && (donation.donatedTo && donation.donatedTo.length > 0)) return false;
-
-      // Filter by Category
       if (filterCategory !== 'All') {
-        // Assuming 'item' corresponds to category
-        // Modify this if you have a separate 'category' field
         const category = donation.item.toLowerCase();
         if (filterCategory === 'Food' && category !== 'food') return false;
         if (filterCategory === 'Hygiene' && category !== 'hygiene') return false;
         if (filterCategory === 'Clothes' && category !== 'clothes') return false;
         if (filterCategory === 'Others' && category !== 'others') return false;
       }
-
-      // Filter by Expiration Date
       if (filterExpiration) {
-        if (!donation.expirationDate) return false; // Exclude donations without expiration date
+        if (!donation.expirationDate) return false; 
         const expirationDate = new Date(donation.expirationDate);
         return expirationDate <= new Date(filterExpiration);
       }
@@ -293,7 +280,6 @@ function Inventory() {
     }).sort((a, b) => b.quantity - a.quantity);
   }, [donations, filterStatus, filterCategory, filterExpiration]);
 
-  // Group Donations by Cabinet > Column > Row
   const groupedDonations = useMemo(() => {
     const group = {};
 
@@ -312,19 +298,13 @@ function Inventory() {
 
     return group;
   }, [donations]);
-
-  // Render Loading or Error States
   if (loading) return <div class="loader loader_bubble"></div>;
-
   if (error) {
     return <div className="error-message">Error loading donations. Please try again later.</div>;
   }
 
-  // PDF Generation Function
   const downloadReport = () => {
     const doc = new jsPDF();
-
-    // Header
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
     const title = 'MINOR BASILICA OF THE BLACK NAZARENE';
@@ -332,7 +312,6 @@ function Inventory() {
     const xPos = (doc.internal.pageSize.getWidth() - textWidth) / 2;
     doc.text(title, xPos, 22);
 
-    // Line
     const lineY = 28;
     const lineWidth = 1.2;
     doc.setLineWidth(lineWidth);
@@ -340,14 +319,12 @@ function Inventory() {
     const margin = 30;
     doc.line(margin, lineY, pageWidth - margin, lineY);
 
-    // Subheader
     doc.setFontSize(14);
     const title2 = 'SAINT JOHN THE BAPTIST PARISH | QUIAPO CHURCH';
     const textWidth2 = doc.getTextWidth(title2);
     const xPos2 = (doc.internal.pageSize.getWidth() - textWidth2) / 2;
     doc.text(title2, xPos2, 38);
     
-    // Report Title
     doc.setFontSize(16);
     doc.setFont("helvetica", "bold");
     const reportTitle = 'Inventory Report';
@@ -356,12 +333,10 @@ function Inventory() {
     const reportTitleY = 56;
     doc.text(reportTitle, xPos3, reportTitleY);
     
-    // Current Date
     doc.setFontSize(12);
     const currentDate = new Date().toLocaleDateString();
     doc.text(`Date: ${currentDate}`, margin, 65);
 
-    // Table
     const tableStartY = 70;
 
     const tableColumn = ["Donation ID", "Item", "Quantity", "Expiration Date", "Status", "Location", "Donated To"];
@@ -393,11 +368,9 @@ function Inventory() {
       },
       margin: { left: margin, right: margin },
       didDrawPage: function (data) {
-        // Add footer if needed
       },
     });
 
-    // Footer (Optional)
     const finalY = doc.lastAutoTable.finalY || tableStartY;
     doc.setFontSize(10);
     doc.save('Inventory_Report.pdf');
@@ -449,7 +422,12 @@ function Inventory() {
             />
           </div>
         <div className="filter-group">
-            <button     className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md my-2" onClick={downloadReport}>Print Reports</button>
+            <button     className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md my-2 mr-2" onClick={downloadReport}>Print Reports</button>
+            <button 
+            className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md my-2"
+            onClick={handleViewExpiredItems}>
+            View Expired Items
+          </button>
           </div>
         {filteredDonations.length === 0 ? (
           <p className="no-data">No located donations available.</p>
@@ -689,6 +667,53 @@ function Inventory() {
               </div>
             )}
           </>
+        )}
+         {/* Expired Items Modal */}
+         {isExpiredModalOpen && (
+          <div className="modal-overlay">
+            <div className="modalevents">
+              <div className="modal-header">
+                <h2 className="text-2xl mb-2"><strong>Expired Items as of Today</strong></h2>
+              </div>
+              <div className="modal-body">
+                {expiredItems.length > 0 ? (
+                  <table className="table-auto w-full overflow-x-auto overflow-y-auto max-h-[500px]">
+                    <thead className="bg-red-800 text-white ">
+                      <tr>
+                        <th className="font-normal py-1.5 px-2">Item</th>
+                        <th className="font-normal py-1.5 px-2">Expiration Date</th>
+                        <th className="font-normal py-1.5 px-2">Location</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expiredItems.map((item, index) => (
+                        <tr key={index} className="even:bg-gray-200">
+                          <td className="px-10 py-2">{item.item}</td>
+                          <td className="px-10 py-2">
+                            {new Date(item.expirationDate).toLocaleDateString()}
+                          </td>
+                          <td className="px-10 py-2">
+                            {item.location
+                              ? `Cabinet ${item.location.cabinet}, Column ${item.location.column}, Row ${item.location.row}`
+                              : 'Not assigned'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No expired items found as of today.</p>
+                )}
+              </div>
+              <div className="modal-buttons">
+                <button 
+                  className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md"
+                  onClick={handleCloseExpiredModal}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

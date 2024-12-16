@@ -1452,7 +1452,7 @@ router.put('/donations/locate/:id', async (req, res) => {
     });
 
     if (existingDonation) {
-      return res.status(400).json({ message: 'This cabinet, column, and row are already assigned to another donation.' });
+      return res.status(400).json({ message: 'The chosen cabinet, column, and row number are already occupied.' });
     }
 
     // Assign the location

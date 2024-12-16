@@ -8,7 +8,7 @@ import 'jspdf-autotable';
 import { MdKeyboardBackspace } from "react-icons/md";
 
 
-const Receipt = () => {4
+const Receipt = () => {
   const dateNow = new Date()
   const tobeSubmitted = dateNow.toLocaleDateString('en-PH', {
     year: 'numeric',
@@ -33,11 +33,21 @@ const Receipt = () => {4
   const [error, setError] = useState('');
   const username = localStorage.getItem('username'); // Get the username from local storage
   const contact = localStorage.getItem('contact'); 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
     const month = (`0${today.getMonth() + 1}`).slice(-2); // Months are zero-based
     const day = (`0${today.getDate()}`).slice(-2);
+    return `${year}-${month}-${day}`;
+  };
+
+  const getMinDate = () => {
+    const minDate = new Date();
+    minDate.setMonth(minDate.getMonth() - 1); // One month before today
+    const year = minDate.getFullYear();
+    const month = (`0${minDate.getMonth() + 1}`).slice(-2); // Months are zero-based
+    const day = (`0${minDate.getDate()}`).slice(-2);
     return `${year}-${month}-${day}`;
   };
   
@@ -65,6 +75,7 @@ const Receipt = () => {4
   }
 
   try {
+    setIsButtonDisabled(true);
     const response = await axios.post('/routes/accounts/addProof', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -74,7 +85,7 @@ const Receipt = () => {4
     setDonorDetails({
       name: '',
       amount: '',
-      date: getTodayDate(),
+      date: '',
       image: null,
     });
     setError('');
@@ -83,6 +94,8 @@ const Receipt = () => {4
     console.error('Failed to add proof of payment:', error.response ? error.response.data : error.message);
     setError('Failed to add proof of payment. Please try again later.');
     alert('Failed to add proof of payment. Please try again later.');
+  } finally {
+    setIsButtonDisabled(false); // Re-enable the button after the submission attempt
   }
 };
 
@@ -320,11 +333,21 @@ const handleChange = (e) => {
             </div>
 
             <div className="flex flex-col space-y-1.5">
-              <label>Date of Donation<span style={{color: 'red'}}> *</span>: {formattedDate}</label>
+              <label>Date of Donation<span style={{ color: 'red' }}> *</span>:</label>
+              <input
+                type="date"
+                name="date"
+                value={donorDetails.date}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-lg"
+                min={getMinDate()}
+                max={getTodayDate()}
+                required
+              />
             </div>
-            <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addProofOfPayment}>
-              Submit
-            </button>
+            <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addProofOfPayment} disabled={isButtonDisabled}>
+        Submit
+      </button>
           </form>
 
           <div className="overflow-x-auto overflow-y-auto max-h-[400px] max-lg:w-full border-2">

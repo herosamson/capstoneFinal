@@ -24,7 +24,7 @@ const Disaster = () => {
     const [disasterRequests, setDisasterRequests] = useState([]);
     const [error, setError] = useState('');
 
-
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const username = localStorage.getItem('username');
 
     const disasterTypes = ["Typhoons", "Earthquakes", "Floods", "Volcanic Eruptions", "Landslides", "Fires"];
@@ -97,6 +97,7 @@ const Disaster = () => {
         };
     
         try {
+            setIsButtonDisabled(true);
             const response = await axios.post(`/routes/accounts/disaster-relief/add`, newRequest, {
                 headers: { username },
             });
@@ -106,7 +107,9 @@ const Disaster = () => {
         } catch (error) {
             console.error('Failed to add disaster relief request:', error.response ? error.response.data : error.message);
             alert('Failed to add disaster relief request. Please try again later.');
-        }
+        } finally {
+            setIsButtonDisabled(false); // Re-enable the button after the submission attempt
+          }
     };
     
 
@@ -268,7 +271,7 @@ const Disaster = () => {
                             min={today}
                              className="read-only w-full p-2 border rounded-lg"
                         />
-                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addDisasterRequest}>
+                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addDisasterRequest} disabled={isButtonDisabled}>
                             {"Add Disaster Relief Request"}
                         </button>
                     </form>

@@ -29,14 +29,23 @@ function Inventory() {
   const [customLocation, setCustomLocation] = useState('');
   const [isCustomLocation, setIsCustomLocation] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
-
-  // Dropdown Toggles
-  const toggleDropdownA = () => {
-    setIsDropdownOpenA(!isDropdownOpenA);
+  const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
+  const [expiredItems, setExpiredItems] = useState([]);
+  const handleViewExpiredItems = () => {
+    const today = new Date();
+    const expired = donations.filter(donation => {
+      if (donation.expirationDate) {
+        const expirationDate = new Date(donation.expirationDate);
+        return expirationDate < today; // Filter expired items
+      }
+      return false;
+    });
+    setExpiredItems(expired);
+    setIsExpiredModalOpen(true); // Open the modal
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const handleCloseExpiredModal = () => {
+    setIsExpiredModalOpen(false);
   };
 
   // Logout Handler
@@ -439,7 +448,12 @@ function Inventory() {
             />
           </div>
         <div className="filter-group">
-            <button     className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md my-2" onClick={downloadReport}>Print Reports</button>
+            <button     className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md my-2 mr-3" onClick={downloadReport}>Print Reports</button>
+            <button 
+            className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md my-2"
+            onClick={handleViewExpiredItems}>
+            View Expired Items
+          </button>
           </div>
         {filteredDonations.length === 0 ? (
           <p className="no-data">No located donations available.</p>
@@ -519,6 +533,53 @@ function Inventory() {
                 ))
               )}
             </div>
+              {/* Expired Items Modal */}
+        {isExpiredModalOpen && (
+          <div className="modal-overlay">
+            <div className="modalevents">
+              <div className="modal-header">
+                <h2 className="text-2xl mb-2"><strong>Expired Items as of Today</strong></h2>
+              </div>
+              <div className="modal-body">
+                {expiredItems.length > 0 ? (
+                  <table className="table-auto w-full">
+                    <thead className="bg-red-800 text-white">
+                      <tr>
+                        <th className="font-normal py-1.5 px-2">Item</th>
+                        <th className="font-normal py-1.5 px-2">Expiration Date</th>
+                        <th className="font-normal py-1.5 px-2">Location</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expiredItems.map((item, index) => (
+                        <tr key={index} className="even:bg-gray-200">
+                          <td className="px-10 py-2">{item.item}</td>
+                          <td className="px-10 py-2">
+                            {new Date(item.expirationDate).toLocaleDateString()}
+                          </td>
+                          <td className="px-10 py-2">
+                            {item.location
+                              ? `Cabinet ${item.location.cabinet}, Column ${item.location.column}, Row ${item.location.row}`
+                              : 'Not assigned'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No expired items found as of today.</p>
+                )}
+              </div>
+              <div className="modal-buttons">
+                <button 
+                  className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md"
+                  onClick={handleCloseExpiredModal}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
             {/* Consume Modal */}
             {isModalOpen && currentDonation && (
               <div className="modal-overlay">
@@ -664,6 +725,7 @@ function Inventory() {
                         </label>
                       )}
                     </div>
+                    
                     <div className="modal-buttons">
                       <button type="submit"   className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md" >Submit</button> 
                     </div>

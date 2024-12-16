@@ -19,7 +19,7 @@ const Legal = () => {
     const [legalRequests, setLegalRequests] = useState([]);
     const [error, setError] = useState('');
 
-
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const username = localStorage.getItem('username');
     const today = new Date().toISOString().split('T')[0];
 
@@ -73,6 +73,7 @@ const Legal = () => {
         };
 
         try {
+            setIsButtonDisabled(true);
             const response = await axios.post(`/routes/accounts/legal-assistance/add`, newRequest, {
                 headers: { username }
             });
@@ -90,7 +91,9 @@ const Legal = () => {
             console.error('Failed to add legal request:', error.response ? error.response.data : error.message);
             setError('Failed to add legal request. Please try again later.');
             alert('Failed to add legal request. Please try again later.');
-            }
+            } finally {
+                setIsButtonDisabled(false); // Re-enable the button after the submission attempt
+              }
     };
 
     const handleChange = (e) => {
@@ -218,7 +221,7 @@ const Legal = () => {
                             className="read-only w-full p-2 border rounded-lg"
                         />
 
-                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addLegalRequest}>
+                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addLegalRequest} disabled={isButtonDisabled}>
                             { "Add Legal Request"}
                         </button>
                     </form>

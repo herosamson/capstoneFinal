@@ -24,7 +24,7 @@ const Medical = () => {
     const [targetDate, setTargetDate] = useState('');
     const [medicalAssistance, setMedicalAssistance] = useState([]);
 
-
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const username = localStorage.getItem('username');
 
     const medicineTypes = [
@@ -99,6 +99,7 @@ const Medical = () => {
         const newRequest = { name, typeOfMedicine: typeOfMedicine === "Others" ? customTypeOfMedicine : typeOfMedicine, quantity, contactNumber, location: fullLocation, reason, targetDate, username };
 
         try {
+            setIsButtonDisabled(true);
             const response = await axios.post(`/routes/accounts/medical-assistance/add`, newRequest, {
                 headers: { username }
             });
@@ -120,7 +121,9 @@ const Medical = () => {
         } catch (error) {
             console.error('Failed to add medical assistance:', error.response ? error.response.data : error.message);
             alert('Failed to add medical assistance. Please try again later.');
-        }
+        } finally {
+            setIsButtonDisabled(false); // Re-enable the button after the submission attempt
+          }
     };
 
     useEffect(() => {
@@ -302,7 +305,7 @@ const Medical = () => {
                             min={today}
                              className="read-only w-full p-2 border rounded-lg"
                         />
-                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addMedicalAssistance}>
+                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addMedicalAssistance} disabled={isButtonDisabled}>
                            { "Add Medical Request"}
                         </button>
 

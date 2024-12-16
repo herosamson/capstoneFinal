@@ -408,7 +408,7 @@ fetchTotalItemDonations();
           {/* Total Cash Donations per Month BarChart */}
           <div className="bar-chart">
             <h3 className='font-bold text-2xl' >Total Cash Donations per Month</h3>
-            <BarChart width={500} height={300} data={monthlyApprovedDonations}>
+            <BarChart width={600} height={350} data={monthlyApprovedDonations}  margin={{ top: 20, right: 20, left: 70, bottom: 20 }} >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
@@ -419,7 +419,7 @@ fetchTotalItemDonations();
           {/* Total Item Donations per Month BarChart */}
           <div className="bar-chart">
             <h3 className='font-bold text-2xl'>Total Item Donations per Month</h3>
-            <BarChart width={500} height={300} data={monthlyItemDonations}>
+            <BarChart width={600} height={350} data={monthlyItemDonations}  margin={{ top: 20, right: 20, left: 70, bottom: 20 }} >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
@@ -449,14 +449,14 @@ fetchTotalItemDonations();
          {/* Items Modal to show located items in a table */}
          {isItemsModalOpen && (
           <div className="modal-overlay">
-            <div className="modal">
+            <div className="modalevents">
               <div className="modal-header">
                 <h2 className='text-2xl'><strong>Located Items</strong></h2>
                 <span className="close-button" onClick={closeItemModal1}>&times;</span>
               </div>
               <div className="modal-content">
                 {locatedItems.length > 0 ? (
-                    <table className='table-auto w-full'>
+                    <table className='table-auto w-full overflow-x-auto overflow-y-auto max-h-[500px]'>
                    <thead className='bg-red-800 text-white'>
                       <tr>
                         <th className='font-normal py-1.5 px-2'>Item Name</th>

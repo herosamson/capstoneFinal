@@ -22,7 +22,7 @@ const ForgotPassword = () => {
       }
     } catch (error) {
       console.error(error);
-      alert('An error occurred while sending OTP. Please try again.');
+      alert('User does not exist.');
     }
   };
 

@@ -22,6 +22,7 @@ const Others = () => {
   const [expirationDate, setExpirationDate] = useState('');
   const [error, setError] = useState('');
   const [category, setCategory] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const navigate = useNavigate();
 
   const categoryItems = {
@@ -203,6 +204,7 @@ const Others = () => {
         }
 
         try {
+            setIsButtonDisabled(true);
             const itemsToSubmit = pendingItems.map(pendingItem => ({
                 item: pendingItem.item,
                 quantity: pendingItem.quantity,
@@ -229,7 +231,9 @@ const Others = () => {
         } catch (err) {
             console.error('Error submitting items:', err.response ? err.response.data : err.message);
             alert('Error submitting items.');
-        }
+        } finally {
+    setIsButtonDisabled(false); // Re-enable the button after the submission attempt
+  }
     };
 
     const handleChange = (e) => {
@@ -478,6 +482,7 @@ const Others = () => {
                             <button
                             className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200"
                             onClick={submitItems}
+                            disabled={isButtonDisabled}
                             >
                             Submit
                             </button>
@@ -487,7 +492,7 @@ const Others = () => {
                     </div>
 
                     <div className="">
-                        <h3 className='bg-white rounded-lg shadow-md border text-xl font-medium py-3 px-3 max-lg:w-full'>Pending Items</h3>
+                        <h3 className='bg-white rounded-lg shadow-md border text-xl font-medium py-3 px-3 max-lg:w-full'>For Receiving Donations of Items</h3>
                         <div className=" overflow-x-auto overflow-y-auto max-h-[400px] max-lg:w-full">
                             {pendingItems.length > 0 && (
                                 <table className='bg-white table-auto w-full'>

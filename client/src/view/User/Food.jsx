@@ -22,7 +22,7 @@ const Food = () => {
     const [targetDate, setTargetDate] = useState('');
     const [numberOfPax, setNumberOfPax] = useState('');
     const [foodAssistance, setFoodAssistance] = useState([]);
-
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const username = localStorage.getItem('username');
     const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
   
@@ -103,6 +103,7 @@ const Food = () => {
     
     
         try {
+            setIsButtonDisabled(true);
             const response = await axios.post(`/routes/accounts/food-assistance/add`, newRequest, {
                 headers: { username }
             });
@@ -113,7 +114,9 @@ const Food = () => {
         } catch (error) {
             console.error('Failed to add food request:', error.response ? error.response.data : error.message);
             alert('Failed to add food request. Please try again later.');
-        }
+        } finally {
+            setIsButtonDisabled(false); // Re-enable the button after the submission attempt
+          }
     };
     
     
@@ -295,7 +298,7 @@ const Food = () => {
                             max="200"
                          className="read-only w-full p-2 border rounded-lg"
                         />
-                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addFoodAssistance}>
+                        <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addFoodAssistance} disabled={isButtonDisabled}>
                             {"Add Food Request"}
                         </button>
                     </form>
