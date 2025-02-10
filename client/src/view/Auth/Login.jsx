@@ -18,14 +18,19 @@ const Login = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
+      console.log("Attempting login with:", loginData); // Debugging log
+  
       const response = await axios.post(`/routes/accounts/login`, loginData);
+      
+      console.log("Login response:", response.data); // Debugging log
+      
       const { userId, username, role, firstname, lastname, contact } = response.data;
-
+  
       setUserRole(role);
       setIsLoggedIn(true);
-
+  
       // Store user details in localStorage
       localStorage.setItem('userId', userId);
       localStorage.setItem('username', username);
@@ -33,25 +38,30 @@ const Login = ({ onLogin }) => {
       localStorage.setItem('firstname', firstname);
       localStorage.setItem('lastname', lastname);
       localStorage.setItem('contact', contact);
-
+  
       onLogin(userId, username, role, firstname, lastname, contact);
     } catch (error) {
+      console.error("Login error:", error.response?.data || error.message);
       setIsIncorrectPassword(true);
     }
   };
+  
 
 
-  if (isLoggedIn) {
-    if (userRole === 'superadmin') {
-      return <Navigate to="/analyticsSA" />;
-    } else if (userRole === 'admin') {
-      return <Navigate to="/analytics" />;
-    } else if (userRole === 'staff') {
-      return <Navigate to="/staffDashboard" />;
-    } else {
-      return <Navigate to="/home" />;
+  useEffect(() => {
+    if (isLoggedIn) {
+      if (userRole === 'superadmin') {
+        window.location.href = "/analyticsSA";
+      } else if (userRole === 'admin') {
+        window.location.href = "/analytics";
+      } else if (userRole === 'staff') {
+        window.location.href = "/staffDashboard";
+      } else {
+        window.location.href = "/home";
+      }
     }
-  }
+  }, [isLoggedIn, userRole]);
+  
 
    const [ isOpen, setIsOpen ] = useState(false);
       const [ isScrolled, setIsScrolled ] = useState(false);
