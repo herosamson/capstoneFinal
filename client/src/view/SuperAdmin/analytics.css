@@ -1,0 +1,279 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+
+  }
+  
+  #container {
+    display: flex;
+    height: 100vh;
+  }
+  .logoU {
+    display: block;
+    margin: 0 auto; /* Center horizontally */
+    max-width: 100%;
+  }
+  #sidebar ul .dropdown-toggle {
+    cursor: pointer;
+    padding: 10px;
+    font-size: 20px;
+  }
+  
+  #sidebar ul .dropdown-menu {
+    padding-left: 20px;
+  }
+  
+  #sidebar ul .dropdown-menu li {
+    margin-bottom: 10px;
+  }
+  
+  #sidebar ul .dropdown-menu li a.no-hover:hover {
+    background-color: transparent !important;
+    padding-left: 10px;
+  }
+  
+  .arrow {
+    margin-left: 10px;
+    font-size: 16px;
+    transition: transform 0.3s ease; /* Added transition property */
+  }
+  
+  .arrow.open {
+    transform: rotate(90deg);
+  }
+  #sidebar {
+    width: 50px;
+    background-color: #740000 !important;
+    color: #fff;
+    padding: 10px 5px;
+    transition: width 0.3s ease;
+    position: relative; /* Added position relative */
+  }
+  
+  #sidebar:hover {
+    width: 250px;
+  }
+  
+  .status-box p {
+    font-size: 1.3em !important; /* Adjust as needed */
+    margin-top: 10px;
+    /* Additional styles */
+    text-size-adjust: 20px;
+  }
+
+  #sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    visibility: visible; /* Hide the text initially */
+    transition: visibility 0.3s; /* Delay visibility change to match width transition */
+  }
+  
+  #sidebar:hover h2 {
+    visibility: visible; /* Show the text on hover */
+  }
+  
+  #sidebar ul {
+    padding: 0;
+    list-style-type: none;
+    width: 100%; 
+  }
+  
+  #sidebar ul li {
+    margin-bottom: 10px;
+    opacity: 0; /* Hide the text initially */
+    transition: opacity 0.3s ease;
+  }
+  
+  #sidebar:hover ul li {
+    opacity: 1; /* Show the text on hover */
+  }
+  
+  #sidebar ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+    font-size: 20px;
+  }
+  
+  #sidebar ul li a:hover {
+    background-color: #490000 !important;
+    padding-left: 30px;
+  }
+  
+  #sidebar ul .dropdown-toggle {
+    cursor: pointer;
+  }
+  
+  #sidebar ul .dropdown-menu {
+    padding-left: 20px;
+  }
+  
+  #sidebar ul .dropdown-menu li {
+    margin-bottom: 10px;
+  }
+  
+  #content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  #user-list {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  #user-list th,
+  #user-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  #user-list th {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  .menu-icon {
+    margin-right: 10px;
+  }
+  
+ /* Container for Status Boxes */
+.status-boxes {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 20px; /* Adds space between boxes */
+  text-decoration: none;
+  margin-bottom: 100px;
+}
+
+.status-box p {
+  font-size: larger;
+}
+
+/* Individual Status Box */
+.status-box {
+  position: relative; /* To position the pseudo-elements */
+  background-color: #ffffff; /* White background for a clean look */
+  padding: 20px 40px 20px 20px; /* Added right padding for the icon */
+  text-align: left; /* Align text to the left for better readability */
+  flex-grow: 1;
+  margin: 0 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+}
+
+/* Hover Effect for Status Box */
+.status-box:hover {
+  background-color: #f5f5f5; /* Light gray on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow */
+}
+
+/* Paragraph Styling Inside Status Box */
+.status-box p {
+  margin: 10px 0; /* Space between texts */
+  font-size: 16px;
+  color: #333333; /* Darker text for readability */
+}
+
+/* Left Vertical Line */
+.status-box::before {
+  content: '';
+  position: absolute;
+  left: 0; /* Align to the left */
+  top: 0;
+  width: 5px; /* Width of the line */
+  height: 100%;
+  background-color: #10c400; /* Green color for emphasis */
+  border-top-left-radius: 8px; /* Match border-radius */
+  border-bottom-left-radius: 8px;
+}
+
+/* Right Side Icon */
+.status-box::after {
+  content: '\f0c8'; /* Font Awesome icon (box) */
+  font-family: 'Font Awesome 5 Free'; /* Ensure Font Awesome is loaded */
+  font-weight: 900; /* Solid style */
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #10c400; /* Icon color matching the left line */
+}
+
+/* Ensure the status-box is large enough to accommodate the icon */
+.status-box {
+  padding-right: 40px; /* Increase right padding */
+}
+/* Responsive Design: Stack vertically on smaller screens */
+@media (max-width: 768px) {
+  .status-boxes {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+  
+  .charts {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .line-chart{
+margin-top: 30px;
+margin-bottom: 80px;
+    display: flex;
+    justify-content: center;
+    width: 500px;
+  }
+  .pie-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    margin-top: 30px;
+    margin-bottom: 80px;
+  }
+/* New styles for Bar Charts Container */
+.bar-charts-container {
+  display: flex;
+  justify-content: space-around; /* Distribute space evenly between charts */
+  align-items: center;
+  margin-top: 20px; /* Add some spacing from the previous section */
+}
+
+/* New styles for each Bar Chart */
+.bar-chart {
+  margin-top: 30px;
+margin-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Optional: Adjust chart titles */
+.bar-chart h3 {
+  margin-bottom: 10px;
+}
+
+/* Responsive adjustments (optional) */
+@media (max-width: 768px) {
+  .bar-charts-container {
+    flex-direction: column;
+  }
+
+  .bar-chart {
+    margin-bottom: 20px;
+  }
+}
+  

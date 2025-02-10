@@ -18,7 +18,6 @@ const Profile = ({ username }) => {
     lastname: '',
     email: '',
     contact: '',
-    address: '',
     username: '',
   });
 
@@ -78,7 +77,6 @@ const Profile = ({ username }) => {
         lastname: user.lastname,
         email: user.email,
         contact: user.contact,
-        address: user.address,
         username: user.username,
       });
 
@@ -115,10 +113,6 @@ const Profile = ({ username }) => {
       return;
     }
 
-  if (!editData.address || editData.address.trim() === "") {
-    alert('Address is required.');
-    return;
-  }
   
     try {
       const response = await axios.put(`/routes/accounts/user/${username}`, editData);
@@ -148,7 +142,6 @@ const Profile = ({ username }) => {
       lastname: user?.lastname,
       email: user?.email,
       contact: user?.contact,
-      address: user?.address,
       username: user?.username,
     });
   };
@@ -240,17 +233,6 @@ const Profile = ({ username }) => {
                   />
                 </div>
 
-                <div className="edit-field">
-                  <label className="block mb-2">Address:</label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={editData.address}
-                    onChange={handleChange}
-                    className="read-only w-full p-2 border rounded-lg"
-                  />
-                </div>
-
                 <div className="button-group">
                   <button type="button" className="px-4 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-2 mr-1 ml-1" onClick={handleSave}>Save</button>
                   <button type="button" className="px-4 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md" onClick={handleCancel}>Cancel</button>
@@ -267,7 +249,6 @@ const Profile = ({ username }) => {
                 <p>Name: {user?.firstname} {user?.lastname}</p>
                 <p>Email: {user?.email}</p>
                 <p>Contact: {user?.contact}</p>
-                <p>Address: {user?.address}</p>
                 <p>Username: {user?.username}</p>
               </div>
               <div className="flex justify-center mt-6">

@@ -229,7 +229,7 @@ let transporter = nodemailer.createTransport({
 //admin add user
 router.post('/register-verified', async (req, res) => {
   try {
-    const { firstname, lastname, contact, address, email, username, password } = req.body;
+    const { firstname, lastname, contact,  email, username, password } = req.body;
 
     // Check if the username already exists across all user collections
     const userExists = await Register.findOne({ username }) || 
@@ -263,7 +263,6 @@ router.post('/register-verified', async (req, res) => {
       firstname,
       lastname,
       contact,
-      address,
       email,
       username,
       password: hashedPassword,
@@ -282,7 +281,7 @@ router.post('/register-verified', async (req, res) => {
 
 // User registration
 router.post('/register', async (req, res) => {
-  const { firstname, lastname, contact, address, email, username, password } = req.body;
+  const { firstname, lastname, contact, email, username, password } = req.body;
 
   try {
     // Check for unique username, email, and contact across all models using Promise.all
@@ -305,7 +304,7 @@ router.post('/register', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new Register({ firstname, lastname, contact, address, email, username, password: hashedPassword, verified: false });
+    const newUser = new Register({ firstname, lastname, contact, email, username, password: hashedPassword, verified: false });
 
     await newUser.save();
 
@@ -416,7 +415,7 @@ router.delete('/user/:id', async (req, res) => {
 
 // Add Staff Route
 router.post('/stafff', async (req, res) => {
-  const { firstname, lastname, contact, address, email, username, password } = req.body;
+  const { firstname, lastname, contact, email, username, password } = req.body;
 
   try {
     // Check for unique username, email, and contact across all models
@@ -443,7 +442,6 @@ router.post('/stafff', async (req, res) => {
       firstname,
       lastname,
       contact,
-      address,
       email,
       username,
       password: hashedPassword,
@@ -636,10 +634,10 @@ router.get('/user/:id', async (req, res) => {
 
 // Update user details
 router.put('/user/:id',  async (req, res) => {
-  const { firstname, lastname, contact, address, email, username } = req.body;
+  const { firstname, lastname, contact, email, username } = req.body;
 
   try {
-    const updatedData = { firstname, lastname, contact, address, email, username };
+    const updatedData = { firstname, lastname, contact, email, username };
 
     const updatedUser = await Register.findByIdAndUpdate(req.params.id, updatedData, { new: true, fields: { password: 0 } });
     if (!updatedUser) {
@@ -1227,7 +1225,7 @@ router.put('/legal-assistance/:id/approve',async (req, res) => {
 
 // Admin registration
 router.post('/admin', async (req, res) => {
-  const { firstname, lastname, contact, address, email, username, password } = req.body;
+  const { firstname, lastname, contact, email, username, password } = req.body;
 
   try {
     // Check for unique email, contact, and username across all models
@@ -1241,7 +1239,7 @@ router.post('/admin', async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newAdmin = new Admin({ firstname, lastname, contact, address, email, username, password: hashedPassword });
+    const newAdmin = new Admin({ firstname, lastname, contact, email, username, password: hashedPassword });
     const savedAdmin = await newAdmin.save();
     res.status(201).json(savedAdmin);
   } catch (error) {
@@ -1274,7 +1272,7 @@ router.delete('/admin/:id', async (req, res) => {
 // Update an admin
 router.put('/admin/:id', async (req, res) => {
   const { id } = req.params;
-  const { firstname, lastname, contact, email, username, password } = req.body;  // Exclude address
+  const { firstname, lastname, contact, email, username, password } = req.body; 
 
   try {
     // Check for unique email, contact, and username across all models, excluding the current admin
@@ -1288,10 +1286,9 @@ router.put('/admin/:id', async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Update the admin, excluding address
     const updatedAdmin = await Admin.findByIdAndUpdate(
       id,
-      { firstname, lastname, contact, email, username, password: hashedPassword },  // Exclude address
+      { firstname, lastname, contact, email, username, password: hashedPassword },  
       { new: true }
     );
 

@@ -53,6 +53,7 @@ function Activity() {
       <ul>
           <li><img className="logoU" src={logo2} alt="Logo" /></li>
           <br />
+           <li><Link to="/analyticsSA">Dashboard</Link></li>
           <li className="dropdown-toggle" onClick={toggleDropdownA}>
             Accounts Management<span className="arrow">&#9660;</span>
           </li>

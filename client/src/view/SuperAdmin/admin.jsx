@@ -397,24 +397,25 @@ function Administrator() {
     <div id="container">
       <div id="sidebar">
       <ul>
-          <li><img className="logoU" src={logo2} alt="Logo" /></li>
-          <br />
-          <li className="dropdown-toggle" onClick={toggleDropdownA}>
-            Accounts Management<span className="arrow">&#9660;</span>
-          </li>
-          {isDropdownOpenA && (
-            <ul className="dropdown-menuU">
-          <li><Link to="/admin">Donors </Link></li>
-          <li><Link to="/adminSA">Administrators </Link></li>
-          <li><Link to="/staffSA">Staff </Link></li>
-            </ul>
-          )}
-          <li><Link to="/eventsSA">Events</Link></li>
-          <li><Link to="/inventorySA">Inventory</Link></li>
-          <li><Link to="/activity">Activity Logs</Link></li>
-          <br />
-          <li><Link to="/" onClick={handleLogout}>Logout</Link></li>
-        </ul>
+                <li><img className="logoU" src={logo2} alt="Logo" /></li>
+                <br />
+                 <li><Link to="/analyticsSA">Dashboard</Link></li>
+                <li className="dropdown-toggle" onClick={toggleDropdownA}>
+                  Accounts Management<span className="arrow">&#9660;</span>
+                </li>
+                {isDropdownOpenA && (
+                  <ul className="dropdown-menuU">
+                <li><Link to="/admin">Donors </Link></li>
+                <li><Link to="/adminSA">Administrators </Link></li>
+                <li><Link to="/staffSA">Staff </Link></li>
+                  </ul>
+                )}
+                <li><Link to="/eventsSA">Events</Link></li>
+                <li><Link to="/inventorySA">Inventory</Link></li>
+                <li><Link to="/activity">Activity Logs</Link></li>
+                <br />
+                <li><Link to="/" onClick={handleLogout}>Logout</Link></li>
+              </ul>
       </div>
       <div id="content">
         <h1  className='text-3xl font-bold mt-2 mb-4'>Administrator Management</h1>

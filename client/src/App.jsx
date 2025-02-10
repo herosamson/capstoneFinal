@@ -47,6 +47,7 @@ import AdminMedical from './view/Admin/medical.jsx';
 /* SuperAdmin */
 import Activity from './view/SuperAdmin/activity.jsx';
 import Admin from './view/SuperAdmin/admin.jsx';
+import AnalyticsSA from './view/SuperAdmin/analytics.jsx';
 import SuperAdminDashboard from './view/SuperAdmin/dashboard.jsx';
 import SuperAdminEvents from './view/SuperAdmin/eventsA.jsx';
 import SuperAdminInventory from './view/SuperAdmin/inventoryA.jsx';
@@ -266,6 +267,11 @@ const App = () => {
         <Route path="/admin" element={
           <ProtectedRoute userRole={userRole} allowedRoles={['superadmin']}>
             <SuperAdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/analyticsSA" element={
+          <ProtectedRoute userRole={userRole} allowedRoles={['superadmin']}>
+            <AnalyticsSA />
           </ProtectedRoute>
         } />
         <Route path="/eventsSA" element={
