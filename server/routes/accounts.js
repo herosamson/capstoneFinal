@@ -416,20 +416,23 @@ router.delete('/user/:id', async (req, res, next) => {
       return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
     }
 
-    // ✅ Set req.user before logging
+    // ✅ Ensure req.user is set before LogActivity
     req.user = { 
       username: superAdmin.username, 
       role: 'superadmin' 
     };
 
-    next();
+    // Call log middleware here
+    await LogActivity('Deleted a Donor')(req, res, () => {});
+
+    await Register.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'User deleted successfully.' });
+
   } catch (error) {
     return res.status(500).json({ message: 'Server error.' });
   }
-}, LogActivity('Deleted a Donor'), async (req, res) => { 
-  await Register.findByIdAndDelete(req.params.id);
-  res.status(200).json({ message: 'User deleted successfully.' });
 });
+
 
 
 
@@ -535,20 +538,23 @@ router.delete('/staff/:id', async (req, res, next) => {
       return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
     }
 
-    // ✅ Set req.user before logging
+    // ✅ Ensure req.user is set before LogActivity
     req.user = { 
       username: superAdmin.username, 
       role: 'superadmin' 
     };
 
-    next();
+    // Call log middleware here
+    await LogActivity('Deleted a Staff Member')(req, res, () => {});
+
+    await Staff.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Staff member deleted successfully.' });
+
   } catch (error) {
     return res.status(500).json({ message: 'Server error.' });
   }
-}, LogActivity('Deleted a Staff Member'), async (req, res) => { 
-  await Staff.findByIdAndDelete(req.params.id);
-  res.status(200).json({ message: 'Staff member deleted successfully.' });
 });
+
 
 
 
@@ -1343,20 +1349,23 @@ router.delete('/admin/:id', async (req, res, next) => {
       return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
     }
 
-    // ✅ Set req.user before logging
+    // ✅ Ensure req.user is set before LogActivity
     req.user = { 
       username: superAdmin.username, 
       role: 'superadmin' 
     };
 
-    next();
+    // Call log middleware here
+    await LogActivity('Deleted an Admin')(req, res, () => {});
+
+    await Admin.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Admin deleted successfully.' });
+
   } catch (error) {
     return res.status(500).json({ message: 'Server error.' });
   }
-}, LogActivity('Deleted an Admin'), async (req, res) => { 
-  await Admin.findByIdAndDelete(req.params.id);
-  res.status(200).json({ message: 'Admin deleted successfully.' });
 });
+
 
 
 
@@ -1735,20 +1744,23 @@ router.delete('/superadmin/delete/:id', async (req, res, next) => {
       return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
     }
 
-    // ✅ Set req.user before logging
+    // ✅ Ensure req.user is set before LogActivity
     req.user = { 
       username: superAdminRequester.username, 
       role: 'superadmin' 
     };
 
-    next(); // Move to the logActivity middleware
+    // Call log middleware here
+    await LogActivity('Deleted a Super Admin')(req, res, () => {});
+
+    await SuperAdmin.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'SuperAdmin deleted successfully.' });
+
   } catch (error) {
     return res.status(500).json({ message: 'Server error.' });
   }
-}, LogActivity('Deleted a Super Admin'), async (req, res) => { 
-  await SuperAdmin.findByIdAndDelete(req.params.id);
-  res.status(200).json({ message: 'SuperAdmin deleted successfully.' });
 });
+
 
 
 

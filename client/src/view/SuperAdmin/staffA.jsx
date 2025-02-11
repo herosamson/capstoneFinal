@@ -180,7 +180,6 @@ const handleRequestDelete = (id) => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this staff member?")) {
       try {
         const response = await fetch(`/routes/accounts/staff/${id}`, {
           method: 'DELETE',
@@ -190,7 +189,7 @@ const handleRequestDelete = (id) => {
   
         if (response.ok) {
           setStaff(staff.filter(staffMember => staffMember._id !== id));
-          setIsAuthorized(false); // Reset authorization after deletion
+          setIsAuthorized(false); 
           setDeleteUserId(null);
           alert(data.message);
         } else {
@@ -199,7 +198,6 @@ const handleRequestDelete = (id) => {
       } catch (error) {
         console.error('Error deleting staff member:', error);
         alert('Failed to delete staff member');
-      }
     }
   };
   

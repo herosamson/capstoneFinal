@@ -495,11 +495,11 @@ const deleteUser = async () => {
                         <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditClick(admin)}>Edit</button>
 
                         {!isAuthorized || deleteUserId !== admin._id ? (
-                        <button onClick={() => handleRequestDelete(admin._id, 'admin')}>
+                        <button className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2" onClick={() => handleRequestDelete(admin._id, 'admin')}>
                           Request Delete
                         </button>
                       ) : (
-                        <button onClick={() => deleteUser(admin._id, 'admin')}>
+                        <button className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2" onClick={() => deleteUser(admin._id, 'admin')}>
                           Delete
                         </button>
                       )}
