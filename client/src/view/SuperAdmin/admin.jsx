@@ -309,7 +309,6 @@ function Administrator() {
     }
   };
   
-
   const deleteSuperAdmin = async (id) => { // Delete SuperAdmin
     try {
       await fetch(`https://idonate1.onrender.com/routes/accounts/superadmin/delete/${id}`, { method: 'DELETE' });
