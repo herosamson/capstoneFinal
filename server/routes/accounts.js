@@ -424,7 +424,7 @@ router.delete('/user/:id', async (req, res) => {
     req.user.role = 'superadmin';
 
     // ✅ Log activity after deletion
-    await logActivity('Deleted a Donor')(req, res, () => {});
+    await LogActivity('Deleted a Donor')(req, res, () => {});
 
     res.status(200).json({ message: `User ${deletedUser.firstname} ${deletedUser.lastname} deleted successfully.` });
   } catch (error) {
@@ -544,7 +544,7 @@ router.delete('/staff/:id', async (req, res) => {
     req.user.role = 'superadmin';
 
     // ✅ Log activity after deletion
-    await logActivity('Deleted a Staff Member')(req, res, () => {});
+    await LogActivity('Deleted a Staff Member')(req, res, () => {});
 
     res.status(200).json({ message: `Staff member ${staff.firstname} ${staff.lastname} deleted successfully` });
   } catch (error) {
@@ -1353,7 +1353,7 @@ router.delete('/admin/:id', async (req, res) => {
     req.user.role = 'superadmin';
 
     // ✅ Log activity after deletion
-    await logActivity('Deleted an Admin')(req, res, () => {});
+    await LogActivity('Deleted an Admin')(req, res, () => {});
 
     res.status(200).json({ message: `Admin ${admin.firstname} ${admin.lastname} deleted successfully` });
   } catch (error) {
@@ -1746,7 +1746,7 @@ router.delete('/superadmin/delete/:id', async (req, res) => {
     req.user.role = 'superadmin';
 
     // ✅ Log activity after deletion
-    await logActivity('Deleted a Super Admin')(req, res, () => {});
+    await LogActivity('Deleted a Super Admin')(req, res, () => {});
 
     res.status(200).json({ message: `SuperAdmin ${superAdmin.firstname} ${superAdmin.lastname} deleted successfully.` });
   } catch (error) {
