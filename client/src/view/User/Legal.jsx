@@ -86,6 +86,7 @@ const Legal = () => {
             setTargetDate('');
             setError('');
 
+            alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Legal request added successfully.');
         } catch (error) {
             console.error('Failed to add legal request:', error.response ? error.response.data : error.message);

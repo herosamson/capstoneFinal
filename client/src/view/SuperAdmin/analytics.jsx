@@ -473,7 +473,6 @@ fetchTotalItemDonations();
       </div>
       <div id="content">
       <div className="">
-            <h1 className='text-4xl font-bold mt-2 mb-4'>Administrator Dashboard</h1>
           </div>
         <div className="status-boxes">
           <div className="status-box" onClick={openItemModal}>

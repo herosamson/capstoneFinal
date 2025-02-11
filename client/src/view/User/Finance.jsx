@@ -105,13 +105,14 @@ const Finance = () => {
             setTargetDate('');
             setError('');
 
+            alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Financial request added successfully.');
         } catch (error) {
             console.error('Failed to add financial request:', error.response ? error.response.data : error.message);
             setError('Failed to add financial request. Please try again later.');
             alert('Failed to add financial request. Please try again later.');
         } finally {
-            setIsButtonDisabled(false); // Re-enable the button after the submission attempt
+            setIsButtonDisabled(false); 
           }
     };
 

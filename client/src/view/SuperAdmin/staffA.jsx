@@ -4,34 +4,19 @@ import './staffA.css';
 import logo2 from './logo2.png';
 
 function Staff() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [staff, setStaff] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [editStaffId, setEditStaffId] = useState(null);
   const [editFormData, setEditFormData] = useState({});
   const [newPassword, setNewPassword] = useState('');
+  const [showPasswordModal, setShowPasswordModal] = useState(false); 
+  const [superAdminPassword, setSuperAdminPassword] = useState(''); 
+  const [deleteUserId, setDeleteUserId] = useState(null); 
+  const [isAuthorized, setIsAuthorized] = useState(false); 
   const [isDropdownOpenA, setIsDropdownOpenA] = useState(false);
   const [users, setUsers] = useState([]);
   const [admins, setAdmins] = useState([]);
-  const [newUser, setNewUser] = useState({
-    firstname: '',
-    lastname: '',
-    contact: '',
-    address: '',
-    email: '',
-    username: '',
-    password: '',
-  });
   const [newStaff, setNewStaff] = useState({
-    firstname: '',
-    lastname: '',
-    contact: '',
-    address: '',
-    email: '',
-    username: '',
-    password: '',
-  });
-  const [newAdmin, setNewAdmin] = useState({
     firstname: '',
     lastname: '',
     contact: '',
@@ -97,6 +82,31 @@ function Staff() {
 
     return true;
 };
+
+const handleVerifySuperAdmin = async () => {
+  try {
+    const response = await fetch('https://idonate1.onrender.com/routes/accounts/verify-superadmin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: superAdminPassword }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setIsAuthorized(true); // ✅ Unlock Delete Button
+      setShowPasswordModal(false);
+      setSuperAdminPassword('');
+      alert('Authorization successful! You can now delete the staff member.');
+    } else {
+      alert('Authorization failed: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error verifying super admin:', error);
+    alert('An error occurred while verifying password.');
+  }
+};
+
 
   const handleAddStaff = async () => {
     if (Object.values(newStaff).some((field) => field === '')) {
@@ -167,9 +177,13 @@ function Staff() {
         const response = await fetch(`/routes/accounts/staff/${id}`, {
           method: 'DELETE',
         });
+  
         const data = await response.json();
+  
         if (response.ok) {
           setStaff(staff.filter(staffMember => staffMember._id !== id));
+          setIsAuthorized(false); // Reset authorization after deletion
+          setDeleteUserId(null);
           alert(data.message);
         } else {
           alert(data.message);
@@ -180,6 +194,7 @@ function Staff() {
       }
     }
   };
+  
 
   const handleLogout = async () => {
     const username = localStorage.getItem('username'); 
@@ -233,14 +248,9 @@ function Staff() {
     setEditFormData({ ...editFormData, [name]: value });
   };
 
-  const handleNewPasswordChange = (e) => {
-    setNewPassword(e.target.value);
-  };
-
   const handleEditFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Update staff details
       const response = await fetch(`https://idonate1.onrender.com/routes/accounts/staff/${editStaffId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -252,7 +262,6 @@ function Staff() {
         return;
       }
 
-      // Update password if new password is provided
       if (newPassword) {
         const passwordResponse = await fetch(`https://idonate1.onrender.com/routes/accounts/staff/${editStaffId}/password`, {
           method: 'PUT',
@@ -361,7 +370,26 @@ function Staff() {
                     <td className='px-10 py-2'>{staffMember.contact}</td>
                     <td className='px-10 py-2'>
                       <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditClick(staffMember)}>Edit</button>
-                      <button type="button" className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2" onClick={() => handleDelete(staffMember._id)}>Delete</button>
+                      {!isAuthorized || deleteUserId !== staffMember._id ? (
+                        <button
+                          type="button"
+                          className="px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 duration-200 rounded-md mr-2"
+                          onClick={() => {
+                            setDeleteUserId(staffMember._id);
+                            setShowPasswordModal(true);
+                          }}
+                        >
+                          Request Delete
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
+                          onClick={() => handleDelete(staffMember._id)}
+                        >
+                          Delete
+                        </button>
+                      )}
                     </td>
                   </>
                 )}
@@ -390,6 +418,39 @@ function Staff() {
           </div>
         </div>
       )}
+
+      {showPasswordModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Enter Super Admin Password</h2>
+            <input
+              type="password"
+              placeholder="Super Admin Password"
+              value={superAdminPassword}
+              onChange={(e) => setSuperAdminPassword(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            <div className="flex justify-end mt-4">
+              <button
+                className="px-4 py-2 bg-gray-400 text-white rounded-md mr-2"
+                onClick={() => { 
+                  setShowPasswordModal(false);
+                  setSuperAdminPassword('');
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                onClick={handleVerifySuperAdmin}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

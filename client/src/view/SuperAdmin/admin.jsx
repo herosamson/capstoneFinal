@@ -7,11 +7,16 @@ function Administrator() {
   const [users, setUsers] = useState([]);
   const [staff, setStaff] = useState([]);
   const [admins, setAdmins] = useState([]);
-  const [superAdmins, setSuperAdmins] = useState([]); // New state for SuperAdmins
+  const [showPasswordModal, setShowPasswordModal] = useState(false); 
+  const [superAdminPassword, setSuperAdminPassword] = useState('');  
+  const [deleteUserId, setDeleteUserId] = useState(null); 
+  const [deleteUserRole, setDeleteUserRole] = useState(''); 
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [superAdmins, setSuperAdmins] = useState([]); 
   const [editAdminId, setEditAdminId] = useState(null);
-  const [editSuperAdminId, setEditSuperAdminId] = useState(null); // State for editing SuperAdmins
+  const [editSuperAdminId, setEditSuperAdminId] = useState(null); 
   const [showAdminModal, setShowAdminModal] = useState(false);
-  const [showSuperAdminModal, setShowSuperAdminModal] = useState(false); // State for SuperAdmin modal
+  const [showSuperAdminModal, setShowSuperAdminModal] = useState(false); 
   const [isDropdownOpenA, setIsDropdownOpenA] = useState(false);
   const toggleDropdownA = () => {
     setIsDropdownOpenA(!isDropdownOpenA);
@@ -22,24 +27,7 @@ function Administrator() {
   const [editSuperAdminFormData, setEditSuperAdminFormData] = useState({
     firstname: '', lastname: '', contact: '', email: '', username: '', password: ''
   });
-  const [newUser, setNewUser] = useState({
-    firstname: '',
-    lastname: '',
-    contact: '',
-    address: '',
-    email: '',
-    username: '',
-    password: '',
-  });
-  const [newStaff, setNewStaff] = useState({
-    firstname: '',
-    lastname: '',
-    contact: '',
-    address: '',
-    email: '',
-    username: '',
-    password: '',
-  });
+
   const [newAdmin, setNewAdmin] = useState({
     firstname: '',
     lastname: '',
@@ -49,7 +37,7 @@ function Administrator() {
     username: '',
     password: '',
   });
-  const [newSuperAdmin, setNewSuperAdmin] = useState({ // State for new SuperAdmin
+  const [newSuperAdmin, setNewSuperAdmin] = useState({ 
     firstname: '',
     lastname: '',
     contact: '',
@@ -58,7 +46,6 @@ function Administrator() {
     password: '',
   });
 
-  // Validation functions (reuse or adapt as needed)
   const validateAdminInput = () => {
     const { firstname, lastname, contact, email, username, password } = newAdmin;
 
@@ -199,6 +186,31 @@ function Administrator() {
     }
   };
 
+  const handleVerifySuperAdmin = async () => {
+    try {
+      const response = await fetch('https://idonate1.onrender.com/routes/accounts/verify-superadmin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: superAdminPassword }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setIsAuthorized(true); // ✅ Unlock Delete Button
+        setShowPasswordModal(false);
+        setSuperAdminPassword('');
+        alert('Authorization successful! You can now delete the user.');
+      } else {
+        alert('Authorization failed: ' + data.message);
+      }
+    } catch (error) {
+      console.error('Error verifying super admin:', error);
+      alert('An error occurred while verifying password.');
+    }
+  };
+  
+
   const handleAddSuperAdmin = async () => {
     if (Object.values(newSuperAdmin).some((field) => field === '')) {
       alert('Please fill in all fields');
@@ -276,14 +288,27 @@ function Administrator() {
     }
   };
 
-  const deleteAdmin = async (id) => {
+  const deleteUser = async (id, role) => {
+    const endpoint = role === 'admin'
+      ? `https://idonate1.onrender.com/routes/accounts/admin/${id}`
+      : `https://idonate1.onrender.com/routes/accounts/superadmin/delete/${id}`;
+  
     try {
-      await fetch(`https://idonate1.onrender.com/routes/accounts/admin/${id}`, { method: 'DELETE' });
-      setAdmins(admins.filter((admin) => admin._id !== id));
+      await fetch(endpoint, { method: 'DELETE' });
+  
+      if (role === 'admin') {
+        setAdmins(admins.filter((admin) => admin._id !== id));
+      } else {
+        setSuperAdmins(superAdmins.filter((sa) => sa._id !== id));
+      }
+  
+      setIsAuthorized(false); // Reset authorization after deletion
+      setDeleteUserId(null);
     } catch (error) {
-      console.error('Error deleting admin:', error);
+      console.error('Error deleting user:', error);
     }
   };
+  
 
   const deleteSuperAdmin = async (id) => { // Delete SuperAdmin
     try {
@@ -457,7 +482,28 @@ function Administrator() {
                       <td className='px-10 py-2'>{admin.email}</td>
                       <td className='px-10 py-2'>
                         <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditClick(admin)}>Edit</button>
-                        <button type="button" className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2" onClick={() => deleteAdmin(admin._id)}>Delete</button>
+
+                        {!isAuthorized || deleteUserId !== admin._id ? (
+                          <button
+                            type="button"
+                            className="px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 duration-200 rounded-md mr-2"
+                            onClick={() => {
+                              setDeleteUserId(admin._id);
+                              setDeleteUserRole('admin'); 
+                              setShowPasswordModal(true);
+                            }}
+                          >
+                            Request Delete
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
+                            onClick={() => deleteUser(admin._id, 'admin')}
+                          >
+                            Delete
+                          </button>
+                        )}
                       </td>
                     </>
                   )}
@@ -467,7 +513,6 @@ function Administrator() {
           </tbody>
         </table>
         <button type="button" className="px-10 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-3 ml-1" onClick={() => setShowAdminModal(true)}>Add Administrator</button>
-        {/* Admin Modal */}
         {showAdminModal && (
           <div className="modal-overlayAccounts">
             <div className="modalAccounts">
@@ -486,7 +531,6 @@ function Administrator() {
             </div>
           </div>
         )}
-        {/* SuperAdmin Modal */}
         {showSuperAdminModal && (
           <div className="modal-overlayAccounts">
             <div className="modalAccounts">
@@ -505,7 +549,38 @@ function Administrator() {
           </div>
         )}
 
-        {/* SuperAdmin Table */}
+        {showPasswordModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <h2 className="text-xl font-semibold mb-4">Enter Super Admin Password</h2>
+              <input
+                type="password"
+                placeholder="Super Admin Password"
+                value={superAdminPassword}
+                onChange={(e) => setSuperAdminPassword(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+              <div className="flex justify-end mt-4">
+                <button
+                  className="px-4 py-2 bg-gray-400 text-white rounded-md mr-2"
+                  onClick={() => { 
+                    setShowPasswordModal(false);
+                    setSuperAdminPassword('');
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                  onClick={handleVerifySuperAdmin}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <h1 className='text-3xl font-bold mt-10 mb-4'>Super Administrator Management</h1>
         <table className='table-auto w-full overflow-x-auto overflow-y-auto max-h-[500px]'>
         <thead className='bg-red-800 text-white'>
@@ -545,7 +620,27 @@ function Administrator() {
                       <td className='px-10 py-2'>{sa.contact}</td>
                       <td className='px-10 py-2'>
                         <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditSuperAdminClick(sa)}>Edit</button>
-                        <button type="button" className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2" onClick={() => deleteSuperAdmin(sa._id)}>Delete</button>
+                        {!isAuthorized || deleteUserId !== admin._id ? (
+                          <button
+                            type="button"
+                            className="px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 duration-200 rounded-md mr-2"
+                            onClick={() => {
+                              setDeleteUserId(admin._id);
+                              setDeleteUserRole('admin'); 
+                              setShowPasswordModal(true);
+                            }}
+                          >
+                            Request Delete
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
+                            onClick={() => deleteUser(admin._id, 'admin')}
+                          >
+                            Delete
+                          </button>
+                        )}
                       </td>
                     </>
                   )}
