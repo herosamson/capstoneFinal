@@ -94,13 +94,26 @@ function Admin() {
 
   const deleteUser = async (id) => {
     try {
-      await fetch(`https://idonate1.onrender.com/routes/accounts/user/${id}`, { method: 'DELETE' });
-      setUsers(users.filter((user) => user._id !== id));
-      setFilteredUsers(filteredUsers.filter((user) => user._id !== id));
+      const response = await fetch(`https://idonate1.onrender.com/routes/accounts/user/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' } // Ensure headers are included
+      });
+  
+      if (response.ok) {
+        setUsers(users.filter((user) => user._id !== id));
+        setFilteredUsers(filteredUsers.filter((user) => user._id !== id));
+        setIsAuthorized(null); // ✅ Reset authorization after deletion
+        alert('User deleted successfully.');
+      } else {
+        const data = await response.json();
+        alert('Error: ' + data.message);
+      }
     } catch (error) {
       console.error('Error deleting user:', error);
+      alert('Failed to delete user.');
     }
   };
+  
 
   const handleVerifySuperAdmin = async () => {
     try {
@@ -113,10 +126,12 @@ function Admin() {
       const data = await response.json();
   
       if (response.ok) {
-        setIsAuthorized(true); 
         setShowPasswordModal(false);
         setSuperAdminPassword('');
         alert('Authorization successful! You can now delete the donor.');
+  
+        // ✅ Instead of setting a global isAuthorized, store the specific user ID
+        setIsAuthorized(deleteUserId);
       } else {
         alert('Authorization failed: ' + data.message);
       }
@@ -125,6 +140,7 @@ function Admin() {
       alert('An error occurred while verifying password.');
     }
   };
+  
   
   const handleInputChange = (e, type) => {
     const { name, value } = e.target;
@@ -293,18 +309,7 @@ function Admin() {
                 <td className='px-10 py-2'>{user.contact}</td>
                 <td className='px-10 py-2'>{user.email}</td>
                 <td className='px-10 py-2'>
-                {!isAuthorized ? (
-                  <button
-                    type="button"
-                   className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2"
-                    onClick={() => {
-                      setDeleteUserId(user._id);
-                      setShowPasswordModal(true);
-                    }}
-                  >
-                    Request Delete
-                  </button>
-                ) : (
+                {isAuthorized === user._id ? (
                   <button
                     type="button"
                     className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
@@ -312,7 +317,19 @@ function Admin() {
                   >
                     Delete
                   </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="px-4 py-2 text-white bg-red-600 hover:bg-red-800 duration-200 rounded-md mr-2"
+                    onClick={() => {
+                      setDeleteUserId(user._id); // Set the user ID to be deleted
+                      setShowPasswordModal(true);
+                    }}
+                  >
+                    Request Delete
+                  </button>
                 )}
+
               </td>
               </tr>
             ))}
@@ -352,11 +369,13 @@ function Admin() {
               className="w-full p-2 border border-gray-300 rounded-md"
             />
             <div className="flex justify-end mt-4">
-              <button
+            <button
                 className="px-4 py-2 bg-gray-400 text-white rounded-md mr-2"
-                onClick={() => { 
+                onClick={() => {
                   setShowPasswordModal(false);
                   setSuperAdminPassword('');
+                  setDeleteUserId(null);
+                  setIsAuthorized(null); 
                 }}
               >
                 Cancel

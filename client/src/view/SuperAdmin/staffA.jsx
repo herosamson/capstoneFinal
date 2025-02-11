@@ -95,20 +95,23 @@ const handleVerifySuperAdmin = async () => {
     const data = await response.json();
 
     if (response.ok) {
-      setIsAuthorized(true);
       setShowPasswordModal(false);
       setSuperAdminPassword('');
       alert('Authorization successful! You can now delete the selected staff member.');
+
+      // ✅ Instead of setting a global isAuthorized, store the specific user ID
+      setIsAuthorized(deleteUserId);
     } else {
       alert('Authorization failed: ' + data.message);
-      setIsAuthorized(false);
+      setIsAuthorized(null);
     }
   } catch (error) {
     console.error('Error verifying super admin:', error);
     alert('An error occurred while verifying password.');
-    setIsAuthorized(false);
+    setIsAuthorized(null);
   }
 };
+
 
 const handleRequestDelete = (id) => {
   setDeleteUserId(id);
@@ -180,26 +183,26 @@ const handleRequestDelete = (id) => {
   };
 
   const handleDelete = async (id) => {
-      try {
-        const response = await fetch(`/routes/accounts/staff/${id}`, {
-          method: 'DELETE',
-        });
+    try {
+      const response = await fetch(`https://idonate1.onrender.com/routes/accounts/staff/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }, // ✅ Ensure headers are included
+      });
   
+      if (response.ok) {
+        setStaff(staff.filter(staffMember => staffMember._id !== id)); // ✅ Remove from state
+        setDeleteUserId(null);
+        alert('Staff member deleted successfully.');
+      } else {
         const data = await response.json();
-  
-        if (response.ok) {
-          setStaff(staff.filter(staffMember => staffMember._id !== id));
-          setIsAuthorized(false); 
-          setDeleteUserId(null);
-          alert(data.message);
-        } else {
-          alert(data.message);
-        }
-      } catch (error) {
-        console.error('Error deleting staff member:', error);
-        alert('Failed to delete staff member');
+        alert('Error: ' + data.message);
+      }
+    } catch (error) {
+      console.error('Error deleting staff member:', error);
+      alert('Failed to delete staff member.');
     }
   };
+  
   
 
   const handleLogout = async () => {
@@ -302,9 +305,8 @@ const handleRequestDelete = (id) => {
     setShowPasswordModal(false);
     setSuperAdminPassword('');
     setDeleteUserId(null);
-    setIsAuthorized(false); // Ensure no unintended deletions
+    setIsAuthorized(null); // ✅ Reset authorization when canceling
   };
-  
 
   const filteredStaff = staff.filter(staffMember => {
     const searchLower = searchQuery.toLowerCase();
@@ -384,15 +386,27 @@ const handleRequestDelete = (id) => {
                     <td className='px-10 py-2'>{staffMember.contact}</td>
                     <td className='px-10 py-2'>
                       <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditClick(staffMember)}>Edit</button>
-                      {!isAuthorized || deleteUserId !== staffMember._id ? (
-              <button className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2" onClick={() => handleRequestDelete(staffMember._id)}>
-                Request Delete
-              </button>
-            ) : (
-              <button className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2" onClick={() => handleDelete(staffMember._id)}>
-                Delete
-              </button>
-            )}
+                      {isAuthorized === staffMember._id ? (
+                      <button
+                        type="button"
+                        className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
+                        onClick={() => handleDelete(staffMember._id)}
+                      >
+                        Delete
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="px-4 py-2 text-white bg-red-600 hover:bg-red-800 duration-200 rounded-md mr-2"
+                        onClick={() => {
+                          setDeleteUserId(staffMember._id); // ✅ Store the ID of the user requesting deletion
+                          setShowPasswordModal(true);
+                        }}
+                      >
+                        Request Delete
+                      </button>
+                    )}
+
                     </td>
                   </>
                 )}
@@ -434,16 +448,13 @@ const handleRequestDelete = (id) => {
               className="w-full p-2 border border-gray-300 rounded-md"
             />
             <div className="flex justify-end mt-4">
-              <button
-                className="px-4 py-2 bg-gray-400 text-white rounded-md mr-2"
-                onClick={() => { 
-                  setShowPasswordModal(false);
-                  setSuperAdminPassword('');
-                  handleCancelDelete
-                }}
-              >
-                Cancel
-              </button>
+            <button
+              className="px-4 py-2 bg-gray-400 text-white rounded-md mr-2"
+              onClick={handleCancelDelete} // ✅ Correct function call
+            >
+              Cancel
+            </button>
+
               <button
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
                 onClick={handleVerifySuperAdmin}
