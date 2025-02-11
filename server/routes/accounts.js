@@ -400,7 +400,7 @@ router.get('/users', async (req, res) => {
   }
 });
 
-router.delete('/user/:id', logActivity('Deleted a Donor'), async (req, res) => {
+router.delete('/user/:id', LogActivity('Deleted a Donor'), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -505,7 +505,7 @@ router.get('/staff', async (req, res) => {
 });
 
 // Delete a staff member
-router.delete('/staff/:id', logActivity('Deleted a Staff Member'), async (req, res) => {
+router.delete('/staff/:id', LogActivity('Deleted a Staff Member'), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -1299,7 +1299,7 @@ router.get('/admin', async (req, res) => {
 });
 
 // Delete an admin
-router.delete('/admin/:id', logActivity('Deleted an Admin'), async (req, res) => {
+router.delete('/admin/:id', LogActivity('Deleted an Admin'), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -1677,7 +1677,7 @@ router.put('/superadmin/edit/:id', async (req, res) => {
   }
 });
 
-router.delete('/superadmin/delete/:id', logActivity('Deleted a Super Admin'), async (req, res) => {
+router.delete('/superadmin/delete/:id', LogActivity('Deleted a Super Admin'), async (req, res) => {
   try {
     const { id } = req.params;
 
