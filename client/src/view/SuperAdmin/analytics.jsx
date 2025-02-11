@@ -454,10 +454,10 @@ fetchTotalItemDonations();
                  <li><img className="logoU" src={logo2} alt="Logo" /></li>
                  <br />
                   <li><Link to="/analyticsSA">Dashboard</Link></li>
-                 <li className="dropdown-toggle" onClick={toggleDropdownA}>
+                 <li className="dropdown-toggle" onClick={toggleDropdown}>
                    Accounts Management<span className="arrow">&#9660;</span>
                  </li>
-                 {isDropdownOpenA && (
+                 {isDropdownOpen && (
                    <ul className="dropdown-menuU">
                  <li><Link to="/admin">Donors </Link></li>
                  <li><Link to="/adminSA">Administrators </Link></li>
