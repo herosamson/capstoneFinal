@@ -414,10 +414,10 @@ router.delete('/user/:id', async (req, res) => {
 });
 
 router.post('/verify-superadmin', async (req, res) => {
-  const { password } = req.body;
+  const { password, username } = req.body;
 
   try {
-    const superAdmin = await SuperAdmin.findOne({ role: 'superadmin' }); 
+    const superAdmin = await SuperAdmin.findOne({ username }); 
 
     if (!superAdmin) {
       return res.status(404).json({ message: 'Super Admin not found' });
