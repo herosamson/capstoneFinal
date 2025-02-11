@@ -296,7 +296,7 @@ function Admin() {
                 {!isAuthorized ? (
                   <button
                     type="button"
-                    className="px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 duration-200 rounded-md mr-2"
+                   className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2"
                     onClick={() => {
                       setDeleteUserId(user._id);
                       setShowPasswordModal(true);

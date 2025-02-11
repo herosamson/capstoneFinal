@@ -387,11 +387,11 @@ const handleRequestDelete = (id) => {
                     <td className='px-10 py-2'>
                       <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditClick(staffMember)}>Edit</button>
                       {!isAuthorized || deleteUserId !== staffMember._id ? (
-              <button onClick={() => handleRequestDelete(staffMember._id)}>
+              <button className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2" onClick={() => handleRequestDelete(staffMember._id)}>
                 Request Delete
               </button>
             ) : (
-              <button onClick={() => handleDelete(staffMember._id)}>
+              <button className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2" onClick={() => handleDelete(staffMember._id)}>
                 Delete
               </button>
             )}

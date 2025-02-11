@@ -621,26 +621,14 @@ const deleteUser = async () => {
                       <td className='px-10 py-2'>
                         <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditSuperAdminClick(sa)}>Edit</button>
                         {!isAuthorized || deleteUserId !== sa._id ? (
-                          <button
-                            type="button"
-                            className="px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 duration-200 rounded-md mr-2"
-                            onClick={() => {
-                              setDeleteUserId(sa._id);
-                              setDeleteUserRole('superadmin'); 
-                              setShowPasswordModal(true);
-                            }}
-                          >
-                            Request Delete
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
-                            onClick={() => deleteUser(sa._id, 'admin')}
-                          >
-                            Delete
-                          </button>
-                        )}
+                        <button className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2" onClick={() => handleRequestDelete(sa._id, 'superadmin')}>
+                          Request Delete
+                        </button>
+                      ) : (
+                        <button className="px-4 py-2 text-white bg-red-600  hover:bg-red-800 duration-200 rounded-md mr-2" onClick={() => deleteUser(sa._id, 'superadmin')}>
+                          Delete
+                        </button>
+                      )}
                       </td>
                     </>
                   )}
