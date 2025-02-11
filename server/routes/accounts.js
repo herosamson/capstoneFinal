@@ -402,7 +402,7 @@ router.get('/users', async (req, res) => {
 
 router.delete('/user/:id', async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { id, username } = req.params;
 
     // Check if User exists
     const deletedUser = await Register.findById(id);
@@ -411,12 +411,8 @@ router.delete('/user/:id', async (req, res, next) => {
     }
 
     // Ensure requester is a Super Admin
-    const superAdmin = await SuperAdmin.findOne({ username: req.user?.username });
-    if (!superAdmin) {
-      return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
-    }
+    const superAdmin = await SuperAdmin.findOne({ username });
 
-    // ✅ Ensure req.user is set before LogActivity
     req.user = { 
       username: superAdmin.username, 
       role: 'superadmin' 
@@ -524,7 +520,7 @@ router.get('/staff', async (req, res) => {
 // Delete a staff member
 router.delete('/staff/:id', async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { id, username } = req.params;
 
     // Check if Staff exists
     const staff = await Staff.findById(id);
@@ -533,10 +529,7 @@ router.delete('/staff/:id', async (req, res, next) => {
     }
 
     // Ensure requester is a Super Admin
-    const superAdmin = await SuperAdmin.findOne({ username: req.user?.username });
-    if (!superAdmin) {
-      return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
-    }
+    const superAdmin = await SuperAdmin.findOne({ username });
 
     // ✅ Ensure req.user is set before LogActivity
     req.user = { 
@@ -1335,7 +1328,7 @@ router.get('/admin', async (req, res) => {
 // Delete an admin
 router.delete('/admin/:id', async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { id, username } = req.params;
 
     // Check if Admin exists
     const admin = await Admin.findById(id);
@@ -1344,12 +1337,8 @@ router.delete('/admin/:id', async (req, res, next) => {
     }
 
     // Ensure requester is a Super Admin
-    const superAdmin = await SuperAdmin.findOne({ username: req.user?.username });
-    if (!superAdmin) {
-      return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
-    }
+    const superAdmin = await SuperAdmin.findOne({ username });
 
-    // ✅ Ensure req.user is set before LogActivity
     req.user = { 
       username: superAdmin.username, 
       role: 'superadmin' 
@@ -1730,7 +1719,7 @@ router.put('/superadmin/edit/:id', async (req, res) => {
 
 router.delete('/superadmin/delete/:id', async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { id, username } = req.params;
 
     // Check if Super Admin exists
     const superAdmin = await SuperAdmin.findById(id);
@@ -1739,12 +1728,8 @@ router.delete('/superadmin/delete/:id', async (req, res, next) => {
     }
 
     // Ensure requester is a Super Admin
-    const superAdminRequester = await SuperAdmin.findOne({ username: req.user?.username });
-    if (!superAdminRequester) {
-      return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
-    }
+    const superAdminRequester = await SuperAdmin.findOne({ username });
 
-    // ✅ Ensure req.user is set before LogActivity
     req.user = { 
       username: superAdminRequester.username, 
       role: 'superadmin' 
