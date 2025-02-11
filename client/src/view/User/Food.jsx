@@ -3,10 +3,11 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/logo.png'
 import { MdKeyboardBackspace } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 const Food = () => {
     const [isOpen, setIsOpen] = useState(false);
-  
+      const navigate = useNavigate();
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
@@ -112,6 +113,7 @@ const Food = () => {
             resetForm();
             alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Food request added successfully.');
+            navigate('/home');
         } catch (error) {
             console.error('Failed to add food request:', error.response ? error.response.data : error.message);
             alert('Failed to add food request. Please try again later.');

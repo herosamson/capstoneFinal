@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/logo.png'
 import { MdKeyboardBackspace } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 const Medical = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,7 @@ const Medical = () => {
     const [reason, setReason] = useState('');
     const [targetDate, setTargetDate] = useState('');
     const [medicalAssistance, setMedicalAssistance] = useState([]);
-
+    const navigate = useNavigate();
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const username = localStorage.getItem('username');
 
@@ -120,6 +121,7 @@ const Medical = () => {
 
             alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Medical request added successfully.');
+            navigate('/home');
         } catch (error) {
             console.error('Failed to add medical assistance:', error.response ? error.response.data : error.message);
             alert('Failed to add medical assistance. Please try again later.');

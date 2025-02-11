@@ -3,10 +3,11 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/logo.png';
 import { MdKeyboardBackspace } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 const Finance = () => {
     const [isOpen, setIsOpen] = useState(false);
-  
+      const navigate = useNavigate();
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
@@ -107,6 +108,7 @@ const Finance = () => {
 
             alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Financial request added successfully.');
+            navigate('/home');
         } catch (error) {
             console.error('Failed to add financial request:', error.response ? error.response.data : error.message);
             setError('Failed to add financial request. Please try again later.');

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/logo.png'
 import { MdKeyboardBackspace } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 const Legal = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,7 @@ const Legal = () => {
     const [targetDate, setTargetDate] = useState('');
     const [legalRequests, setLegalRequests] = useState([]);
     const [error, setError] = useState('');
-
+    const navigate = useNavigate();
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const username = localStorage.getItem('username');
     const today = new Date().toISOString().split('T')[0];
@@ -88,6 +89,7 @@ const Legal = () => {
 
             alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Legal request added successfully.');
+            navigate('/home');
         } catch (error) {
             console.error('Failed to add legal request:', error.response ? error.response.data : error.message);
             setError('Failed to add legal request. Please try again later.');
