@@ -400,21 +400,25 @@ router.get('/users', async (req, res) => {
   }
 });
 
-router.delete('/user/:id', async (req, res) => {
+router.delete('/user/:id', logActivity('Deleted a Donor'), async (req, res) => {
   try {
-    const deletedUser = await Register.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+
+    // Ensure the user (donor) exists before deleting
+    const deletedUser = await Register.findById(id);
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Log activity after successful deletion
-    await LogActivity(req.user.username, `Deleted a Donor: ${deletedUser.firstname} ${deletedUser.lastname}`);
+    await Register.findByIdAndDelete(id);
 
-    res.status(200).json({ message: 'User deleted successfully' });
+    res.status(200).json({ message: `User ${deletedUser.firstname} ${deletedUser.lastname} deleted successfully.` });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Error deleting user', error: error.message });
   }
 });
+
 
 
 router.post('/verify-superadmin', async (req, res) => {
@@ -501,21 +505,25 @@ router.get('/staff', async (req, res) => {
 });
 
 // Delete a staff member
-router.delete('/staff/:id', async (req, res) => {
+router.delete('/staff/:id', logActivity('Deleted a Staff Member'), async (req, res) => {
   try {
-    const deletedStaff = await Staff.findByIdAndDelete(req.params.id);
-    if (!deletedStaff) {
+    const { id } = req.params;
+
+    // Ensure the staff member exists before deleting
+    const staff = await Staff.findById(id);
+    if (!staff) {
       return res.status(404).json({ message: 'Staff member not found' });
     }
 
-    // Log activity after successful deletion
-    await LogActivity(req.user.username, `Deleted a Staff Member: ${deletedStaff.firstname} ${deletedStaff.lastname}`);
+    await Staff.findByIdAndDelete(id);
 
-    res.status(200).json({ message: 'Staff member deleted successfully' });
+    res.status(200).json({ message: `Staff member ${staff.firstname} ${staff.lastname} deleted successfully` });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error deleting staff member:', error);
+    res.status(500).json({ message: 'Error deleting staff member', error: error.message });
   }
 });
+
 
 
 // Update staff member details
@@ -1291,10 +1299,11 @@ router.get('/admin', async (req, res) => {
 });
 
 // Delete an admin
-router.delete('/admin/:id', async (req, res) => {
+router.delete('/admin/:id', logActivity('Deleted an Admin'), async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Ensure the admin exists before deleting
     const admin = await Admin.findById(id);
     if (!admin) {
       return res.status(404).json({ message: 'Admin not found' });
@@ -1302,10 +1311,7 @@ router.delete('/admin/:id', async (req, res) => {
 
     await Admin.findByIdAndDelete(id);
 
-    // Log activity after successful deletion
-    await LogActivity(req.user.username, `Deleted an Admin: ${admin.firstname} ${admin.lastname}`);
-
-    res.status(200).json({ message: 'Admin deleted successfully' });
+    res.status(200).json({ message: `Admin ${admin.firstname} ${admin.lastname} deleted successfully` });
   } catch (error) {
     console.error('Error deleting admin:', error);
     res.status(500).json({ message: 'Error deleting admin', error: error.message });
@@ -1671,11 +1677,11 @@ router.put('/superadmin/edit/:id', async (req, res) => {
   }
 });
 
-// Delete a SuperAdmin
-router.delete('/superadmin/delete/:id', async (req, res) => {
-  const { id } = req.params;
-
+router.delete('/superadmin/delete/:id', logActivity('Deleted a Super Admin'), async (req, res) => {
   try {
+    const { id } = req.params;
+
+    // Ensure the Super Admin exists before deleting
     const superAdmin = await SuperAdmin.findById(id);
     if (!superAdmin) {
       return res.status(404).json({ message: 'SuperAdmin not found.' });
@@ -1683,15 +1689,13 @@ router.delete('/superadmin/delete/:id', async (req, res) => {
 
     await SuperAdmin.findByIdAndDelete(id);
 
-    // Log activity after successful deletion
-    await LogActivity(req.user.username, `Deleted a Super Admin: ${superAdmin.firstname} ${superAdmin.lastname}`);
-
-    res.status(200).json({ message: 'SuperAdmin deleted successfully.' });
+    res.status(200).json({ message: `SuperAdmin ${superAdmin.firstname} ${superAdmin.lastname} deleted successfully.` });
   } catch (error) {
     console.error('Error deleting SuperAdmin:', error);
     res.status(500).json({ message: 'Server error.' });
   }
 });
+
 
 
 // Route to add a new cabinet
