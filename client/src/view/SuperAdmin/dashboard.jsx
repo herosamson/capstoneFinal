@@ -113,7 +113,7 @@ function Admin() {
       const data = await response.json();
   
       if (response.ok) {
-        setIsAuthorized(true);  // ✅ Unlock Delete Button
+        setIsAuthorized(true); 
         setShowPasswordModal(false);
         setSuperAdminPassword('');
         alert('Authorization successful! You can now delete the donor.');
