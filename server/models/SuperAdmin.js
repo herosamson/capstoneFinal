@@ -31,7 +31,7 @@ const SuperAdminSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  role: { type: String, required: true, default: 'supereadmin' }
+  role: { type: String, required: true, default: 'superadmin' }
 }, { timestamps: true });
 
 const SuperAdmin = mongoose.model('SuperAdmin', SuperAdminSchema);
