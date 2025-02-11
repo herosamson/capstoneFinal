@@ -417,15 +417,19 @@ router.post('/verify-superadmin', async (req, res) => {
   const { password } = req.body;
 
   try {
-    const superAdmin = await SuperAdmin.findOne({ role: 'superadmin' }); 
+    // Find all SuperAdmins
+    const superAdmins = await SuperAdmin.find({ role: 'superadmin' });
 
-    if (!superAdmin) {
-      return res.status(404).json({ message: 'Super Admin not found' });
+    if (superAdmins.length === 0) {
+      return res.status(404).json({ message: 'Super Admins not found' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, superAdmin.password);
+    // Check if any SuperAdmin's password matches
+    const isAuthorized = await Promise.all(
+      superAdmins.map(async (admin) => await bcrypt.compare(password, admin.password))
+    );
 
-    if (!isPasswordValid) {
+    if (!isAuthorized.includes(true)) {
       return res.status(401).json({ message: 'Invalid password' });
     }
 

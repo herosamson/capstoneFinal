@@ -126,7 +126,6 @@ function Admin() {
     }
   };
   
-
   const handleInputChange = (e, type) => {
     const { name, value } = e.target;
     if (type === 'user') {
