@@ -413,6 +413,29 @@ router.delete('/user/:id', async (req, res) => {
   }
 });
 
+router.post('/verify-superadmin', async (req, res) => {
+  const { password } = req.body;
+
+  try {
+    const superAdmin = await SuperAdmin.findOne({ role: 'superadmin' }); 
+
+    if (!superAdmin) {
+      return res.status(404).json({ message: 'Super Admin not found' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, superAdmin.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid password' });
+    }
+
+    res.status(200).json({ message: 'Authorization successful' });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // Add Staff Route
 router.post('/stafff', async (req, res) => {
   const { firstname, lastname, contact, email, username, password } = req.body;
@@ -1688,33 +1711,6 @@ router.get('/cabinets', async (req, res) => {
   } catch (error) {
     console.error('Error fetching cabinets:', error);
     res.status(500).json({ message: 'Server error.', error: error.message });
-  }
-});
-
-router.post('/verify-superadmin', async (req, res) => {
-  const { password } = req.body;
-
-  try {
-    // Find all SuperAdmins
-    const superAdmins = await SuperAdmin.find({ role: 'superadmin' });
-
-    if (superAdmins.length === 0) {
-      return res.status(404).json({ message: 'Super Admins not found' });
-    }
-
-    // Check if any SuperAdmin's password matches
-    const isAuthorized = await Promise.all(
-      superAdmins.map(async (admin) => await bcrypt.compare(password, admin.password))
-    );
-
-    if (!isAuthorized.includes(true)) {
-      return res.status(401).json({ message: 'Invalid password' });
-    }
-
-    res.status(200).json({ message: 'Authorization successful' });
-
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 

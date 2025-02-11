@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './dashboard.css';
 import logo2 from './logo2.png';
-import axios from 'axios';
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -105,22 +104,25 @@ function Admin() {
 
   const handleVerifySuperAdmin = async () => {
     try {
-      const response = await axios.post(
-        `/routes/accounts/verify-superadmin`,
-        { password: superAdminPassword }
-      );
+      const response = await fetch(`https://idonate1.onrender.com/routes/accounts/verify-superadmin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: superAdminPassword }),
+      });
   
-      if (response.status === 200) {
-        setIsAuthorized(true);
+      const data = await response.json();
+  
+      if (response.ok) {
+        setIsAuthorized(true); 
         setShowPasswordModal(false);
         setSuperAdminPassword('');
         alert('Authorization successful! You can now delete the donor.');
       } else {
-        alert('Authorization failed: ' + response.data.message);
+        alert('Authorization failed: ' + data.message);
       }
     } catch (error) {
       console.error('Error verifying super admin:', error);
-      alert('Authorization failed: ' + (error.response?.data?.message || 'Server error'));
+      alert('An error occurred while verifying password.');
     }
   };
   

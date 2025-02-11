@@ -86,24 +86,28 @@ function Staff() {
 
 const handleVerifySuperAdmin = async () => {
   try {
-    const response = await axios.post(
-      'https://idonate1.onrender.com/routes/accounts/verify-superadmin',
-      { password: superAdminPassword }
-    );
+    const response = await fetch(`https://idonate1.onrender.com/routes/accounts/verify-superadmin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: superAdminPassword }),
+    });
 
-    if (response.status === 200) {
+    const data = await response.json();
+
+    if (response.ok) {
       setIsAuthorized(true); // ✅ Unlock Delete Button
       setShowPasswordModal(false);
       setSuperAdminPassword('');
       alert('Authorization successful! You can now delete the staff member.');
     } else {
-      alert('Authorization failed: ' + response.data.message);
+      alert('Authorization failed: ' + data.message);
     }
   } catch (error) {
     console.error('Error verifying super admin:', error);
-    alert('Authorization failed: ' + (error.response?.data?.message || 'Server error'));
+    alert('An error occurred while verifying password.');
   }
 };
+
 
   const handleAddStaff = async () => {
     if (Object.values(newStaff).some((field) => field === '')) {
