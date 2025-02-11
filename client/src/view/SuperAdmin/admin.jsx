@@ -197,7 +197,7 @@ function Administrator() {
       const data = await response.json();
   
       if (response.ok) {
-        setIsAuthorized(true); // ✅ Unlock Delete Button
+        setIsAuthorized(true);
         setShowPasswordModal(false);
         setSuperAdminPassword('');
         alert('Authorization successful! You can now delete the user.');
@@ -288,35 +288,36 @@ function Administrator() {
     }
   };
 
-  const deleteUser = async (id, role) => {
-    const endpoint = role === 'admin'
-      ? `https://idonate1.onrender.com/routes/accounts/admin/${id}`
-      : `https://idonate1.onrender.com/routes/accounts/superadmin/delete/${id}`;
-  
-    try {
-      await fetch(endpoint, { method: 'DELETE' });
-  
-      if (role === 'admin') {
-        setAdmins(admins.filter((admin) => admin._id !== id));
-      } else {
-        setSuperAdmins(superAdmins.filter((sa) => sa._id !== id));
-      }
-  
-      setIsAuthorized(false); // Reset authorization after deletion
-      setDeleteUserId(null);
-    } catch (error) {
-      console.error('Error deleting user:', error);
+  // DELETE LOGIC - Unified for both Admins and SuperAdmins
+const handleRequestDelete = (id, role) => {
+  setDeleteUserId(id);
+  setDeleteUserRole(role);
+  setShowPasswordModal(true);
+};
+
+const deleteUser = async () => {
+  if (!deleteUserId || !deleteUserRole) return;
+
+  const endpoint =
+    deleteUserRole === 'admin'
+      ? `https://idonate1.onrender.com/routes/accounts/admin/${deleteUserId}`
+      : `https://idonate1.onrender.com/routes/accounts/superadmin/delete/${deleteUserId}`;
+
+  try {
+    await fetch(endpoint, { method: 'DELETE' });
+
+    if (deleteUserRole === 'admin') {
+      setAdmins(admins.filter((admin) => admin._id !== deleteUserId));
+    } else {
+      setSuperAdmins(superAdmins.filter((sa) => sa._id !== deleteUserId));
     }
-  };
-  
-  const deleteSuperAdmin = async (id) => { // Delete SuperAdmin
-    try {
-      await fetch(`https://idonate1.onrender.com/routes/accounts/superadmin/delete/${id}`, { method: 'DELETE' });
-      setSuperAdmins(superAdmins.filter((sa) => sa._id !== id));
-    } catch (error) {
-      console.error('Error deleting superadmin:', error);
-    }
-  };
+
+    setDeleteUserId(null);
+    setDeleteUserRole('');
+  } catch (error) {
+    console.error('Error deleting user:', error);
+  }
+};
 
   const handleEditClick = (admin) => {
     setEditAdminId(admin._id);
@@ -619,13 +620,13 @@ function Administrator() {
                       <td className='px-10 py-2'>{sa.contact}</td>
                       <td className='px-10 py-2'>
                         <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditSuperAdminClick(sa)}>Edit</button>
-                        {!isAuthorized || deleteUserId !== admin._id ? (
+                        {!isAuthorized || deleteUserId !== sa._id ? (
                           <button
                             type="button"
                             className="px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 duration-200 rounded-md mr-2"
                             onClick={() => {
-                              setDeleteUserId(admin._id);
-                              setDeleteUserRole('admin'); 
+                              setDeleteUserId(sa._id);
+                              setDeleteUserRole('superadmin'); 
                               setShowPasswordModal(true);
                             }}
                           >
@@ -635,7 +636,7 @@ function Administrator() {
                           <button
                             type="button"
                             className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
-                            onClick={() => deleteUser(admin._id, 'admin')}
+                            onClick={() => deleteUser(sa._id, 'admin')}
                           >
                             Delete
                           </button>
