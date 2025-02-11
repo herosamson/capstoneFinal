@@ -400,7 +400,7 @@ router.get('/users', async (req, res) => {
   }
 });
 
-router.delete('/user/:id', LogActivity('Deleted a Donor'), async (req, res) => {
+router.delete('/user/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -410,7 +410,21 @@ router.delete('/user/:id', LogActivity('Deleted a Donor'), async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // ✅ Fetch the Super Admin's username before proceeding
+    const superAdmin = await SuperAdmin.findOne({ username: req.user?.username });
+    if (!superAdmin) {
+      return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
+    }
+
     await Register.findByIdAndDelete(id);
+
+    // ✅ Set req.user with actual username & role
+    req.user = req.user || {};
+    req.user.username = superAdmin.username;
+    req.user.role = 'superadmin';
+
+    // ✅ Log activity after deletion
+    await logActivity('Deleted a Donor')(req, res, () => {});
 
     res.status(200).json({ message: `User ${deletedUser.firstname} ${deletedUser.lastname} deleted successfully.` });
   } catch (error) {
@@ -418,6 +432,7 @@ router.delete('/user/:id', LogActivity('Deleted a Donor'), async (req, res) => {
     res.status(500).json({ message: 'Error deleting user', error: error.message });
   }
 });
+
 
 
 
@@ -505,7 +520,7 @@ router.get('/staff', async (req, res) => {
 });
 
 // Delete a staff member
-router.delete('/staff/:id', LogActivity('Deleted a Staff Member'), async (req, res) => {
+router.delete('/staff/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -515,7 +530,21 @@ router.delete('/staff/:id', LogActivity('Deleted a Staff Member'), async (req, r
       return res.status(404).json({ message: 'Staff member not found' });
     }
 
+    // ✅ Fetch the Super Admin's username before proceeding
+    const superAdmin = await SuperAdmin.findOne({ username: req.user?.username });
+    if (!superAdmin) {
+      return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
+    }
+
     await Staff.findByIdAndDelete(id);
+
+    // ✅ Set req.user with actual username & role
+    req.user = req.user || {};
+    req.user.username = superAdmin.username;
+    req.user.role = 'superadmin';
+
+    // ✅ Log activity after deletion
+    await logActivity('Deleted a Staff Member')(req, res, () => {});
 
     res.status(200).json({ message: `Staff member ${staff.firstname} ${staff.lastname} deleted successfully` });
   } catch (error) {
@@ -523,6 +552,7 @@ router.delete('/staff/:id', LogActivity('Deleted a Staff Member'), async (req, r
     res.status(500).json({ message: 'Error deleting staff member', error: error.message });
   }
 });
+
 
 
 
@@ -1299,7 +1329,7 @@ router.get('/admin', async (req, res) => {
 });
 
 // Delete an admin
-router.delete('/admin/:id', LogActivity('Deleted an Admin'), async (req, res) => {
+router.delete('/admin/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -1309,7 +1339,21 @@ router.delete('/admin/:id', LogActivity('Deleted an Admin'), async (req, res) =>
       return res.status(404).json({ message: 'Admin not found' });
     }
 
+    // ✅ Fetch the Super Admin's username before proceeding
+    const superAdmin = await SuperAdmin.findOne({ username: req.user?.username });
+    if (!superAdmin) {
+      return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
+    }
+
     await Admin.findByIdAndDelete(id);
+
+    // ✅ Set req.user with actual username & role
+    req.user = req.user || {};
+    req.user.username = superAdmin.username;
+    req.user.role = 'superadmin';
+
+    // ✅ Log activity after deletion
+    await logActivity('Deleted an Admin')(req, res, () => {});
 
     res.status(200).json({ message: `Admin ${admin.firstname} ${admin.lastname} deleted successfully` });
   } catch (error) {
@@ -1317,6 +1361,7 @@ router.delete('/admin/:id', LogActivity('Deleted an Admin'), async (req, res) =>
     res.status(500).json({ message: 'Error deleting admin', error: error.message });
   }
 });
+
 
 
 // Update an admin
@@ -1677,7 +1722,7 @@ router.put('/superadmin/edit/:id', async (req, res) => {
   }
 });
 
-router.delete('/superadmin/delete/:id', LogActivity('Deleted a Super Admin'), async (req, res) => {
+router.delete('/superadmin/delete/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -1687,7 +1732,21 @@ router.delete('/superadmin/delete/:id', LogActivity('Deleted a Super Admin'), as
       return res.status(404).json({ message: 'SuperAdmin not found.' });
     }
 
+    // ✅ Fetch the Super Admin's username before proceeding
+    const superAdminRequester = await SuperAdmin.findOne({ username: req.user?.username });
+    if (!superAdminRequester) {
+      return res.status(403).json({ message: 'Unauthorized: Super Admin required' });
+    }
+
     await SuperAdmin.findByIdAndDelete(id);
+
+    // ✅ Set req.user with actual username & role
+    req.user = req.user || {};
+    req.user.username = superAdminRequester.username;
+    req.user.role = 'superadmin';
+
+    // ✅ Log activity after deletion
+    await logActivity('Deleted a Super Admin')(req, res, () => {});
 
     res.status(200).json({ message: `SuperAdmin ${superAdmin.firstname} ${superAdmin.lastname} deleted successfully.` });
   } catch (error) {
@@ -1695,6 +1754,7 @@ router.delete('/superadmin/delete/:id', LogActivity('Deleted a Super Admin'), as
     res.status(500).json({ message: 'Server error.' });
   }
 });
+
 
 
 
