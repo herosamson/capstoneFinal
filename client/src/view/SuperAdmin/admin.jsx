@@ -200,13 +200,15 @@ function Administrator() {
         setIsAuthorized(true);
         setShowPasswordModal(false);
         setSuperAdminPassword('');
-        alert('Authorization successful! You can now delete the user.');
+        alert('Authorization successful! You can now delete this user.');
       } else {
         alert('Authorization failed: ' + data.message);
+        setIsAuthorized(false);
       }
     } catch (error) {
       console.error('Error verifying super admin:', error);
       alert('An error occurred while verifying password.');
+      setIsAuthorized(false);
     }
   };
   
@@ -289,11 +291,12 @@ function Administrator() {
   };
 
   // DELETE LOGIC - Unified for both Admins and SuperAdmins
-const handleRequestDelete = (id, role) => {
-  setDeleteUserId(id);
-  setDeleteUserRole(role);
-  setShowPasswordModal(true);
-};
+  const handleRequestDelete = (id, role) => {
+    setDeleteUserId(id);
+    setDeleteUserRole(role);
+    setShowPasswordModal(true);
+    setIsAuthorized(false); // Reset authorization when a new request is made
+  };
 
 const deleteUser = async () => {
   if (!deleteUserId || !deleteUserRole) return;
@@ -325,6 +328,14 @@ const deleteUser = async () => {
       firstname: admin.firstname, lastname: admin.lastname, contact: admin.contact, address: admin.address,
       email: admin.email, username: admin.username, password: ''
     });
+  };
+
+  const handleCancelDelete = () => {
+    setShowPasswordModal(false);
+    setSuperAdminPassword('');
+    setDeleteUserId(null);
+    setDeleteUserRole('');
+    setIsAuthorized(false); // Reset authorization when canceling
   };
 
   const handleEditSuperAdminClick = (sa) => { // Handle editing SuperAdmin
@@ -484,26 +495,14 @@ const deleteUser = async () => {
                         <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditClick(admin)}>Edit</button>
 
                         {!isAuthorized || deleteUserId !== admin._id ? (
-                          <button
-                            type="button"
-                            className="px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 duration-200 rounded-md mr-2"
-                            onClick={() => {
-                              setDeleteUserId(admin._id);
-                              setDeleteUserRole('admin'); 
-                              setShowPasswordModal(true);
-                            }}
-                          >
-                            Request Delete
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
-                            onClick={() => deleteUser(admin._id, 'admin')}
-                          >
-                            Delete
-                          </button>
-                        )}
+                        <button onClick={() => handleRequestDelete(admin._id, 'admin')}>
+                          Request Delete
+                        </button>
+                      ) : (
+                        <button onClick={() => deleteUser(admin._id, 'admin')}>
+                          Delete
+                        </button>
+                      )}
                       </td>
                     </>
                   )}
@@ -552,7 +551,7 @@ const deleteUser = async () => {
         {showPasswordModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-              <h2 className="text-xl font-semibold mb-4">Enter Super Admin Password</h2>
+              <h2 className="text-xl font-semibold mb-4">Please Enter your Password</h2>
               <input
                 type="password"
                 placeholder="Super Admin Password"
@@ -566,6 +565,7 @@ const deleteUser = async () => {
                   onClick={() => { 
                     setShowPasswordModal(false);
                     setSuperAdminPassword('');
+                    handleCancelDelete
                   }}
                 >
                   Cancel

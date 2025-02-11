@@ -95,19 +95,26 @@ const handleVerifySuperAdmin = async () => {
     const data = await response.json();
 
     if (response.ok) {
-      setIsAuthorized(true); // ✅ Unlock Delete Button
+      setIsAuthorized(true);
       setShowPasswordModal(false);
       setSuperAdminPassword('');
-      alert('Authorization successful! You can now delete the staff member.');
+      alert('Authorization successful! You can now delete the selected staff member.');
     } else {
       alert('Authorization failed: ' + data.message);
+      setIsAuthorized(false);
     }
   } catch (error) {
     console.error('Error verifying super admin:', error);
     alert('An error occurred while verifying password.');
+    setIsAuthorized(false);
   }
 };
 
+const handleRequestDelete = (id) => {
+  setDeleteUserId(id);
+  setShowPasswordModal(true);
+  setIsAuthorized(false); // Reset authorization when a new request is made
+};
 
   const handleAddStaff = async () => {
     if (Object.values(newStaff).some((field) => field === '')) {
@@ -293,6 +300,14 @@ const handleVerifySuperAdmin = async () => {
     setNewPassword('');
   };
 
+  const handleCancelDelete = () => {
+    setShowPasswordModal(false);
+    setSuperAdminPassword('');
+    setDeleteUserId(null);
+    setIsAuthorized(false); // Ensure no unintended deletions
+  };
+  
+
   const filteredStaff = staff.filter(staffMember => {
     const searchLower = searchQuery.toLowerCase();
     const firstnameMatch = staffMember.firstname.toLowerCase().includes(searchLower);
@@ -372,25 +387,14 @@ const handleVerifySuperAdmin = async () => {
                     <td className='px-10 py-2'>
                       <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditClick(staffMember)}>Edit</button>
                       {!isAuthorized || deleteUserId !== staffMember._id ? (
-                        <button
-                          type="button"
-                          className="px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 duration-200 rounded-md mr-2"
-                          onClick={() => {
-                            setDeleteUserId(staffMember._id);
-                            setShowPasswordModal(true);
-                          }}
-                        >
-                          Request Delete
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
-                          onClick={() => handleDelete(staffMember._id)}
-                        >
-                          Delete
-                        </button>
-                      )}
+              <button onClick={() => handleRequestDelete(staffMember._id)}>
+                Request Delete
+              </button>
+            ) : (
+              <button onClick={() => handleDelete(staffMember._id)}>
+                Delete
+              </button>
+            )}
                     </td>
                   </>
                 )}
@@ -437,6 +441,7 @@ const handleVerifySuperAdmin = async () => {
                 onClick={() => { 
                   setShowPasswordModal(false);
                   setSuperAdminPassword('');
+                  handleCancelDelete
                 }}
               >
                 Cancel
