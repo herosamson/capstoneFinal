@@ -184,17 +184,21 @@ const handleRequestDelete = (id) => {
 
   const handleDelete = async (id) => {
     try {
+      const superAdminUsername = localStorage.getItem('username'); // Get Super Admin username
+  
       const response = await fetch(`https://idonate1.onrender.com/routes/accounts/staff/${id}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' }, // ✅ Ensure headers are included
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: superAdminUsername }) // ✅ Send SuperAdmin's username
       });
   
+      const data = await response.json();
+  
       if (response.ok) {
-        setStaff(staff.filter(staffMember => staffMember._id !== id)); // ✅ Remove from state
+        setStaff(staff.filter(staffMember => staffMember._id !== id));
         setDeleteUserId(null);
         alert('Staff member deleted successfully.');
       } else {
-        const data = await response.json();
         alert('Error: ' + data.message);
       }
     } catch (error) {
@@ -202,6 +206,7 @@ const handleRequestDelete = (id) => {
       alert('Failed to delete staff member.');
     }
   };
+  
   
   
 

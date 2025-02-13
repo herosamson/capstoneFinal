@@ -94,18 +94,21 @@ function Admin() {
 
   const deleteUser = async (id) => {
     try {
+      const superAdminUsername = localStorage.getItem('username'); // Get Super Admin username
+  
       const response = await fetch(`https://idonate1.onrender.com/routes/accounts/user/${id}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' } // Ensure headers are included
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: superAdminUsername }) // ✅ Send SuperAdmin's username
       });
+  
+      const data = await response.json();
   
       if (response.ok) {
         setUsers(users.filter((user) => user._id !== id));
         setFilteredUsers(filteredUsers.filter((user) => user._id !== id));
-        setIsAuthorized(null); // ✅ Reset authorization after deletion
         alert('User deleted successfully.');
       } else {
-        const data = await response.json();
         alert('Error: ' + data.message);
       }
     } catch (error) {

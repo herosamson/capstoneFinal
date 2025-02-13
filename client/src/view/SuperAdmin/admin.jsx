@@ -301,6 +301,8 @@ function Administrator() {
   const deleteUser = async () => {
     if (!deleteUserId || !deleteUserRole) return;
   
+    const superAdminUsername = localStorage.getItem('username'); // Get Super Admin username
+  
     const endpoint =
       deleteUserRole === 'admin'
         ? `https://idonate1.onrender.com/routes/accounts/admin/${deleteUserId}`
@@ -309,8 +311,11 @@ function Administrator() {
     try {
       const response = await fetch(endpoint, { 
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' } // Ensure correct headers
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: superAdminUsername }) // ✅ Send SuperAdmin's username
       });
+  
+      const data = await response.json();
   
       if (response.ok) {
         if (deleteUserRole === 'admin') {
@@ -324,7 +329,6 @@ function Administrator() {
         setIsAuthorized(false);
         alert('User deleted successfully.');
       } else {
-        const data = await response.json();
         alert('Error: ' + data.message);
       }
     } catch (error) {
@@ -332,6 +336,7 @@ function Administrator() {
       alert('Failed to delete user.');
     }
   };
+  
   
   
 
@@ -605,7 +610,6 @@ function Administrator() {
               <th className='font-normal py-1.5 px-2'>Lastname</th>
               <th className='font-normal py-1.5 px-2'>Email</th>
               <th className='font-normal py-1.5 px-2'>Contact</th>
-              <th className='font-normal py-1.5 px-2'>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -634,25 +638,7 @@ function Administrator() {
                       <td className='px-10 py-2'>{sa.lastname}</td>
                       <td className='px-10 py-2'>{sa.email}</td>
                       <td className='px-10 py-2'>{sa.contact}</td>
-                      <td className='px-10 py-2'>
-                        <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditSuperAdminClick(sa)}>Edit</button>
-                        {!isAuthorized || deleteUserId !== sa._id ? (
-                          <button 
-                            className="px-4 py-2 text-white bg-red-600 hover:bg-red-800 duration-200 rounded-md mr-2"
-                            onClick={() => handleRequestDelete(sa._id, 'superadmin')}
-                          >
-                            Request Delete
-                          </button>
-                        ) : (
-                          <button 
-                            className="px-4 py-2 text-white bg-red-600 hover:bg-red-800 duration-200 rounded-md mr-2"
-                            onClick={deleteUser} // ✅ Don't pass params here since `deleteUserId` is already set
-                          >
-                            Delete
-                          </button>
-                        )}
-
-                      </td>
+                      
                     </>
                   )}
                 </tr>
