@@ -290,6 +290,7 @@ const Food = () => {
                             value={targetDate}
                             onChange={(e) => setTargetDate(e.target.value)}
                             min={today}
+                            onKeyDown={(e) => e.preventDefault()} 
                             className="read-only w-full p-2 border rounded-lg"
                         />
 

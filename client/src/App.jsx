@@ -108,9 +108,6 @@ const App = () => {
           case 'superadmin':
             navigate('/analyticsSA'); // SuperAdmin goes to SuperAdmin Analytics
             break;
-          default:
-            navigate('/'); // Default to homepage if role is unknown
-            break;
         }
       } else if (lastVisitedPath) {
         navigate(lastVisitedPath); // Otherwise, go to the last visited path

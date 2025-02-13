@@ -273,6 +273,7 @@ const Disaster = () => {
                             value={targetDate}
                             onChange={(e) => setTargetDate(e.target.value)}
                             min={today}
+                            onKeyDown={(e) => e.preventDefault()} 
                              className="read-only w-full p-2 border rounded-lg"
                         />
                         <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addDisasterRequest} disabled={isButtonDisabled}>

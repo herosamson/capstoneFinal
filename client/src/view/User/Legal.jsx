@@ -222,6 +222,7 @@ const Legal = () => {
                             value={targetDate}
                             onChange={handleChange}
                             min={today}
+                            onKeyDown={(e) => e.preventDefault()} 
                             className="read-only w-full p-2 border rounded-lg"
                         />
 
