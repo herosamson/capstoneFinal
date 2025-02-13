@@ -1323,8 +1323,6 @@ router.get('/admin', async (req, res) => {
   }
 });
 
-const logActivity = require('../utils/logActivity'); // Import updated function
-
 router.delete('/admin/:id', async (req, res) => {
   try {
     const { id } = req.params; 
