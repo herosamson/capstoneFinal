@@ -1,18 +1,22 @@
 const ActivityLog = require('../models/ActivityLog');
 
-const logActivity = async (user, role, action) => {
-  try {
-    const log = new ActivityLog({
-      user: user || 'Unknown',
-      role: role || 'Unknown',
-      action: action,
-      timestamp: new Date(),
-    });
-    await log.save();
-    console.log('Activity Logged:', { user, role, action }); // Debugging
-  } catch (error) {
-    console.error('Error logging activity:', error);
-  }
+const logActivity = (action) => {
+  return async (req, res, next) => {
+    try {
+      const user = req.user ? req.user.username : 'Unknown';
+      const role = req.user ? req.user.role : 'Unknown'; // Capture the role from the user object
+      const log = new ActivityLog({
+        user: user,
+        role: role,
+        action: action,
+      });
+      await log.save();
+    } catch (error) {
+      console.error('Error logging activity:', error);
+    }
+    next();
+  };
 };
+
 
 module.exports = logActivity;
