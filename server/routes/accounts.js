@@ -403,7 +403,7 @@ router.get('/users', async (req, res) => {
 router.delete('/user/:id', async (req, res) => {
   try {
     const { id } = req.params; 
-    const { username } = req.body; // Get SuperAdmin's username from request body
+    const { username } = req.body; 
 
     // Check if User exists
     const deletedUser = await Register.findById(id);
@@ -420,15 +420,16 @@ router.delete('/user/:id', async (req, res) => {
     // Delete User
     await Register.findByIdAndDelete(id);
 
-    // Call log middleware AFTER successful deletion
-    await LogActivity(`Super Admin ${username} deleted a donor: ${deletedUser.username}`);
+    // ✅ Log activity after successful deletion
+    await LogActivity(username, 'superadmin', `Deleted donor: ${deletedUser.username}`);
 
-    return res.status(200).json({ message: 'User deleted successfully.' });
+    return res.status(200).json({ message: 'Donor deleted successfully.' });
   } catch (error) {
     console.error('Error deleting user:', error);
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
+
 
 router.post('/verify-superadmin', async (req, res) => {
   const { password } = req.body;
@@ -516,7 +517,7 @@ router.get('/staff', async (req, res) => {
 router.delete('/staff/:id', async (req, res) => {
   try {
     const { id } = req.params; 
-    const { username } = req.body; // Get SuperAdmin's username from request body
+    const { username } = req.body; 
 
     // Check if Staff exists
     const staff = await Staff.findById(id);
@@ -530,11 +531,11 @@ router.delete('/staff/:id', async (req, res) => {
       return res.status(403).json({ message: 'Unauthorized: Only Super Admins can delete staff members.' });
     }
 
-    // Delete Staff Member
+    // Delete Staff
     await Staff.findByIdAndDelete(id);
 
-    // Call log middleware AFTER successful deletion
-    await LogActivity(`Super Admin ${username} deleted a staff member: ${staff.username}`);
+    // ✅ Log activity after successful deletion
+    await LogActivity(username, 'superadmin', `Deleted staff member: ${staff.username}`);
 
     return res.status(200).json({ message: 'Staff member deleted successfully.' });
   } catch (error) {
@@ -542,6 +543,7 @@ router.delete('/staff/:id', async (req, res) => {
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
+
 
 
 
@@ -1321,10 +1323,12 @@ router.get('/admin', async (req, res) => {
   }
 });
 
+const logActivity = require('../utils/logActivity'); // Import updated function
+
 router.delete('/admin/:id', async (req, res) => {
   try {
     const { id } = req.params; 
-    const { username } = req.body; // Get SuperAdmin's username from request body
+    const { username } = req.body; // Super Admin's username
 
     // Check if Admin exists
     const admin = await Admin.findById(id);
@@ -1341,8 +1345,8 @@ router.delete('/admin/:id', async (req, res) => {
     // Delete Admin
     await Admin.findByIdAndDelete(id);
 
-    // Call log middleware AFTER successful deletion
-    await LogActivity(`Super Admin ${username} deleted an admin: ${admin.username}`);
+    // ✅ Log activity after successful deletion
+    await LogActivity(username, 'superadmin', `Deleted admin: ${admin.username}`);
 
     return res.status(200).json({ message: 'Admin deleted successfully.' });
   } catch (error) {
@@ -1350,6 +1354,7 @@ router.delete('/admin/:id', async (req, res) => {
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
+
 
 // Update an admin
 router.put('/admin/:id', async (req, res) => {
