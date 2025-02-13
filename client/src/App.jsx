@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Route, Routes, useNavigate, useLocation  } from 'react-router-dom'
+import ProtectedRoute from './hooks/protected.jsx';
+import UseInactivityTimeout from './hooks/UseInactivityTimeout.jsx';
 
 /* Auth */
 import Login from './view/Auth/Login.jsx';
@@ -88,9 +90,34 @@ const App = () => {
 
      // Redirect to the last visited path if user is logged in
      const lastVisitedPath = localStorage.getItem('lastVisitedPath');
-     if (storedUserRole && lastVisitedPath && location.pathname === '/') {
-       navigate(lastVisitedPath);
-     }
+     if (storedUserRole) {
+      // Redirect users based on role when reopening the site
+      if (
+        location.pathname === '/' ||
+        location.pathname === '/login' ||
+        location.pathname === '/register'
+      ) {
+        switch (storedUserRole) {
+          case 'user':
+            navigate('/home'); // Donors go to UserHomePage
+            break;
+          case 'staff':
+            navigate('/staffDashboard'); // Staff goes to Staff Dashboard
+            break;
+          case 'admin':
+            navigate('/analytics'); // Admin goes to Admin Analytics
+            break;
+          case 'superadmin':
+            navigate('/analyticsSA'); // SuperAdmin goes to SuperAdmin Analytics
+            break;
+          default:
+            navigate('/'); // Default to homepage if role is unknown
+            break;
+        }
+      } else if (lastVisitedPath) {
+        navigate(lastVisitedPath); // Otherwise, go to the last visited path
+      }
+    }
   }, [navigate, location.pathname]);
 
   const handleLogin = (userId, username, role, firstname, lastname, contact) => {

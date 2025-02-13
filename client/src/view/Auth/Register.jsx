@@ -216,14 +216,10 @@ const Register = ({ onLogin }) => {
     }
   
     // Email validation
-    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.push('Please enter a valid Email Address.');
-    } else if (!formData.email.endsWith('@gmail.com')) {
-      errors.push('Please enter a valid Email Address (Gmail).');
-    } else if (!/^[a-zA-Z0-9]+@gmail\.com$/.test(formData.email)) {
-      errors.push('Email should not contain special characters before "@gmail.com".');
+    if (!/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@gmail\.com$/.test(formData.email.trim())) {
+      errors.push('Please enter a valid Gmail address.');
     }
-  
+
     // Username validation
     if (!formData.username.trim() || /[<>]/.test(formData.username)) {
       errors.push('Please enter a valid Username.');

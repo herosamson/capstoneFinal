@@ -3,31 +3,29 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = ({ userRole, allowedRoles, children }) => {
   const location = useLocation();
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Store the last visited path in localStorage
-    localStorage.setItem('lastVisitedPath', location.pathname);
+    if (userRole) {
+      // Store the last visited path only if the user is logged in
+      localStorage.setItem('lastVisitedPath', location.pathname);
+    }
 
-    // Simulate delay to ensure userRole is loaded
-    const timeout = setTimeout(() => setLoading(false), 100); 
+    // Simulate loading delay
+    const timeout = setTimeout(() => setLoading(false), 100);
     return () => clearTimeout(timeout);
-  }, [location]);
+  }, [location, userRole]);
 
-  // Wait until loading is complete
   if (loading) return null;
 
-  // If user is not logged in, redirect to login page
   if (!userRole) {
     return <Navigate to="/login" />;
   }
 
-  // If user role is not allowed, redirect to the home page
   if (!allowedRoles.includes(userRole)) {
     return <Navigate to="/" />;
   }
 
-  // Render children if role is authorized
   return children;
 };
 

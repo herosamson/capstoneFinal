@@ -103,7 +103,8 @@ const UserHomePage = ({ firstname }) => {
             }`}
           >
             <Link className="nav" to="/home">Home</Link>
-            <Link className="nav" to="/donate">Donate</Link>
+            <Link className="nav" to="/requestassistance">Request</Link>
+            <Link className="nav" to="/cashothers">Donate</Link>
             <Link className="nav" to="/profile">Profile</Link>
             <Link to="/" onClick={handleLogout}>Logout</Link>
           </div>

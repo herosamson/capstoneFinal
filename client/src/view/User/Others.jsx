@@ -459,6 +459,7 @@ const Others = () => {
                                         onChange={handleChange}
                                         name="expirationDate"
                                         min={today}
+                                        onKeyDown={(e) => e.preventDefault()} 
                                         className='w-full border-2 py-2 px-2 text-xs'
                                     />
                                 </>

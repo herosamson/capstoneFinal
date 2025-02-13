@@ -38,7 +38,7 @@ const HomeBody = () => {
                 <div className="absolute inset-0 flex flex-col justify-center ml-10 text-white">
                     <p className="text-7xl font-bold max-xl:text-5xl max-md:text-3xl">LEAVE NO ONE BEHIND!</p>
                     <p className='text-semibold text-2xl mt-2 max-md:text-lg'>Help Affected Communities Around Philippines.</p>
-                    <Link to='/receipt' className=' mt-4 text-black py-3 font-medium rounded-md bg-yellow-300 hover:scale-105 hover:bg-yellow-400 duration-200 w-40 text-center max-md:py-2'>Donate now</Link>
+                    <Link to='/cashothers' className=' mt-4 text-black py-3 font-medium rounded-md bg-yellow-300 hover:scale-105 hover:bg-yellow-400 duration-200 w-40 text-center max-md:py-2'>Donate now</Link>
                 </div>
             </div>
 
