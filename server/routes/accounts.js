@@ -1489,18 +1489,21 @@ router.get('/activity-logs', async (req, res) => {
 });
 
 // Logout route
-router.post('/logout', async (req, res, next) => {
+router.post('/logout', async (req, res) => {
   const { username, role } = req.body; 
 
   try {
     req.user = { username, role }; // Set req.user for logging
-    next();
-    
+
+    // Log the activity **before** sending a response
+    await LogActivity('Logged out')(req, res, () => {});
+
     res.json({ message: 'Successfully logged out' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}, LogActivity('Logged out'));
+});
+
 
 // Assign location to a donation
 router.put('/donations/locate/:id', async (req, res) => {
