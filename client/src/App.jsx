@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Route, Routes, useNavigate, useLocation  } from 'react-router-dom'
-import ProtectedRoute from './hooks/protected.jsx';
-import UseInactivityTimeout from './hooks/UseInactivityTimeout.jsx';
 
 /* Auth */
 import Login from './view/Auth/Login.jsx';
