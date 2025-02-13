@@ -227,7 +227,7 @@ const Register = ({ onLogin }) => {
   
     // Password validation
     if (!formData.password.trim() || formData.password.length < 8 || !/\d/.test(formData.password)) {
-      errors.push('Password must be at least 8 characters long and contain a number.');
+      errors.push('Password must be at least 8 characters long, with at least one uppercase letter and one number.');
     }
   
     // Confirm Password match

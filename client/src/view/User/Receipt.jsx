@@ -286,6 +286,7 @@ const handleChange = (e) => {
           </div>
           <div className={`flex space-x-6 max-sm:flex-col max-sm:items-center max-sm:absolute max-sm:top-[52px] max-sm:right-0 max-sm:w-full max-sm:bg-red-800 max-sm:space-x-0 max-sm:pb-4 max-sm:pt-10 max-sm:text-lg max-sm:space-y-3 ${isOpen ? 'max-sm:flex' : 'max-sm:hidden'}`}>
               <Link className='nav' to="/home">Home</Link>
+              <Link className="nav" to="/requestassistance">Request</Link>
               <Link className='nav' to="/donate">Donate</Link>
               <Link className='nav' to="/profile">Profile</Link>
               <Link to="/" onClick={handleLogout}>Logout</Link>

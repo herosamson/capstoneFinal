@@ -66,7 +66,7 @@ const RequestAssistance = () => {
                 </div>
             </div>
             <div className="pb-6 px-40 flex flex-col flex-grow max-xl:px-20 max-lg:px-16 max-md:px-1 max-sm:px-8">
-            <Link to="/donate" className='mt-4 text-4xl '>
+            <Link to="/home" className='mt-4 text-4xl '>
                     <div className="circle"><MdKeyboardBackspace/></div>
                 </Link>
                 <div className="flex flex-wrap justify-center gap-10 mt-[4%] max-sm:justify-normal max-sm:gap-4 max-sm:mt-[10%]">
