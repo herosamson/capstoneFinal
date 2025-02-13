@@ -402,26 +402,24 @@ router.get('/users', async (req, res) => {
 
 router.delete('/user/:id', async (req, res) => {
   try {
-    const { id } = req.params; 
-    const { username } = req.body; 
+    const { id } = req.params;
+    const { username } = req.body;
 
-    // Check if User exists
     const deletedUser = await Register.findById(id);
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Ensure requester is a Super Admin
     const superAdmin = await SuperAdmin.findOne({ username });
     if (!superAdmin) {
       return res.status(403).json({ message: 'Unauthorized: Only Super Admins can delete users.' });
     }
 
-    // Delete User
     await Register.findByIdAndDelete(id);
 
-    // ✅ Log activity after successful deletion
-    await LogActivity(username, 'superadmin', `Deleted donor: ${deletedUser.username}`);
+    // ✅ Fix LogActivity call
+    req.user = { username, role: 'superadmin' }; 
+    await LogActivity(`Deleted donor: ${deletedUser.username}`)(req, res, () => {});
 
     return res.status(200).json({ message: 'Donor deleted successfully.' });
   } catch (error) {
@@ -429,6 +427,7 @@ router.delete('/user/:id', async (req, res) => {
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
+
 
 
 router.post('/verify-superadmin', async (req, res) => {
@@ -516,26 +515,24 @@ router.get('/staff', async (req, res) => {
 
 router.delete('/staff/:id', async (req, res) => {
   try {
-    const { id } = req.params; 
-    const { username } = req.body; 
+    const { id } = req.params;
+    const { username } = req.body;
 
-    // Check if Staff exists
     const staff = await Staff.findById(id);
     if (!staff) {
       return res.status(404).json({ message: 'Staff member not found' });
     }
 
-    // Ensure requester is a Super Admin
     const superAdmin = await SuperAdmin.findOne({ username });
     if (!superAdmin) {
       return res.status(403).json({ message: 'Unauthorized: Only Super Admins can delete staff members.' });
     }
 
-    // Delete Staff
     await Staff.findByIdAndDelete(id);
 
-    // ✅ Log activity after successful deletion
-    await LogActivity(username, 'superadmin', `Deleted staff member: ${staff.username}`);
+    // ✅ Fix LogActivity call
+    req.user = { username, role: 'superadmin' }; 
+    await LogActivity(`Deleted staff member: ${staff.username}`)(req, res, () => {});
 
     return res.status(200).json({ message: 'Staff member deleted successfully.' });
   } catch (error) {
@@ -543,6 +540,7 @@ router.delete('/staff/:id', async (req, res) => {
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
+
 
 
 
@@ -1325,26 +1323,24 @@ router.get('/admin', async (req, res) => {
 
 router.delete('/admin/:id', async (req, res) => {
   try {
-    const { id } = req.params; 
-    const { username } = req.body; // Super Admin's username
+    const { id } = req.params;
+    const { username } = req.body;
 
-    // Check if Admin exists
     const admin = await Admin.findById(id);
     if (!admin) {
       return res.status(404).json({ message: 'Admin not found' });
     }
 
-    // Ensure requester is a Super Admin
     const superAdmin = await SuperAdmin.findOne({ username });
     if (!superAdmin) {
       return res.status(403).json({ message: 'Unauthorized: Only Super Admins can delete admins.' });
     }
 
-    // Delete Admin
     await Admin.findByIdAndDelete(id);
 
-    // ✅ Log activity after successful deletion
-    await LogActivity(username, 'superadmin', `Deleted admin: ${admin.username}`);
+    // ✅ Fix LogActivity call
+    req.user = { username, role: 'superadmin' }; 
+    await LogActivity(`Deleted admin: ${admin.username}`)(req, res, () => {});
 
     return res.status(200).json({ message: 'Admin deleted successfully.' });
   } catch (error) {
@@ -1352,6 +1348,7 @@ router.delete('/admin/:id', async (req, res) => {
     return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
+
 
 
 // Update an admin
