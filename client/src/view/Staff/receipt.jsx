@@ -10,6 +10,8 @@ function ReceiptS() {
   const [proofs, setProofs] = useState([]);
   const [filteredProofs, setFilteredProofs] = useState([]);
   const [filter, setFilter] = useState('All');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchProofs = async () => {
@@ -187,8 +189,11 @@ function ReceiptS() {
                 <td className='px-10 py-2'>
                   {proof.imagePath ? (
                     <button 
-                      onClick={() => window.open(`https://idonate1.onrender.com/${proof.imagePath}`, '_blank')}
-                      className="view-image-button"
+                      onClick={() => {
+                        setSelectedImage(`https://idonate1.onrender.com/${proof.imagePath}`);
+                        setIsModalOpen(true);
+                      }}
+                      className="view-image-button bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
                     >
                       View Image
                     </button>
@@ -205,8 +210,37 @@ function ReceiptS() {
                 </td>
               </tr>
             ))}
+            
           </tbody>
         </table>
+          {isModalOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full relative">
+                <button 
+                  className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  ✖
+                </button>
+                <h2 className="text-xl font-semibold mb-4">Proof of Payment</h2>
+                <div className="flex justify-center">
+                  <img 
+                    src={selectedImage} 
+                    alt="Proof of Payment" 
+                    className="max-w-full h-auto rounded-md"
+                  />
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button 
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );

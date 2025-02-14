@@ -201,11 +201,20 @@ const Profile = ({ username }) => {
   const fetchUserData = useCallback(async () => {
     setLoading(true);
     setError(null);
+  
     try {
       const userResponse = await axios.get(`/routes/accounts/user/${username}`);
-      const user = userResponse.data.user;
+      console.log("Fetched User Data:", userResponse.data);
   
-      let extractedCountryCode = '+63'; 
+      const user = userResponse.data.user;
+      const receivedDonations = userResponse.data.donations.filter(donation => donation.received);
+      const pendingDonations = userResponse.data.donations.filter(donation => !donation.received);
+  
+      setUser(user);
+      setDonations(pendingDonations); 
+      setPendingItems(receivedDonations); 
+  
+      let extractedCountryCode = '+63';
       let extractedContact = user.contact;
   
       countryCodes.forEach((country) => {
@@ -215,12 +224,11 @@ const Profile = ({ username }) => {
         }
       });
   
-      setUser(user);
       setEditData({
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
-        contact: extractedContact, 
+        contact: extractedContact,
         username: user.username,
       });
   
@@ -232,6 +240,7 @@ const Profile = ({ username }) => {
       setLoading(false);
     }
   }, [username]);
+  
   
   
   useEffect(() => {

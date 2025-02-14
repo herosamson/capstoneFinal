@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Route, Routes, useNavigate, useLocation  } from 'react-router-dom'
-
 import NotFound from './NotFound.jsx';
-<Route path="*" element={<NotFound />} />
 
 /* Auth */
 import Login from './view/Auth/Login.jsx';
@@ -141,6 +139,7 @@ const App = () => {
         <Route path='/' element={<Homepage/>}/>
         <Route path='/events' element={<Events/>}/>
         <Route path='/about' element={<AboutUs/>}/>
+        <Route path="*" element={<NotFound />} />
     
         {/* Auth */}
         <Route path='/login' element={<Login onLogin={handleLogin}/>}/>
