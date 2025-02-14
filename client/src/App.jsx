@@ -87,7 +87,7 @@ const App = () => {
     if (storedFirstName) setFirstName(storedFirstName);
     if (storedLastName) setLastName(storedLastName);
     if (storedContact) setContact(storedContact);
-    if (storedEmail) setContact(storedEmail);
+    if (storedEmail) setEmail(storedEmail);
 
      // Redirect to the last visited path if user is logged in
      const lastVisitedPath = localStorage.getItem('lastVisitedPath');
