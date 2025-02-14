@@ -186,15 +186,12 @@ function ReceiptS() {
                 <td className='px-10 py-2'>{new Date(proof.date).toLocaleDateString()}</td>
                 <td className='px-10 py-2'>
                   {proof.imagePath ? (
-                    <a 
-                      href={`https://idonate1.onrender.com/${proof.imagePath}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <button 
+                      onClick={() => window.open(`https://idonate1.onrender.com/${proof.imagePath}`, '_blank')}
                       className="view-image-button"
-                      type="button"
                     >
                       View Image
-                    </a>
+                    </button>
                   ) : 'No Image'}
                 </td>
                 <td className='px-10 py-2'>

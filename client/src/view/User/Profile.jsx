@@ -6,8 +6,8 @@ import ProfilePicture from '../../assets/images/profilepic.png';
 
 const Profile = ({ username }) => {
   const [user, setUser] = useState(null);
-  const [donations, setDonations] = useState([]); // This will now hold pending items
-  const [pendingItems, setPendingItems] = useState([]); // This will now hold received donations
+  const [donations, setDonations] = useState([]); 
+  const [pendingItems, setPendingItems] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -22,8 +22,147 @@ const Profile = ({ username }) => {
   });
 
   console.log(user)
+  const handleChangeContact = (e) => {
+    let inputValue = e.target.value.replace(/\D/g, '');
+  
+    if (selectedCountryCode in countryStartingDigits) {
+      const validStarts = countryStartingDigits[selectedCountryCode];
+  
+      if (inputValue.length > 0 && !validStarts.includes(inputValue[0])) {
+        inputValue = validStarts[0] + inputValue.slice(1); 
+      }
+    }
+  
+    const maxDigits = selectedCountryCode === '+63' ? 10 : 10; 
+    inputValue = inputValue.substring(0, maxDigits);
+  
+    let formattedNumber = '';
+    if (inputValue.length > 0) formattedNumber += inputValue.substring(0, 3);
+    if (inputValue.length > 3) formattedNumber += ' ' + inputValue.substring(3, 6);
+    if (inputValue.length > 6) formattedNumber += ' ' + inputValue.substring(6, maxDigits);
+  
+    setEditData({ ...editData, contact: formattedNumber });
+  };
 
+    const [selectedCountryCode, setSelectedCountryCode] = useState('+63');
+    const countryCodes = [
+      { code: '+1', country: 'United States' },
+      { code: '+44', country: 'United Kingdom' },
+      { code: '+63', country: 'Philippines' },
+      { code: '+91', country: 'India' },
+      { code: '+81', country: 'Japan' },
+      { code: '+61', country: 'Australia' },
+      { code: '+49', country: 'Germany' },
+      { code: '+33', country: 'France' },
+      { code: '+39', country: 'Italy' },
+      { code: '+86', country: 'China' },
+      { code: '+82', country: 'South Korea' },
+      { code: '+7', country: 'Russia' },
+      { code: '+55', country: 'Brazil' },
+      { code: '+27', country: 'South Africa' },
+      { code: '+34', country: 'Spain' },
+      { code: '+971', country: 'United Arab Emirates' },
+      { code: '+92', country: 'Pakistan' },
+      { code: '+20', country: 'Egypt' },
+      { code: '+62', country: 'Indonesia' },
+      { code: '+64', country: 'New Zealand' },
+      { code: '+353', country: 'Ireland' },
+      { code: '+31', country: 'Netherlands' },
+      { code: '+46', country: 'Sweden' },
+      { code: '+41', country: 'Switzerland' },
+      { code: '+32', country: 'Belgium' },
+      { code: '+45', country: 'Denmark' },
+      { code: '+52', country: 'Mexico' },
+      { code: '+972', country: 'Israel' },
+      { code: '+66', country: 'Thailand' },
+      { code: '+65', country: 'Singapore' },
+      { code: '+47', country: 'Norway' },
+      { code: '+420', country: 'Czech Republic' },
+      { code: '+48', country: 'Poland' },
+      { code: '+43', country: 'Austria' },
+      { code: '+36', country: 'Hungary' },
+      { code: '+351', country: 'Portugal' },
+      { code: '+375', country: 'Belarus' },
+      { code: '+380', country: 'Ukraine' },
+      { code: '+30', country: 'Greece' },
+      { code: '+57', country: 'Colombia' },
+      { code: '+98', country: 'Iran' },
+      { code: '+90', country: 'Turkey' },
+      { code: '+56', country: 'Chile' },
+      { code: '+233', country: 'Ghana' },
+      { code: '+234', country: 'Nigeria' },
+      { code: '+264', country: 'Namibia' },
+      { code: '+258', country: 'Mozambique' },
+      { code: '+94', country: 'Sri Lanka' },
+      { code: '+975', country: 'Bhutan' },
+      { code: '+372', country: 'Estonia' },
+      { code: '+591', country: 'Bolivia' },
+      { code: '+597', country: 'Suriname' },
+      { code: '+675', country: 'Papua New Guinea' },
+      { code: '+54', country: 'Argentina' },
+      { code: '+507', country: 'Panama' },
+      { code: '+592', country: 'Guyana' },
+    ];
 
+  const countryStartingDigits = {
+    '+1': ['2', '3', '4', '5', '6', '7', '8', '9'], 
+    '+44': ['7'],    
+    '+63': ['9'],      
+    '+91': ['6', '7', '8', '9'], 
+    '+81': ['7', '8', '9'], 
+    '+61': ['4'],   
+    '+49': ['1'],    
+    '+33': ['6', '7'], 
+    '+39': ['3'],   
+    '+86': ['1'],    
+    '+82': ['1'],       
+    '+7': ['9'],     
+    '+55': ['9'],      
+    '+27': ['6', '7', '8'], 
+    '+34': ['6', '7'], 
+    '+971': ['5'],     
+    '+92': ['3'],     
+    '+20': ['1'],     
+    '+62': ['8'],    
+    '+64': ['2', '3', '4', '5', '6', '7', '8', '9'], 
+    '+353': ['8'],    
+    '+31': ['6'],     
+    '+46': ['7'],   
+    '+41': ['7'],    
+    '+32': ['4'],   
+    '+45': ['2', '3', '4', '5', '6', '7'],
+    '+52': ['1'],      
+    '+972': ['5'],    
+    '+66': ['6', '8', '9'], 
+    '+65': ['8', '9'], 
+    '+47': ['4', '9'],  
+    '+420': ['6', '7'], 
+    '+48': ['5', '6', '7', '8'], 
+    '+43': ['6'],    
+    '+36': ['2', '3', '4', '5', '6', '7'],
+    '+351': ['9'],    
+    '+375': ['2', '3', '4', '5'], 
+    '+380': ['6', '7', '9'], 
+    '+30': ['6', '9'],  
+    '+57': ['3'],     
+    '+98': ['9'],    
+    '+90': ['5'],     
+    '+56': ['9'],     
+    '+233': ['2', '5'],
+    '+234': ['7', '8', '9'], 
+    '+264': ['8'],   
+    '+258': ['8', '9'], 
+    '+94': ['7'],      
+    '+975': ['1', '7'], 
+    '+372': ['5'],     
+    '+591': ['6', '7'], 
+    '+597': ['8'],    
+    '+675': ['7'],    
+    '+54': ['1', '2', '3', '4', '5', '6', '7', '8', '9'], 
+    '+507': ['6'],    
+    '+592': ['6', '7'], 
+  };
+  
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -64,22 +203,28 @@ const Profile = ({ username }) => {
     setError(null);
     try {
       const userResponse = await axios.get(`/routes/accounts/user/${username}`);
-      console.log(userResponse)
       const user = userResponse.data.user;
-      const receivedDonations = userResponse.data.donations.filter(donation => donation.received);
-      const pendingDonations = userResponse.data.donations.filter(donation => !donation.received);
-
+  
+      let extractedCountryCode = '+63'; 
+      let extractedContact = user.contact;
+  
+      countryCodes.forEach((country) => {
+        if (user.contact.startsWith(country.code)) {
+          extractedCountryCode = country.code;
+          extractedContact = user.contact.replace(country.code, '').trim();
+        }
+      });
+  
       setUser(user);
-      setDonations(pendingDonations); // Set pending items initially
-      setPendingItems(receivedDonations); // Set received items initially
       setEditData({
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
-        contact: user.contact,
+        contact: extractedContact, 
         username: user.username,
       });
-
+  
+      setSelectedCountryCode(extractedCountryCode);
     } catch (error) {
       console.error("Error fetching data:", error.response ? error.response.data : error.message);
       setError('Error fetching data');
@@ -87,6 +232,7 @@ const Profile = ({ username }) => {
       setLoading(false);
     }
   }, [username]);
+  
   
   useEffect(() => {
     if (username) {
@@ -105,35 +251,41 @@ const Profile = ({ username }) => {
   };
 
   const handleSave = async () => {
-    const contactRegex = /^09\d{9}$/;
-
+    let errors = [];
   
-    if (!contactRegex.test(editData.contact)) {
-      alert('Please enter a valid Contact Number.');
+    if (selectedCountryCode === '+63') {
+      if (!/^9\d{9}$/.test(editData.contact)) {
+        errors.push('Philippines contact number must start with 9 and be 10 digits long.');
+      }
+    } else if (selectedCountryCode === '+1') {
+      if (!/^\d{10}$/.test(editData.contact)) {
+        errors.push('US contact number must be 10 digits long.');
+      }
+    }
+  
+    if (errors.length > 0) {
+      alert(errors.join('\n'));
       return;
     }
-
   
     try {
-      const response = await axios.put(`/routes/accounts/user/${username}`, editData);
+      const response = await axios.put(`/routes/accounts/user/${username}`, {
+        ...editData,
+        contact: `${selectedCountryCode} ${editData.contact}`, 
+      });
+  
       setUser(response.data);
       localStorage.setItem('username', editData.username);
       setIsEditing(false);
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        if (error.response.data.message.includes('Username already taken')) {
-          alert('Username is already taken.');
-        } else if (error.response.data.message.includes('Email or contact number already in use')) {
-          alert('Email or contact number is already in use.');
-        } else {
-          alert('Error updating user data: ' + error.response.data.message);
-        }
+        alert(error.response.data.message || 'Error updating user data.');
       } else {
         setError('Error updating user data');
-        console.error("Error updating user data:", error);
       }
     }
   };
+  
   
   const handleCancel = () => {
     setIsEditing(false);
@@ -154,10 +306,6 @@ const Profile = ({ username }) => {
     setIsModalOpen(false);
   };
 
-  /* if (loading) return <div className="loader loader_bubble"></div>;
-  if (error) return <div>{error}</div>;
-  if (!user) return <div>User not found</div>; */
-
   return (
     <div className="font-Poppins min-h-screen flex flex-col">
       <div className={`flex justify-between py-3 px-6 font-Poppins bg-red-800 `}>
@@ -171,7 +319,7 @@ const Profile = ({ username }) => {
           <div className={`flex space-x-6 max-sm:flex-col max-sm:items-center max-sm:absolute max-sm:top-[52px] max-sm:right-0 max-sm:w-full max-sm:bg-red-800 max-sm:space-x-0 max-sm:pb-4 max-sm:pt-10 max-sm:text-lg max-sm:space-y-3 ${isOpen ? 'max-sm:flex' : 'max-sm:hidden'}`}>
               <Link className='nav' to="/home">Home</Link>
               <Link className="nav" to="/requestassistance">Request</Link>
-              <Link className='nav' to="/donate">Donate</Link>
+              <Link className='nav' to="/cashothers">Donate</Link>
               <Link className='nav' to="/profile">Profile</Link>
               <Link to="/" onClick={handleLogout}>Logout</Link>
           </div>
@@ -225,14 +373,31 @@ const Profile = ({ username }) => {
 
                 <div className="edit-field">
                   <label className="block mb-2">Contact:</label>
-                  <input
-                    type="text"
-                    name="contact"
-                    value={editData.contact}
-                    onChange={handleChange}
-                    className="read-only w-full p-2 border rounded-lg"
-                  />
+                  <div className="flex">
+                    <select
+                      className="border rounded-l-md p-2 bg-white w-20 text-sm"
+                      value={selectedCountryCode}
+                      onChange={(e) => setSelectedCountryCode(e.target.value)}
+                    >
+                      {countryCodes.map((item) => (
+                        <option key={item.code} value={item.code}>
+                          {item.country} ({item.code})
+                        </option>
+                      ))}
+                    </select>
+
+                    <input
+                      type="text"
+                      name="contact"
+                      value={editData.contact}
+                      onChange={handleChangeContact}
+                      className="border-l-0 rounded-r-md flex-grow p-2"
+                      placeholder="Enter Contact Number"
+                      required
+                    />
+                  </div>
                 </div>
+
 
                 <div className="button-group">
                   <button type="button" className="px-4 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-2 mr-1 ml-1" onClick={handleSave}>Save</button>
