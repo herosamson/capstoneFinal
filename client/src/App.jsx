@@ -79,6 +79,7 @@ const App = () => {
     const storedFirstName = localStorage.getItem('firstname');
     const storedLastName = localStorage.getItem('lastname');
     const storedContact = localStorage.getItem('contact');
+    const storedEmail = localStorage.getItem('email');
   
     if (storedUserId) setUserId(storedUserId);
     if (storedUsername) setUsername(storedUsername);
@@ -86,6 +87,7 @@ const App = () => {
     if (storedFirstName) setFirstName(storedFirstName);
     if (storedLastName) setLastName(storedLastName);
     if (storedContact) setContact(storedContact);
+    if (storedEmail) setContact(storedEmail);
 
      // Redirect to the last visited path if user is logged in
      const lastVisitedPath = localStorage.getItem('lastVisitedPath');
@@ -116,20 +118,21 @@ const App = () => {
     }
   }, [navigate, location.pathname]);
 
-  const handleLogin = (userId, username, role, firstname, lastname, contact) => {
+  const handleLogin = (userId, username, role, firstname, lastname, contact, email) => {
     setUserId(userId);
     setUsername(username);
     setUserRole(role);
     setFirstName(firstname);
     setLastName(lastname);
     setLastName(contact);
+    setEmail(email);
     localStorage.setItem('userId', userId);
     localStorage.setItem('username', username);
     localStorage.setItem('userRole', role);
     localStorage.setItem('firstname', firstname);
     localStorage.setItem('lastname', lastname);
     localStorage.setItem('contact', contact);
-
+    localStorage.setItem('email', email);
   };
 
   return (

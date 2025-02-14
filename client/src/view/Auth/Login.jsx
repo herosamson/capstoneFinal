@@ -26,7 +26,7 @@ const Login = ({ onLogin }) => {
       
       console.log("Login response:", response.data); // Debugging log
       
-      const { userId, username, role, firstname, lastname, contact } = response.data;
+      const { userId, username, role, firstname, lastname, contact, email } = response.data;
   
       setUserRole(role);
       setIsLoggedIn(true);
@@ -38,8 +38,9 @@ const Login = ({ onLogin }) => {
       localStorage.setItem('firstname', firstname);
       localStorage.setItem('lastname', lastname);
       localStorage.setItem('contact', contact);
+      localStorage.setItem('email', email);
   
-      onLogin(userId, username, role, firstname, lastname, contact);
+      onLogin(userId, username, role, firstname, lastname, contact, email);
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
       setIsIncorrectPassword(true);
