@@ -219,7 +219,7 @@ const sendVerificationEmail = async ({ _id, email }) => {
 };
 
 let transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: "smtp.gmail.com",
   auth: {
     user: "idonate2024@gmail.com",
     pass: "twrp vrcg ppsa lhow", 
