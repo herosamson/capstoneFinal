@@ -65,6 +65,7 @@ const App = () => {
   const [firstname, setFirstName] = useState(null);
   const [lastname, setLastName] = useState(null);
   const [contact, setContact] = useState(null);
+  const [email, setEmail] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -176,7 +177,7 @@ const App = () => {
           </ProtectedRoute>
         } />
         <Route path="/receipt" element={
-          <ProtectedRoute userRole={userRole} allowedRoles={['user']}>
+          <ProtectedRoute userRole={userRole} email={email} allowedRoles={['user']}>
             <Receipt />
           </ProtectedRoute>
         } />
@@ -237,7 +238,7 @@ const App = () => {
           </ProtectedRoute>
         } />
         <Route path="/receiptS" element={
-          <ProtectedRoute userRole={userRole} allowedRoles={['staff']}>
+          <ProtectedRoute userRole={userRole} email={email} allowedRoles={['staff']}>
             <StaffReceipt />
           </ProtectedRoute>
         } />
