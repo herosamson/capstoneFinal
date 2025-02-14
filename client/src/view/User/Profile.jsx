@@ -21,26 +21,27 @@ const Profile = ({ username }) => {
     username: '',
   });
 
-  console.log(user)
   const handleChangeContact = (e) => {
-    let inputValue = e.target.value.replace(/\D/g, '');
-  
+    let inputValue = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+
     if (selectedCountryCode in countryStartingDigits) {
       const validStarts = countryStartingDigits[selectedCountryCode];
-  
+
       if (inputValue.length > 0 && !validStarts.includes(inputValue[0])) {
-        inputValue = validStarts[0] + inputValue.slice(1); 
+        inputValue = validStarts[0] + inputValue.slice(1);
       }
     }
-  
+
+    // Define max length based on country
     const maxDigits = selectedCountryCode === '+63' ? 10 : 10; 
     inputValue = inputValue.substring(0, maxDigits);
-  
+
+    // Format the number for readability
     let formattedNumber = '';
     if (inputValue.length > 0) formattedNumber += inputValue.substring(0, 3);
     if (inputValue.length > 3) formattedNumber += ' ' + inputValue.substring(3, 6);
     if (inputValue.length > 6) formattedNumber += ' ' + inputValue.substring(6, maxDigits);
-  
+
     setEditData({ ...editData, contact: formattedNumber });
   };
 
@@ -261,40 +262,32 @@ const Profile = ({ username }) => {
 
   const handleSave = async () => {
     let errors = [];
-  
+
     if (selectedCountryCode === '+63') {
-      if (!/^9\d{9}$/.test(editData.contact)) {
+      if (!/^9\d{9}$/.test(editData.contact.replace(/\s/g, ''))) {
         errors.push('Philippines contact number must start with 9 and be 10 digits long.');
       }
-    } else if (selectedCountryCode === '+1') {
-      if (!/^\d{10}$/.test(editData.contact)) {
-        errors.push('US contact number must be 10 digits long.');
-      }
-    }
-  
+    } 
+
     if (errors.length > 0) {
       alert(errors.join('\n'));
       return;
     }
-  
+
     try {
-      const response = await axios.put(`/routes/accounts/user/${username}`, {
+      await axios.put(`/routes/accounts/user/${username}`, {
         ...editData,
-        contact: `${selectedCountryCode} ${editData.contact}`, 
+        contact: `${selectedCountryCode} ${editData.contact}`,
       });
-  
-      setUser(response.data);
-      localStorage.setItem('username', editData.username);
+
+      alert("Profile updated successfully!");
       setIsEditing(false);
+      fetchUserData();
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        alert(error.response.data.message || 'Error updating user data.');
-      } else {
-        setError('Error updating user data');
-      }
+      console.error("Error updating user data:", error);
+      alert("Failed to update profile.");
     }
   };
-  
   
   const handleCancel = () => {
     setIsEditing(false);
@@ -383,18 +376,6 @@ const Profile = ({ username }) => {
                 <div className="edit-field">
                   <label className="block mb-2">Contact:</label>
                   <div className="flex">
-                    <select
-                      className="border rounded-l-md p-2 bg-white w-20 text-sm"
-                      value={selectedCountryCode}
-                      onChange={(e) => setSelectedCountryCode(e.target.value)}
-                    >
-                      {countryCodes.map((item) => (
-                        <option key={item.code} value={item.code}>
-                          {item.country} ({item.code})
-                        </option>
-                      ))}
-                    </select>
-
                     <input
                       type="text"
                       name="contact"
