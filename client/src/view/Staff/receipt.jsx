@@ -82,20 +82,25 @@ function ReceiptS() {
     }
   };
 
-  const approvePayment = async (id) => {
+  const approvePayment = async (id, email) => {
     if (!window.confirm('Are you sure you want to approve this payment?')) {
       return;
     }
-
+  
     try {
       const response = await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
       setProofs(proofs.map(proof => proof._id === id ? response.data : proof));
-      alert('Payment approved successfully.');
+      
+      // Send email notification to the donor
+      await axios.post('/routes/accounts/send-verification-email', { email });
+  
+      alert('Payment approved successfully. The donor has been notified via email.');
     } catch (error) {
       console.error('Error approving payment:', error);
       alert('Failed to approve payment. Please try again later.');
     }
   };
+  
 
   const downloadReport = () => {
     const doc = new jsPDF();

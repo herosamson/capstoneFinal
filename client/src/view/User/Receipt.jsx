@@ -51,53 +51,51 @@ const Receipt = () => {
     return `${year}-${month}-${day}`;
   };
   
- const addProofOfPayment = async () => {
-  if (!donorDetails.amount || !donorDetails.date || !donorDetails.image) {
-    alert('Amount, date, and image are required.');
-    return;
-  }
-
-  if (!/^\d+$/.test(donorDetails.amount)) {
-    alert('Please enter a valid Amount.');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('username', username);  // Username from local storage
-  formData.append('amount', donorDetails.amount);
-  formData.append('date', donorDetails.date);
-  formData.append('image', donorDetails.image);  // Image is required
-  formData.append('contact', contact);   // Include the contact from local storage
-
-  // Append name only if it's provided
-  if (donorDetails.name.trim() !== '') {
-    formData.append('name', donorDetails.name);  // Add the optional name here
-  }
-
-  try {
-    setIsButtonDisabled(true);
-    const response = await axios.post('/routes/accounts/addProof', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    setProofsOfPayment([...proofsOfPayment, response.data]);
-    setDonorDetails({
-      name: '',
-      amount: '',
-      date: '',
-      image: null,
-    });
-    setError('');
-    alert('Proof of payment added successfully.');
-  } catch (error) {
-    console.error('Failed to add proof of payment:', error.response ? error.response.data : error.message);
-    setError('Failed to add proof of payment. Please try again later.');
-    alert('Failed to add proof of payment. Please try again later.');
-  } finally {
-    setIsButtonDisabled(false); // Re-enable the button after the submission attempt
-  }
-};
+  const addProofOfPayment = async () => {
+    if (!donorDetails.amount || !donorDetails.date || !donorDetails.image) {
+      alert('Amount, date, and image are required.');
+      return;
+    }
+  
+    if (!/^\d+$/.test(donorDetails.amount)) {
+      alert('Please enter a valid Amount.');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('amount', donorDetails.amount);
+    formData.append('date', donorDetails.date);
+    formData.append('image', donorDetails.image);
+    formData.append('contact', contact);
+  
+    if (donorDetails.name.trim() !== '') {
+      formData.append('name', donorDetails.name);
+    }
+  
+    try {
+      setIsButtonDisabled(true);
+      const response = await axios.post('/routes/accounts/addProof', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+  
+      setProofsOfPayment([...proofsOfPayment, response.data]);
+      setDonorDetails({ name: '', amount: '', date: '', image: null });
+      setError('');
+  
+      // Send email notification to the donor
+      await axios.post('/routes/accounts/send-submission-email', { email: localStorage.getItem('email') });
+  
+      alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved.');
+    } catch (error) {
+      console.error('Failed to add proof of payment:', error.response ? error.response.data : error.message);
+      setError('Failed to add proof of payment. Please try again later.');
+      alert('Failed to add proof of payment. Please try again later.');
+    } finally {
+      setIsButtonDisabled(false);
+    }
+  };
+  
 
 
 

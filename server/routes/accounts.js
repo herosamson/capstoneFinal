@@ -1792,5 +1792,66 @@ router.get('/cabinets', async (req, res) => {
   }
 });
 
+// Email when a donor submits proof of donation
+router.post('/send-submission-email', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  const mailOptions = {
+    from: "idonate2024@gmail.com",
+    to: email,
+    subject: "Proof of Cash Donation Submission Received",
+    html: `
+      <p>Dear Donor,</p>
+      <p>We have received your proof of cash donation. Please wait while we verify your submission.</p>
+      <p>You will receive another email once your donation is approved.</p>
+      <p>Thank you for your generosity!</p>
+      <p>Best regards,</p>
+      <p>iDonate Team</p>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.json({ message: "Submission email sent successfully." });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: "Failed to send email." });
+  }
+});
+
+// Email when staff verifies the donation
+router.post('/send-verification-email', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  const mailOptions = {
+    from: "idonate2024@gmail.com",
+    to: email,
+    subject: "Cash Donation Verified and Recieved",
+    html: `
+      <p>Dear Donor,</p>
+      <p>Your proof of cash donation has been received and verified.</p>
+      <p>Thank you for your generosity and support!</p>
+      <p>Best regards,</p>
+      <p>iDonate Team</p>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.json({ message: "Verification email sent successfully." });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: "Failed to send email." });
+  }
+});
+
 module.exports = router;
 
