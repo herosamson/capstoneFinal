@@ -177,7 +177,7 @@ const App = () => {
           </ProtectedRoute>
         } />
         <Route path="/receipt" element={
-          <ProtectedRoute userRole={userRole} email={email} allowedRoles={['user']}>
+          <ProtectedRoute userRole={userRole} allowedRoles={['user']}>
             <Receipt />
           </ProtectedRoute>
         } />
@@ -238,7 +238,7 @@ const App = () => {
           </ProtectedRoute>
         } />
         <Route path="/receiptS" element={
-          <ProtectedRoute userRole={userRole} email={email} allowedRoles={['staff']}>
+          <ProtectedRoute userRole={userRole} allowedRoles={['staff']}>
             <StaffReceipt />
           </ProtectedRoute>
         } />

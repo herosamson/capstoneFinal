@@ -219,13 +219,12 @@ const sendVerificationEmail = async ({ _id, email }) => {
 };
 
 let transporter = nodemailer.createTransport({
-  service: "smtp.gmail.com",
+  service: "gmail",
   auth: {
     user: "idonate2024@gmail.com",
-    pass: "twrp vrcg ppsa lhow", 
+    pass: "vsrhiawtcpvddkgu", 
   },
 });
-// vsrhiawtcpvddkgu
 
 //admin add user
 router.post('/register-verified', async (req, res) => {

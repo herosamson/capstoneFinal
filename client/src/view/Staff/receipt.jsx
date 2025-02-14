@@ -92,8 +92,8 @@ function ReceiptS() {
       setProofs(proofs.map(proof => proof._id === id ? response.data : proof));
       
       // Send email notification to the donor
-      await axios.post('/routes/accounts/send-verification-email', { email });
-  
+      await axios.post('https://idonate1.onrender.com/routes/accounts/send-verification-email', { email });
+      
       alert('Payment approved successfully. The donor has been notified via email.');
     } catch (error) {
       console.error('Error approving payment:', error);

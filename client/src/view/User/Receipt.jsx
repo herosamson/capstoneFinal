@@ -84,7 +84,7 @@ const Receipt = () => {
       setError('');
   
       // Send email notification to the donor
-      await axios.post('/routes/accounts/send-submission-email', { email: localStorage.getItem('email') });
+      await axios.post('https://idonate1.onrender.com/routes/accounts/send-submission-email', { email: localStorage.getItem('email') });
   
       alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved.');
     } catch (error) {
