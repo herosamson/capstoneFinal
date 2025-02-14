@@ -222,10 +222,10 @@ let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "idonate2024@gmail.com",
-    pass: "vsrhiawtcpvddkgu", // Use an App Password instead
+    pass: "twrp vrcg ppsa lhow", 
   },
 });
-
+// vsrhiawtcpvddkgu
 
 //admin add user
 router.post('/register-verified', async (req, res) => {
