@@ -18,34 +18,40 @@ const Login = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsIncorrectPassword(false); // Reset incorrect password state before attempt
   
     try {
-      console.log("Attempting login with:", loginData); // Debugging log
+      console.log("Attempting login with:", loginData);
   
       const response = await axios.post(`/routes/accounts/login`, loginData);
-      
-      console.log("Login response:", response.data); // Debugging log
-      
-      const { userId, username, role, firstname, lastname, contact, email } = response.data;
+      console.log("Login response:", response.data);
   
-      setUserRole(role);
-      setIsLoggedIn(true);
+      if (response.status === 200) {
+        // Extract user details from response
+        const { userId, username, role, firstname, lastname, contact, email } = response.data;
   
-      // Store user details in localStorage
-      localStorage.setItem('userId', userId);
-      localStorage.setItem('username', username);
-      localStorage.setItem('userRole', role);
-      localStorage.setItem('firstname', firstname);
-      localStorage.setItem('lastname', lastname);
-      localStorage.setItem('contact', contact);
-      localStorage.setItem('email', email);
+        setUserRole(role);
+        setIsLoggedIn(true);
   
-      onLogin(userId, username, role, firstname, lastname, contact, email);
+        // Store user details in localStorage
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('username', username);
+        localStorage.setItem('userRole', role);
+        localStorage.setItem('firstname', firstname);
+        localStorage.setItem('lastname', lastname);
+        localStorage.setItem('contact', contact);
+        localStorage.setItem('email', email);
+  
+        onLogin(userId, username, role, firstname, lastname, contact, email);
+      } else {
+        setIsIncorrectPassword(true); // Show error if login fails
+      }
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
       setIsIncorrectPassword(true);
     }
   };
+  
   
 
 
