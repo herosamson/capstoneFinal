@@ -1534,7 +1534,8 @@ router.get('/proofs', async (req, res) => {
 
 router.patch('/proofs/:id/approve', async (req, res) => {
   try {
-    const proof = await ProofOfPayment.findById(req.params.id).populate('user', 'email');
+    const proof = await ProofOfPayment.findById(req.params.id).populate({ path: 'user', select: 'email' });
+
 
     if (!proof) {
       return res.status(404).json({ message: "Proof of payment not found." });
@@ -1544,8 +1545,9 @@ router.patch('/proofs/:id/approve', async (req, res) => {
       return res.status(400).json({ message: "This donation is already verified." });
     }
 
-    proof.approved = true;
+    proof.set({ approved: true });
     await proof.save();
+    
 
     // Ensure email is retrieved from the user
     const donorEmail = proof.user?.email;
@@ -1560,7 +1562,7 @@ router.patch('/proofs/:id/approve', async (req, res) => {
       subject: "Cash Donation Verified and Received",
       html: `
         <p>Dear ${proof.name || "Donor"},</p>
-        <p>Your proof of cash donation of <strong>₱${proof.amount}</strong> (Donation ID: <strong>${proof._id}</strong>) has been received and verified.</p>
+        <p>Your proof of cash donation of <strong>₱${proof.amount}
         <p>Thank you for your generosity and support!</p>
         <p>Best regards,</p>
         <p>iDonate Team</p>

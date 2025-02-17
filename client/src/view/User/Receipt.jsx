@@ -150,14 +150,13 @@ const handleChange = (e) => {
   useEffect(() => {
     const fetchProofs = async () => {
       try {
-        const response = await axios.get('/routes/accounts/proofs', {
-          params: { username, approved: true }
-        });
+        const response = await axios.get('/routes/accounts/proofs', { params: { username } }); // Remove { approved: true }
         setProofsOfPayment(response.data);
       } catch (error) {
         console.error('Error fetching proofs of payment:', error);
       }
     };
+    
 
     fetchProofs();
 
