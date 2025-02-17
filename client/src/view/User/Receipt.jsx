@@ -53,51 +53,48 @@ const Receipt = () => {
   
   const addProofOfPayment = async () => {
     if (!donorDetails.amount || !donorDetails.date || !donorDetails.image) {
-      alert('Amount, date, and image are required.');
+      alert("Amount, date, and image are required.");
       return;
     }
   
     if (!/^\d+$/.test(donorDetails.amount)) {
-      alert('Please enter a valid Amount.');
+      alert("Please enter a valid Amount.");
       return;
     }
   
     const formData = new FormData();
-    formData.append('username', username);
-    formData.append('amount', donorDetails.amount);
-    formData.append('date', donorDetails.date);
-    formData.append('image', donorDetails.image);
-    formData.append('contact', contact);
+    formData.append("username", username);
+    formData.append("amount", donorDetails.amount);
+    formData.append("date", donorDetails.date);
+    formData.append("image", donorDetails.image);
+    formData.append("contact", contact);
+    formData.append("email", localStorage.getItem("email")); // Send email to backend
   
-    if (donorDetails.name.trim() !== '') {
-      formData.append('name', donorDetails.name);
+    if (donorDetails.name.trim() !== "") {
+      formData.append("name", donorDetails.name);
     }
   
     try {
       setIsButtonDisabled(true);
-      const response = await axios.post('/routes/accounts/addProof', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const response = await axios.post("/routes/accounts/addProof", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
   
       setProofsOfPayment([...proofsOfPayment, response.data]);
-      setDonorDetails({ name: '', amount: '', date: '', image: null });
-      setError('');
+      setDonorDetails({ name: "", amount: "", date: "", image: null });
+      setError("");
   
-      // Send email notification to the donor
-      await axios.post('https://idonate1.onrender.com/routes/accounts/send-submission-email', { email: localStorage.getItem('email') });
-  
-      alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved.');
+      alert(
+        "Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved."
+      );
     } catch (error) {
-      console.error('Failed to add proof of payment:', error.response ? error.response.data : error.message);
-      setError('Failed to add proof of payment. Please try again later.');
-      alert('Failed to add proof of payment. Please try again later.');
+      console.error("Failed to add proof of payment:", error.response ? error.response.data : error.message);
+      setError("Failed to add proof of payment. Please try again later.");
+      alert("Failed to add proof of payment. Please try again later.");
     } finally {
       setIsButtonDisabled(false);
     }
   };
-  
-
-
 
 const handleChange = (e) => {
   const { name, value, files } = e.target;

@@ -71,16 +71,27 @@ const Donations = () => {
   };
 
   const handleAccept = async (id) => {
+    if (!window.confirm("Are you sure you want to mark this donation as received?")) {
+      return;
+    }
+  
     try {
-      await axios.put(`/routes/accounts/donations/accept/${id}`);
-      setDonations((prevDonations) =>
-        prevDonations.map((donation) =>
-          donation._id === id ? { ...donation, received: true } : donation
-        )
-      );
+      const response = await axios.put(`https://idonate1.onrender.com/routes/accounts/donations/accept/${id}`);
+  
+      if (response.status === 200) {
+        setDonations((prevDonations) =>
+          prevDonations.map((donation) =>
+            donation._id === id ? { ...donation, received: true } : donation
+          )
+        );
+  
+        alert("Donation marked as received. An email has been sent to the donor.");
+      } else {
+        alert("Failed to mark donation as received.");
+      }
     } catch (error) {
-      console.error('Error accepting donation:', error);
-      alert('Failed to accept donation. Please try again.');
+      console.error("Error accepting donation:", error);
+      alert("Failed to accept donation. Please try again later.");
     }
   };
 

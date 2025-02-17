@@ -219,7 +219,7 @@ const sendVerificationEmail = async ({ _id, email }) => {
 };
 
 let transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
   auth: {
     user: "idonate2024@gmail.com",
     pass: "vsrhiawtcpvddkgu", 
@@ -712,52 +712,119 @@ router.put('/user/:id',  async (req, res) => {
   }
 });
 
-// Accept a donation
-router.put('/donations/accept/:id', async (req, res) => {
+// Accept a donation and send an email confirmation
+router.put("/donations/accept/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const acceptedDonation = await Donation.findByIdAndUpdate(id, { received: true }, { new: true });
-    if (!acceptedDonation) {
-      return res.status(404).json({ message: 'Donation not found' });
+    const donation = await Donation.findById(id).populate("user"); // Populate user details
+
+    if (!donation) {
+      return res.status(404).json({ message: "Donation not found" });
     }
-    res.status(200).json({ message: 'Donation accepted successfully', donation: acceptedDonation });
+
+    if (donation.received) {
+      return res.status(400).json({ message: "This donation has already been received." });
+    }
+
+    donation.received = true;
+    await donation.save();
+
+    // Get donor's email from the user data
+    const donorEmail = donation.user?.email || null;
+
+    if (!donorEmail) {
+      return res.status(200).json({
+        message: "Donation accepted successfully, but donor email not found.",
+        donation,
+      });
+    }
+
+    // Send confirmation email to the donor
+    const mailOptions = {
+      from: "idonate2024@gmail.com",
+      to: donorEmail,
+      subject: "Item Donation Received",
+      html: `
+        <p>Dear ${donation.user?.firstname || "Donor"},</p>
+        <p>We are pleased to inform you that we have received your item donation.</p>
+        <ul>
+          <li><strong>Item:</strong> ${donation.item}</li>
+          <li><strong>Quantity:</strong> ${donation.quantity} ${donation.unit || ""}</li>
+          <li><strong>Donation ID:</strong> ${donation.donationId}</li>
+        </ul>
+        <p>Thank you for your generosity and support! Your donation will go a long way in helping those in need.</p>
+        <p>Best regards,</p>
+        <p>iDonate Team</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Donation received and email sent.", donation });
   } catch (error) {
-    console.error('Failed to accept donation:', error);
-    res.status(500).json({ message: 'Failed to accept donation', error: error.message });
+    console.error("Failed to accept donation:", error);
+    res.status(500).json({ message: "Failed to accept donation", error: error.message });
   }
 });
 
-// Add multiple items to donations
-router.post('/donations/add', async (req, res) => {
+router.post("/donations/add", async (req, res) => {
   const { items, date, username } = req.body;
+
   try {
+    // Find the user by username
     const user = await Register.findOne({ username });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const donationId = generateDonationId();
-    const donations = items.map(item => ({
+    const donationId = generateDonationId(); // Ensure this function exists
+
+    const donations = items.map((item) => ({
       ...item,
       date,
       user: user._id,
       contact: user.contact,
       donationId,
-      category: item.category
+      category: item.category,
     }));
 
-    const role = 'user'; 
-    req.user = { username: user.username, role: role }; 
-    await LogActivity('Added a Donation')(req, res, () => {}); 
-
+    // Save donations to the database
     await Donation.insertMany(donations);
-    res.status(201).json({ message: 'Donations added successfully', donations });
+
+    // Send confirmation email to the donor
+    const mailOptions = {
+      from: "idonate2024@gmail.com",
+      to: user.email, // Get donor's email from user data
+      subject: "Item Donation Request Received",
+      html: `
+        <p>Dear ${user.username},</p>
+        <p>We have received your request for an item donation. Here are the details:</p>
+        <ul>
+          ${items
+            .map(
+              (item) =>
+                `<li>${item.quantity} ${item.unit} of ${item.item} (Category: ${item.category})</li>`
+            )
+            .join("")}
+        </ul>
+        <p><strong>Delivery Date:</strong> ${new Date(date).toLocaleDateString()}</p>
+        <p>Please deliver the items to Quiapo Church on the scheduled date.</p>
+        <p>Thank you for your generosity and support!</p>
+        <p>Best regards,</p>
+        <p>iDonate Team</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(201).json({ message: "Donations added and email sent successfully", donations });
   } catch (error) {
-    console.error('Failed to submit donations:', error);
-    res.status(500).json({ message: 'Failed to submit donations', error: error.message });
+    console.error("Failed to submit donations:", error);
+    res.status(500).json({ message: "Failed to submit donations", error: error.message });
   }
 });
+
 
 // Get all donations (including user information)
 router.get('/donations', async (req, res) => {
@@ -1386,19 +1453,19 @@ router.put('/admin/:id', async (req, res) => {
 
 
 // Route to handle proof of payment submission
-router.post('/addProof', upload.single('image'), async (req, res) => {
+router.post("/addProof", upload.single("image"), async (req, res) => {
   const { name, amount, date, username } = req.body;
   const imagePath = req.file ? req.file.path : null;
 
   if (!username || !amount || !date) { // Name is optional
-    return res.status(400).json({ message: 'Username, amount, and date are required.' });
+    return res.status(400).json({ message: "Username, amount, and date are required." });
   }
 
   try {
     // Find the user by username
     const user = await Register.findOne({ username });
     if (!user) {
-      return res.status(400).json({ message: 'User not found.' });
+      return res.status(400).json({ message: "User not found." });
     }
 
     // Create a new ProofOfPayment document
@@ -1408,21 +1475,39 @@ router.post('/addProof', upload.single('image'), async (req, res) => {
       amount,
       date,
       imagePath,
-      username
+      username,
     });
 
     const savedProof = await newProof.save();
 
     // Log activity (ensure LogActivity middleware is correctly implemented)
-    req.user = { username: savedProof.username, role: 'user' };
-    await LogActivity('Cash Donation Submitted')(req, res, () => {});
+    req.user = { username: savedProof.username, role: "user" };
+    await LogActivity("Cash Donation Submitted")(req, res, () => {});
 
-    res.status(201).json(savedProof);
+    // Send confirmation email to the donor
+    const mailOptions = {
+      from: "idonate2024@gmail.com",
+      to: user.email, // Get donor's email from user data
+      subject: "Proof of Cash Donation Submission Received",
+      html: `
+        <p>Dear ${user.username},</p>
+        <p>We have received your proof of cash donation of <strong>₱${amount}</strong>. Please wait while we verify your submission.</p>
+        <p>You will receive another email once your donation is approved.</p>
+        <p>Thank you for your generosity!</p>
+        <p>Best regards,</p>
+        <p>iDonate Team</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(201).json({ message: "Proof submitted and email notification sent successfully.", proof: savedProof });
   } catch (error) {
-    console.error('Error adding proof of payment:', error);
-    res.status(500).json({ message: 'Failed to add proof of payment.', error: error.message });
+    console.error("Error adding proof of payment:", error);
+    res.status(500).json({ message: "Failed to add proof of payment.", error: error.message });
   }
 });
+
 
 // Fetch proofs with optional filtering by username and approval status
 router.get('/proofs', async (req, res) => {
@@ -1446,24 +1531,45 @@ router.get('/proofs', async (req, res) => {
   }
 });
 
-// Route to approve a proof of payment
+// Route to approve a proof of payment and send an email confirmation
 router.patch('/proofs/:id/approve', async (req, res) => {
   try {
-    const proof = await ProofOfPayment.findByIdAndUpdate(
-      req.params.id,
-      { approved: true },
-      { new: true }
-    );
+    const proof = await ProofOfPayment.findById(req.params.id);
 
     if (!proof) {
-      return res.status(404).json({ message: 'Proof of payment not found.' });
+      return res.status(404).json({ message: "Proof of payment not found." });
     }
-    res.status(200).json(proof);
+
+    if (proof.approved) {
+      return res.status(400).json({ message: "This donation is already verified." });
+    }
+
+    proof.approved = true;
+    await proof.save();
+
+    // Send verification email to donor
+    const mailOptions = {
+      from: "idonate2024@gmail.com",
+      to: proof.email, // Get email from proof document
+      subject: "Cash Donation Verified and Received",
+      html: `
+        <p>Dear ${proof.name || "Donor"},</p>
+        <p>Your proof of cash donation of <strong>₱${proof.amount}</strong> has been received and verified.</p>
+        <p>Thank you for your generosity and support!</p>
+        <p>Best regards,</p>
+        <p>iDonate Team</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Donation verified and email sent.", proof });
   } catch (error) {
-    console.error('Error approving proof of payment:', error);
-    res.status(500).json({ message: 'Failed to approve proof of payment.', error: error.message });
+    console.error("Error approving proof of payment:", error);
+    res.status(500).json({ message: "Failed to approve proof of payment.", error: error.message });
   }
 });
+
 
 
 // Fetch all proofs of payment
