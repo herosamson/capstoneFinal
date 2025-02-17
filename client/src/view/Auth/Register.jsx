@@ -215,9 +215,9 @@ const Register = ({ onLogin }) => {
       errors.push('Please enter a valid Last name.');
     }
   
-    // Email validation
-    if (!/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@gmail\.com$/.test(formData.email.trim())) {
-      errors.push('Please enter a valid Gmail address.');
+    // Email validation (Now allows all emails)
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email.trim())) {
+      errors.push('Please enter a valid email address.');
     }
 
     // Username validation
