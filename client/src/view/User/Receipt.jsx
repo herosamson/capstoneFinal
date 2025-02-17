@@ -150,16 +150,14 @@ const handleChange = (e) => {
   useEffect(() => {
     const fetchProofs = async () => {
       try {
-        const response = await axios.get("https://idonate1.onrender.com/routes/accounts/proofs", {
-          params: { username },
+        const response = await axios.get('/routes/accounts/proofs', {
+          params: { username, approved: true }
         });
         setProofsOfPayment(response.data);
       } catch (error) {
-        console.error("Error fetching proofs of payment:", error);
+        console.error('Error fetching proofs of payment:', error);
       }
     };
-    
-    
 
     fetchProofs();
 
@@ -368,25 +366,25 @@ const handleChange = (e) => {
                 {proofsOfPayment ? 
                   proofsOfPayment.map(proof => (
                     <tr key={proof._id} className='even:bg-gray-100'>
-                      <td className='px-10 py-2'>{proof.name || 'Anonymous'}</td>
-                      <td className='px-10 py-2'>₱{proof.amount ? parseFloat(proof.amount).toLocaleString() : "0"}</td>
-                      <td className='px-10 py-2'>{proof.date ? new Date(proof.date).toLocaleDateString() : "N/A"}</td>
+                     <td className='px-10 py-2'>{proof.name || 'Anonymous'}</td>
+                      <td className='px-10 py-2'>₱{parseFloat(proof.amount).toLocaleString()}</td>
+                      <td className='px-10 py-2'>{new Date(proof.date).toLocaleDateString()}</td>
                       <td className='px-10 py-2'>{proof.approved ? 'Received' : 'Pending'}</td>
-                      <td className="flex justify-center items-center py-2">
+                      <td className='px-10 py-2'>
                         {proof.imagePath ? (
                           <a 
-                            href={`https://idonate1.onrender.com/${proof.imagePath}`} 
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-red-800 hover:bg-red-700 text-white px-4 rounded-md py-2 duration-200 text-xs"
+                            href={`https://idonate1.onrender.com/${proof.imagePath}`}
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200"
                           >
-                            View
+                            View Image
                           </a>
-                        ) : "No Image"}
+                        ) : 'No Image'}
                       </td>
-                      <td className='py-2'>
+                      <td className='px-10 py-2'>
                         {proof.approved && (
-                          <button className="bg-red-800 hover:bg-red-700 text-white px-4 rounded-md py-2 duration-200 text-xs flex mx-auto"  onClick={() => generatePDF(proof)}>Print</button>
+                          <button className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200" onClick={() => generatePDF(proof)}>Get Proof</button>
                         )}
                       </td>
                     </tr>
