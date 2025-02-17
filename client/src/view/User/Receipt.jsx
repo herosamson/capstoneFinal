@@ -77,16 +77,18 @@ const Receipt = () => {
   
     try {
       setIsButtonDisabled(true);
-      const response = await axios.post('https://idonate1.onrender.com/routes/accounts/addProof', formData, {
+      await axios.post('https://idonate1.onrender.com/routes/accounts/addProof', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      
-  
-      setProofsOfPayment([...proofsOfPayment, response.data]);
-      setDonorDetails({ name: "", amount: "", date: getTodayDate(), image: null });
-      setError('');
   
       alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved.');
+  
+      // Fetch updated proofs of payment
+      fetchProofs();
+      
+      // Reset form
+      setDonorDetails({ name: "", amount: "", date: getTodayDate(), image: null });
+      setError('');
     } catch (error) {
       console.error('Failed to add proof of payment:', error.response ? error.response.data : error.message);
       setError('Failed to add proof of payment. Please try again later.');
@@ -145,8 +147,6 @@ const handleChange = (e) => {
   }
 };
 
-
-
   useEffect(() => {
     const fetchProofs = async () => {
       try {
@@ -161,12 +161,11 @@ const handleChange = (e) => {
 
     fetchProofs();
 
-    // Set default date to today
     setDonorDetails(prevDetails => ({
       ...prevDetails,
       date: getTodayDate()
     }));
-  }, [username]);
+  }, [username, proofsOfPayment]);
 
   const generatePDF = async (proof) => {
     try {
@@ -363,10 +362,10 @@ const handleChange = (e) => {
                 </tr>
               </thead>
               <tbody>
-                {proofsOfPayment ? 
+                {proofsOfPayment && proofsOfPayment.length > 0 ? (
                   proofsOfPayment.map(proof => (
                     <tr key={proof._id} className='even:bg-gray-100'>
-                     <td className='px-10 py-2'>{proof.name || 'Anonymous'}</td>
+                      <td className='px-10 py-2'>{proof.name || 'Anonymous'}</td>
                       <td className='px-10 py-2'>₱{parseFloat(proof.amount).toLocaleString()}</td>
                       <td className='px-10 py-2'>{new Date(proof.date).toLocaleDateString()}</td>
                       <td className='px-10 py-2'>{proof.approved ? 'Received' : 'Pending'}</td>
@@ -389,8 +388,11 @@ const handleChange = (e) => {
                       </td>
                     </tr>
                   ))
-                  : <p>No data</p>
-                }
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="text-center py-4">No proofs of payment found.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

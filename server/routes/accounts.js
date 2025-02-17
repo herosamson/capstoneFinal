@@ -809,7 +809,7 @@ router.post("/donations/add", async (req, res) => {
             .join("")}
         </ul>
         <p><strong>Delivery Date:</strong> ${new Date(date).toLocaleDateString()}</p>
-         <p><strong>Donation ID:</strong> ${items.donationId}</p>
+         <p><strong>Donation ID:</strong> ${donationId}</p>
         <p>Please deliver the items to Quiapo Church on the scheduled date.</p>
         <p>Thank you for your generosity and support!</p>
         <p>Best regards,</p>
