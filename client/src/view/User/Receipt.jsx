@@ -53,48 +53,51 @@ const Receipt = () => {
   
   const addProofOfPayment = async () => {
     if (!donorDetails.amount || !donorDetails.date || !donorDetails.image) {
-      alert("Amount, date, and image are required.");
+      alert('Amount, date, and image are required.');
       return;
     }
   
     if (!/^\d+$/.test(donorDetails.amount)) {
-      alert("Please enter a valid Amount.");
+      alert('Please enter a valid Amount.');
       return;
     }
   
     const formData = new FormData();
-    formData.append("username", username);
-    formData.append("amount", donorDetails.amount);
-    formData.append("date", donorDetails.date);
-    formData.append("image", donorDetails.image);
-    formData.append("contact", contact);
-    formData.append("email", localStorage.getItem("email")); // Send email to backend
+    formData.append('username', username);
+    formData.append('amount', donorDetails.amount);
+    formData.append('date', donorDetails.date);
+    formData.append('image', donorDetails.image);
+    formData.append('contact', contact);
   
-    if (donorDetails.name.trim() !== "") {
-      formData.append("name", donorDetails.name);
+    if (donorDetails.name.trim() !== '') {
+      formData.append('name', donorDetails.name);
     }
   
     try {
       setIsButtonDisabled(true);
-      const response = await axios.post("/routes/accounts/addProof", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await axios.post('/routes/accounts/addProof', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
   
       setProofsOfPayment([...proofsOfPayment, response.data]);
-      setDonorDetails({ name: "", amount: "", date: "", image: null });
-      setError("");
+      setDonorDetails({ name: "", amount: "", date: getTodayDate(), image: null });
+      setError('');
   
-      alert(
-        "Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved."
-      );
+      // Send email notification to the donor
+      await axios.post('https://idonate1.onrender.com/routes/accounts/send-submission-email', { email: localStorage.getItem('email') });
+  
+      alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved.');
     } catch (error) {
-      console.error("Failed to add proof of payment:", error.response ? error.response.data : error.message);
-      setError("Failed to add proof of payment. Please try again later.");
-      alert("Failed to add proof of payment. Please try again later.");
+      console.error('Failed to add proof of payment:', error.response ? error.response.data : error.message);
+      setError('Failed to add proof of payment. Please try again later.');
+      alert('Failed to add proof of payment. Please try again later.');
     } finally {
       setIsButtonDisabled(false);
     }
   };
+  
+
+
 
 const handleChange = (e) => {
   const { name, value, files } = e.target;
@@ -364,8 +367,8 @@ const handleChange = (e) => {
                   proofsOfPayment.map(proof => (
                     <tr key={proof._id} className='even:bg-gray-100'>
                       <td className='px-10 py-2'>{proof.name || 'Anonymous'}</td>
-                      <td className='px-10 py-2'>₱{parseFloat(proof.amount).toLocaleString()}</td>
-                      <td className='px-10 py-2'>{new Date(proof.date).toLocaleDateString()}</td>
+                      <td className='px-10 py-2'>₱{proof.amount ? parseFloat(proof.amount).toLocaleString() : "0"}</td>
+                      <td className='px-10 py-2'>{proof.date ? new Date(proof.date).toLocaleDateString() : "N/A"}</td>
                       <td className='px-10 py-2'>{proof.approved ? 'Received' : 'Pending'}</td>
                       <td className='flex justify-center items-center py-2'>
                         {proof.imagePath ? (

@@ -809,6 +809,7 @@ router.post("/donations/add", async (req, res) => {
             .join("")}
         </ul>
         <p><strong>Delivery Date:</strong> ${new Date(date).toLocaleDateString()}</p>
+         <p><strong>Donation ID:</strong> ${items.donationId}</p>
         <p>Please deliver the items to Quiapo Church on the scheduled date.</p>
         <p>Thank you for your generosity and support!</p>
         <p>Best regards,</p>
@@ -1531,10 +1532,9 @@ router.get('/proofs', async (req, res) => {
   }
 });
 
-// Route to approve a proof of payment and send an email confirmation
 router.patch('/proofs/:id/approve', async (req, res) => {
   try {
-    const proof = await ProofOfPayment.findById(req.params.id);
+    const proof = await ProofOfPayment.findById(req.params.id).populate('user', 'email');
 
     if (!proof) {
       return res.status(404).json({ message: "Proof of payment not found." });
@@ -1547,14 +1547,20 @@ router.patch('/proofs/:id/approve', async (req, res) => {
     proof.approved = true;
     await proof.save();
 
-    // Send verification email to donor
+    // Ensure email is retrieved from the user
+    const donorEmail = proof.user?.email;
+    if (!donorEmail) {
+      return res.status(400).json({ message: "Donor email not found." });
+    }
+
+    // Send verification email with donation ID
     const mailOptions = {
       from: "idonate2024@gmail.com",
-      to: proof.email, // Get email from proof document
+      to: donorEmail, // Ensure correct email
       subject: "Cash Donation Verified and Received",
       html: `
         <p>Dear ${proof.name || "Donor"},</p>
-        <p>Your proof of cash donation of <strong>₱${proof.amount}</strong> has been received and verified.</p>
+        <p>Your proof of cash donation of <strong>₱${proof.amount}</strong> (Donation ID: <strong>${proof._id}</strong>) has been received and verified.</p>
         <p>Thank you for your generosity and support!</p>
         <p>Best regards,</p>
         <p>iDonate Team</p>
@@ -1569,6 +1575,7 @@ router.patch('/proofs/:id/approve', async (req, res) => {
     res.status(500).json({ message: "Failed to approve proof of payment.", error: error.message });
   }
 });
+
 
 
 

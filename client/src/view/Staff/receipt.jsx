@@ -82,7 +82,7 @@ function ReceiptS() {
     }
   };
 
-  const approvePayment = async (id, email) => {
+  const approvePayment = async (id) => {
     if (!window.confirm("Are you sure you want to approve this payment?")) {
       return;
     }
@@ -90,7 +90,8 @@ function ReceiptS() {
     try {
       const response = await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
   
-      setProofs(proofs.map(proof => proof._id === id ? response.data.proof : proof));
+      // Ensure state updates correctly
+      setProofs(proofs.map(proof => proof._id === id ? { ...proof, approved: true } : proof));
   
       alert("Payment approved successfully. The donor has been notified via email.");
     } catch (error) {
@@ -98,6 +99,7 @@ function ReceiptS() {
       alert("Failed to approve payment. Please try again later.");
     }
   };
+  
   
   
 
