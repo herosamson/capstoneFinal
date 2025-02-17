@@ -33,6 +33,7 @@ const Receipt = () => {
   const [error, setError] = useState('');
   const username = localStorage.getItem('username'); // Get the username from local storage
   const contact = localStorage.getItem('contact'); 
+  const email = localStorage.getItem('email'); 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const getTodayDate = () => {
     const today = new Date();
@@ -68,6 +69,7 @@ const Receipt = () => {
     formData.append('date', donorDetails.date);
     formData.append('image', donorDetails.image);
     formData.append('contact', contact);
+    formData.append('email', email);
   
     if (donorDetails.name.trim() !== '') {
       formData.append('name', donorDetails.name);
@@ -75,16 +77,14 @@ const Receipt = () => {
   
     try {
       setIsButtonDisabled(true);
-      const response = await axios.post('/routes/accounts/addProof', formData, {
+      const response = await axios.post('https://idonate1.onrender.com/routes/accounts/addProof', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      
   
       setProofsOfPayment([...proofsOfPayment, response.data]);
       setDonorDetails({ name: "", amount: "", date: getTodayDate(), image: null });
       setError('');
-  
-      // Send email notification to the donor
-      await axios.post('https://idonate1.onrender.com/routes/accounts/send-submission-email', { email: localStorage.getItem('email') });
   
       alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved.');
     } catch (error) {
@@ -150,12 +150,15 @@ const handleChange = (e) => {
   useEffect(() => {
     const fetchProofs = async () => {
       try {
-        const response = await axios.get('/routes/accounts/proofs', { params: { username } }); // Remove { approved: true }
+        const response = await axios.get("https://idonate1.onrender.com/routes/accounts/proofs", {
+          params: { username },
+        });
         setProofsOfPayment(response.data);
       } catch (error) {
-        console.error('Error fetching proofs of payment:', error);
+        console.error("Error fetching proofs of payment:", error);
       }
     };
+    
     
 
     fetchProofs();
@@ -369,17 +372,17 @@ const handleChange = (e) => {
                       <td className='px-10 py-2'>₱{proof.amount ? parseFloat(proof.amount).toLocaleString() : "0"}</td>
                       <td className='px-10 py-2'>{proof.date ? new Date(proof.date).toLocaleDateString() : "N/A"}</td>
                       <td className='px-10 py-2'>{proof.approved ? 'Received' : 'Pending'}</td>
-                      <td className='flex justify-center items-center py-2'>
+                      <td className="flex justify-center items-center py-2">
                         {proof.imagePath ? (
                           <a 
-                            href={`https://idonate1.onrender.com/${proof.imagePath}`}
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                            href={`https://idonate1.onrender.com/${proof.imagePath}`} 
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="bg-red-800 hover:bg-red-700 text-white px-4 rounded-md py-2 duration-200 text-xs"
                           >
                             View
                           </a>
-                        ) : 'No Image'}
+                        ) : "No Image"}
                       </td>
                       <td className='py-2'>
                         {proof.approved && (
