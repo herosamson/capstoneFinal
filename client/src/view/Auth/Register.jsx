@@ -377,7 +377,7 @@ const Register = ({ onLogin }) => {
                   className='authFields'
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value})}
-                  placeholder="Email: juan@gmail.com"
+                  placeholder="Email"
                   required
                 />
               </div>
