@@ -214,11 +214,11 @@ const Register = ({ onLogin }) => {
     if (!formData.lastname.trim() || !/^[a-zA-Z\s]*$/.test(formData.lastname)) {
       errors.push('Please enter a valid Last name.');
     }
-  
-    // Email validation (Now allows all emails)
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email.trim())) {
+
+    const emailPattern = /^[a-zA-Z0-9]+(?:[._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(formData.email.trim())) {
       errors.push('Please enter a valid email address.');
-    }
+    }    
 
     // Username validation
     if (!formData.username.trim() || /[<>]/.test(formData.username)) {
