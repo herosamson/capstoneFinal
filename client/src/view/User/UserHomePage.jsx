@@ -5,9 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import Footer from '../../components/Tools/Footer';
 import Logo from '../../assets/images/logo.png';
 import UserHomeBody from '../../components/Tools/UserHomeBody.jsx';
-import BPI from '../../assets/images/bpi.png';
+import BPI from '../../assets/images/bpi.jpg';
 import BDO from '../../assets/images/bdo.jpg';
-import Gcash from '../../assets/images/gcash.png';
+import Gcash from '../../assets/images/gcash.jpeg';
 import Maya from '../../assets/images/maya.jpg';
 import { FaCheckCircle } from 'react-icons/fa';
 
@@ -113,46 +113,56 @@ const UserHomePage = ({ firstname }) => {
       <div className="pb-6 flex flex-col flex-grow">
         <UserHomeBody />
         <div className="flex flex-col items-center space-y-8 px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[{ name: 'BPI', img: BPI }, { name: 'BDO', img: BDO }, { name: 'Paymaya', img: Maya }, { name: 'GCash', img: Gcash }].map((option, index) => (
-              <div key={index} onClick={handleContainerClick} className="border-2 w-full overflow-hidden cursor-pointer hover:bg-gray-100">
-                <div className="flex items-center justify-center w-full h-44 overflow-hidden">
-                  <img src={option.img} alt={option.name} className="h-full w-full object-cover" />
-                </div>
-                <div className="px-4 py-2 space-y-2">
-                  <p className="text-2xl font-semibold text-blue-500">{option.name}</p>
-                  {option.name === 'BPI' && (
-                    <>
-                      <p>Account Name: RCAM-Minor Basilica of the Black Nazarene</p>
-                      <p>Peso Savings Account # 2273-0504-37</p>
-                      <p>Dollars Savings Account # 2274-0026-22</p>
-                      <p>Swift Code - BIC: B O P I P H M M</p>
-                    </>
-                  )}
-                  {option.name === 'BDO' && (
-                    <>
-                      <p>Account Name: RCAM-Minor Basilica of the Black Nazarene</p>
-                      <p>Peso Savings Account # 00454-0037-172</p>
-                      <p>Dollars Savings Account # 10454-0037-164</p>
-                      <p>Swift Code - BIC: B N O R P H M M</p>
-                    </>
-                  )}
-                  {option.name === 'Paymaya' && (
-                    <>
-                      <p>Mobile Number: 0961 747 7003</p>
-                      <p>Name: Rufino Sescon, Jr.</p>
-                    </>
-                  )}
-                  {option.name === 'GCash' && (
-                    <>
-                      <p>Mobile Number: 0966 863 9861</p>
-                      <p>Name: Rufino Sescon, Jr.</p>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  {[{ name: 'BPI', img: BPI }, { name: 'BDO', img: BDO }, { name: 'Paymaya', img: Maya }, { name: 'GCash', img: Gcash }].map((option, index) => (
+    <div 
+      key={index} 
+      onClick={handleContainerClick} 
+      className="border-2 w-full overflow-hidden cursor-pointer bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+    >
+      <div className="flex items-center justify-center w-full h-44 overflow-hidden p-4">
+        <img 
+          src={option.img} 
+          alt={option.name} 
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      <div className="px-4 py-2 space-y-2 text-center">
+        <p className="text-2xl font-semibold text-blue-500">{option.name}</p>
+        {option.name === 'BPI' && (
+          <>
+            <p>Account Name: RCAM-Minor Basilica of the Black Nazarene</p>
+            <p>Peso Savings Account # 2273-0504-37</p>
+            <p>Dollars Savings Account # 2274-0026-22</p>
+            <p>Swift Code - BIC: B O P I P H M M</p>
+          </>
+        )}
+        {option.name === 'BDO' && (
+          <>
+            <p>Account Name: RCAM-Minor Basilica of the Black Nazarene</p>
+            <p>Peso Savings Account # 00454-0037-172</p>
+            <p>Dollars Savings Account # 10454-0037-164</p>
+            <p>Swift Code - BIC: B N O R P H M M</p>
+          </>
+        )}
+        {option.name === 'Paymaya' && (
+          <>
+            <p>Mobile Number: 0961 747 7003</p>
+            <p>Name: Rufino Sescon, Jr.</p>
+          </>
+        )}
+        {option.name === 'GCash' && (
+          <>
+            <p>Mobile Number: 0966 863 9861</p>
+            <p>Name: Rufino Sescon, Jr.</p>
+          </>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
+
         </div>
       </div>
       <Footer />

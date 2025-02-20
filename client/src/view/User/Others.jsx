@@ -69,12 +69,12 @@ const Others = () => {
   };
 
   const unitLimits = {
-    "Piece(s)": 100,
-    "Pack(s)": 50,
+    "Piece(s)": 1000000,
+    "Pack(s)": 100,
     "Box(es)": 20,
-    "Sack(s)": 10,
-    "Bottle(s)": 100,
-    "Can(s)": 100,
+    "Sack(s)": 20,
+    "Bottle(s)": 1000,
+    "Can(s)": 1000,
   };
 
   useEffect(() => {
@@ -138,12 +138,22 @@ const Others = () => {
             alert('Item is required.');
             return;
         }
+        if (item === 'Other' || category === 'Others') {
+            if (!customItem.trim() || !/^[A-Za-z\s]+$/.test(customItem)) {
+                alert('Please enter a valid custom item using letters only.');
+                return;
+            }
+        }
         if (!quantity) {
             alert('Quantity is required.');
             return;
         }
         if (!unit && !customUnit) {
             alert('Unit is required.');
+            return;
+        }
+        if (unit === 'Other' && (!customUnit.trim() || !/^[A-Za-z\s]+$/.test(customUnit))) {
+            alert('Please enter a valid custom unit.');
             return;
         }
         if (!/^\d+$/.test(quantity) || parseInt(quantity, 10) <= 0) {
@@ -188,7 +198,10 @@ const Others = () => {
         setCustomUnit('');
         setExpirationDate('');
         setError('');
+
+        alert('Successfully added an item! If you want to submit, select a delivery date and Submit.');
     };
+    
     
     
     const submitItems = async () => {
@@ -238,65 +251,66 @@ const Others = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        const lettersOnlyRegex = /^[A-Za-z\s]+$/;
-      
+        const lettersOnlyRegex = /^[A-Za-z\s]+$/; // Allows only letters and spaces
+    
         if (value.includes('<') || value.includes('>')) {
-          return;
+            return; // Prevents potential XSS attack
         }
-      
+    
         switch (name) {
-          case 'category':
-            setCategory(value);
-            setItem('');
-            setCustomItem('');
-            setUnit('');
-            setCustomUnit('');
-            break;
-      
-          case 'item':
-            setItem(value);
-            setCustomItem('');
-            setUnit('');
-            setCustomUnit('');
-            break;
-      
-          case 'customItem':
-            if (lettersOnlyRegex.test(value) || value === '') {
-              setCustomItem(value);
-            } else {
-              alert('Please enter letters only for custom items.');
-            }
-            break;
-      
-          case 'quantity':
-            setQuantity(value);
-            break;
-      
-          case 'unit':
-            setUnit(value);
-            setCustomUnit('');
-            break;
-      
-          case 'customUnit':
-            if (lettersOnlyRegex.test(value) || value === '') {
-              setCustomUnit(value);
-            } else {
-              alert('Please enter letters only for custom units.');
-            }
-            break;
-      
-          case 'date':
-            setDate(value);
-            break;
-      
-          case 'expirationDate':
-            setExpirationDate(value);
-            break;
-      
-          default:
-            break;
+            case 'category':
+                setCategory(value);
+                setItem('');
+                setCustomItem('');
+                setUnit('');
+                setCustomUnit('');
+                break;
+    
+            case 'item':
+                setItem(value);
+                setCustomItem(''); 
+                setUnit('');
+                setCustomUnit('');
+                break;
+    
+            case 'customItem':
+                if (lettersOnlyRegex.test(value) || value === '') {
+                    setCustomItem(value);
+                } else {
+                    alert('Please enter letters only for custom items.');
+                }
+                break;
+    
+            case 'quantity':
+                setQuantity(value);
+                break;
+    
+            case 'unit':
+                setUnit(value);
+                setCustomUnit('');
+                break;
+    
+            case 'customUnit':
+                if (lettersOnlyRegex.test(value) || value === '') {
+                    setCustomUnit(value);
+                } else {
+                    alert('Please enter letters only for custom units.');
+                }
+                break;
+    
+            case 'date':
+                setDate(value);
+                break;
+    
+            case 'expirationDate':
+                setExpirationDate(value);
+                break;
+    
+            default:
+                break;
         }
-      };
+    };
+    
       const getFilteredUnits = () => {
         if (category === 'Food' || category === 'DisasterRelief') {
           switch (item) {

@@ -214,20 +214,27 @@ const Register = ({ onLogin }) => {
     if (!formData.lastname.trim() || !/^[a-zA-Z\s]*$/.test(formData.lastname)) {
       errors.push('Please enter a valid Last name.');
     }
-
+  
+    // Email validation
     const emailPattern = /^[a-zA-Z0-9]+(?:[._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(formData.email.trim())) {
       errors.push('Please enter a valid email address.');
-    }    
-
+    }
+  
     // Username validation
     if (!formData.username.trim() || /[<>]/.test(formData.username)) {
       errors.push('Please enter a valid Username.');
     }
   
-    // Password validation
-    if (!formData.password.trim() || formData.password.length < 8 || !/\d/.test(formData.password)) {
-      errors.push('Password must be at least 8 characters long, with at least one uppercase letter and one number.');
+    // Password validation (at least 8 characters, one uppercase, one number, and one special character)
+    if (
+      !formData.password.trim() ||
+      formData.password.length < 8 ||
+      !/\d/.test(formData.password) ||
+      !/[A-Z]/.test(formData.password) ||
+      !/[\W_]/.test(formData.password) 
+    ) {
+      errors.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
     }
   
     // Confirm Password match
@@ -247,7 +254,7 @@ const Register = ({ onLogin }) => {
     };
   
     if (errors.length === 0) {
-      setIsLoading(true); // 🔹 Start loading
+      setIsLoading(true); 
   
       try {
         const response = await fetch('https://idonate1.onrender.com/routes/accounts/register', {
@@ -268,20 +275,22 @@ const Register = ({ onLogin }) => {
         localStorage.setItem('email', email);
   
         onLogin(userId, username);
-        
-        // 🔹 Simulate a short delay before navigating
+  
+        alert('Registration successful! Please check your email for the OTP to verify your account.');
+  
         setTimeout(() => {
           navigate('/verifyR', { state: { userId, email } });
         }, 1500);
   
       } catch (error) {
         alert('Registration failed: ' + error.message);
-        setIsLoading(false); // 🔹 Stop loading if there's an error
+        setIsLoading(false); 
       }
     } else {
       alert(errors.join('\n'));
     }
   };
+  
 
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -431,28 +440,29 @@ const Register = ({ onLogin }) => {
                 </span>
               </div>
 
-            <div className="border border-gray-300 p-3 mt-5 bg-white overflow-y-auto max-w-md" style={{ maxHeight: '120px', fontSize: '15px' }}>
-              <center><strong>Terms and Conditions for Data Privacy:</strong></center>
-              <br></br>
-              <center><strong>Republic Act No. 10173 - Data Privacy Act of 2012</strong>
-              <br />
-              <br />
-              <p>
-                The <strong>Data Privacy Act of 2012</strong> aims to protect personal data collected by organizations and individuals. It ensures 
-                the rights of users regarding their personal information, setting guidelines on data collection, processing, and storage. For more information, visit the 
-                <a href="https://privacy.gov.ph/data-privacy-act/" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline ml-1">
-                  National Privacy Commission
-                </a>.
-              </p>
-              <br />
-              <p>
-                By registering on this platform, you acknowledge that your personal data will be handled in compliance with this law. You have 
-                the right to access, modify, and request deletion of your data.   For more details, please review our  <span className="text-blue-500 underline cursor-pointer" onClick={() => setIsModalOpen(true)}>Privacy Policy</span>.
-              </p></center>
-              <br></br>
-              <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="-mr-6 mb-4" />
-              <label>I agree to the Terms and Conditions</label>
-             </div>
+              <div className="border border-gray-300 p-3 mt-5 bg-white overflow-y-auto max-w-md flex flex-col items-center text-center" 
+                style={{ maxHeight: '120px', fontSize: '15px' }}>
+              
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  checked={agreeTerms} 
+                  onChange={(e) => setAgreeTerms(e.target.checked)} 
+                  className="w-5 h-5"
+                />
+                <label className="text-sm">
+                  I agree to the 
+                  <span 
+                    className="text-blue-500 underline cursor-pointer ml-1"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Terms and Conditions
+                  </span>
+                </label>
+              </div>
+
+            </div>
+
             </div>
             
             <div className="">

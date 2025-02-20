@@ -31,9 +31,10 @@ const HomeBody = () => {
                     key={currentImageIndex}
                     src={images[currentImageIndex]}
                     alt="" 
-                    className='h-full w-full duration-500 ease-in-out opacity-0 transition-opacity' 
+                    className='w-full h-full object-cover opacity-0 transition-opacity duration-500 ease-in-out' 
                     onLoad={(e) => { e.target.classList.remove('opacity-0')}}
                 />
+
                 <div className="absolute inset-0 bg-black opacity-40"></div>
                 <div className="absolute inset-0 flex flex-col justify-center ml-10 text-white">
                     <p className="text-7xl font-bold max-xl:text-5xl max-md:text-3xl">LEAVE NO ONE BEHIND!</p>
