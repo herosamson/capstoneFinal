@@ -63,10 +63,15 @@ const Receipt = () => {
       return;
     }
   
+    if (/^0+$/.test(donorDetails.amount)) { // Prevent zero-only amounts
+      alert("Amount cannot be zero.");
+      return;
+    }
+  
     const formData = new FormData();
     formData.append('username', username);
     formData.append('amount', donorDetails.amount);
-    formData.append('date', donorDetails.date);
+    formData.append('date', donorDetails.date); // Keep user's selected date
     formData.append('image', donorDetails.image);
     formData.append('contact', contact);
     formData.append('email', email);
@@ -81,13 +86,16 @@ const Receipt = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
   
-      alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved.');
+      alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved. Thank you.');
   
-      // Fetch updated proofs of payment
-      fetchProofs();
-      
-      // Reset form
-      setDonorDetails({ name: "", amount: "", date: getTodayDate(), image: null });
+      // Reset form but KEEP the selected date
+      setDonorDetails(prevDetails => ({
+        name: "",
+        amount: "",
+        date: prevDetails.date, // Preserve the selected date
+        image: null
+      }));
+  
       setError('');
     } catch (error) {
       console.error('Failed to add proof of payment:', error.response ? error.response.data : error.message);
@@ -98,54 +106,47 @@ const Receipt = () => {
     }
   };
   
+  
+  
 
 
 
-const handleChange = (e) => {
-  const { name, value, files } = e.target;
-
-  // Regular expression for validating alphabetic characters and spaces
-  const lettersOnlyRegex = /^[A-Za-z\s]*$/;
-
-  if (value && (value.includes('<') || value.includes('>'))) {
-    return; // If contains < or >, do not update state
-  }
-
-  // Validate name input to allow only letters and spaces
-  if (name === 'name' && !lettersOnlyRegex.test(value)) {
-    alert('Please enter letters only for the name.');
-    return;
-  }
-
-  // Validate amount input to allow only numeric characters
-  if (name === 'amount' && !/^\d*$/.test(value)) {
-    return; // If not numeric characters, do not update state
-  }
-
-  if (name === 'image') {
-    const file = files[0];
-
-    // Check if the file is a .jpg or .png
-    if (file && !['image/jpeg', 'image/png'].includes(file.type)) {
-      alert('Proof of payment must be in .jpg or .png format only.');
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+  
+    if (value.includes('<') || value.includes('>')) return; // Prevent XSS attacks
+  
+    // Validate Name (Only Letters and Spaces)
+    if (name === 'name' && !/^[A-Za-z\s]*$/.test(value)) {
+      alert('Please enter letters only for the name.');
       return;
     }
-
-    // Display confirmation alert before setting the image
-    const isConfirmed = window.confirm('Are you sure that this is the proof of payment?');
-    if (isConfirmed) {
-      setDonorDetails({
-        ...donorDetails,
-        [name]: file
-      });
+  
+    // Validate Amount (Only Numbers, No Zero Amounts)
+    if (name === 'amount') {
+      if (!/^\d+$/.test(value)) return; // Allow only numbers
+      if (/^0+$/.test(value)) { // Prevent only zero inputs like 0, 00, 0000
+        alert("Amount cannot be zero.");
+        return;
+      }
     }
-  } else {
-    setDonorDetails({
-      ...donorDetails,
-      [name]: value
-    });
-  }
-};
+  
+    // Validate Image (Only JPG or PNG)
+    if (name === 'image') {
+      const file = files[0];
+      if (file && !['image/jpeg', 'image/png'].includes(file.type)) {
+        alert('Proof of payment must be in .jpg or .png format only.');
+        return;
+      }
+      if (window.confirm('Are you sure that this is the proof of payment?')) {
+        setDonorDetails({ ...donorDetails, [name]: file });
+      }
+    } else {
+      setDonorDetails({ ...donorDetails, [name]: value });
+    }
+  };
+  
+  
 
   useEffect(() => {
     const fetchProofs = async () => {
@@ -158,14 +159,16 @@ const handleChange = (e) => {
         console.error('Error fetching proofs of payment:', error);
       }
     };
-
+  
     fetchProofs();
-
+  
     setDonorDetails(prevDetails => ({
       ...prevDetails,
-      date: getTodayDate()
+      date: prevDetails.date || getTodayDate(), 
     }));
-  }, [username, proofsOfPayment]);
+  
+  }, [username]); 
+  
 
   const generatePDF = async (proof) => {
     try {

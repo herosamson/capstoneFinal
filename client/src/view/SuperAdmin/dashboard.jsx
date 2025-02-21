@@ -329,7 +329,7 @@ function Admin() {
                       setShowPasswordModal(true);
                     }}
                   >
-                    Request Delete
+                    Delete
                   </button>
                 )}
 
@@ -359,14 +359,14 @@ function Admin() {
           </div>
         </div>
       )}
-      {/* Super Admin Password Confirmation Modal */}
+
       {showPasswordModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-semibold mb-4">Enter your Password</h2>
             <input
               type="password"
-              placeholder="Super Admin Password"
+              placeholder="Enter Password"
               value={superAdminPassword}
               onChange={(e) => setSuperAdminPassword(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"

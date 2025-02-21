@@ -408,7 +408,7 @@ const handleRequestDelete = (id) => {
                           setShowPasswordModal(true);
                         }}
                       >
-                        Request Delete
+                       Delete
                       </button>
                     )}
 
@@ -447,7 +447,7 @@ const handleRequestDelete = (id) => {
             <h2 className="text-xl font-semibold mb-4">Enter your Password</h2>
             <input
               type="password"
-              placeholder="Super Admin Password"
+              placeholder="Enter Password"
               value={superAdminPassword}
               onChange={(e) => setSuperAdminPassword(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"

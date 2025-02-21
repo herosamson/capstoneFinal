@@ -1453,61 +1453,60 @@ router.put('/admin/:id', async (req, res) => {
 });
 
 
-// Route to handle proof of payment submission
 router.post("/addProof", upload.single("image"), async (req, res) => {
-  const { name, amount, date, username } = req.body;
-  const imagePath = req.file ? req.file.path : null;
-
-  if (!username || !amount || !date) { // Name is optional
-    return res.status(400).json({ message: "Username, amount, and date are required." });
-  }
-
   try {
+    const { name, amount, date, username } = req.body;
+    const imagePath = req.file ? req.file.path : null;
+
+    if (!username || !amount || !date) {
+      return res.status(400).json({ message: "Username, amount, and date are required." });
+    }
+
+    if (!/^\d+$/.test(amount) || /^0+$/.test(amount)) { // Prevent zero-only amounts
+      return res.status(400).json({ message: "Invalid amount. Amount cannot be zero." });
+    }
+
     // Find the user by username
     const user = await Register.findOne({ username });
     if (!user) {
       return res.status(400).json({ message: "User not found." });
     }
 
-    // Create a new ProofOfPayment document
+    // Save proof of payment
     const newProof = new ProofOfPayment({
-      user: user._id, // Associate with user
+      user: user._id,
       name,
       amount,
-      date,
+      date,  // Store the donor-selected date
       imagePath,
       username,
     });
 
     const savedProof = await newProof.save();
 
-    // Log activity (ensure LogActivity middleware is correctly implemented)
-    req.user = { username: savedProof.username, role: "user" };
-    await LogActivity("Cash Donation Submitted")(req, res, () => {});
-
-    // Send confirmation email to the donor
+    // Send confirmation email
     const mailOptions = {
       from: "idonate2024@gmail.com",
-      to: user.email, // Get donor's email from user data
+      to: user.email,
       subject: "Proof of Cash Donation Submission Received",
-      html: `
-        <p>Dear ${user.username},</p>
-        <p>We have received your proof of cash donation of <strong>₱${amount}</strong>. Please wait while we verify your submission.</p>
-        <p>You will receive another email once your donation is approved.</p>
-        <p>Thank you for your generosity!</p>
-        <p>Best regards,</p>
-        <p>iDonate Team</p>
-      `,
+      html: `<p>Dear ${user.username},</p>
+      <p>We have received your proof of cash donation of <strong>₱${amount}</strong> made on <strong>${date}</strong>. Please wait while we verify your submission.</p>
+      <p>You will receive another email once your donation is approved.</p>
+      <p>Thank you for your generosity!</p>
+      <p>Best regards,</p>
+      <p>iDonate Team</p>`,
     };
 
     await transporter.sendMail(mailOptions);
 
     res.status(201).json({ message: "Proof submitted and email notification sent successfully.", proof: savedProof });
+
   } catch (error) {
     console.error("Error adding proof of payment:", error);
     res.status(500).json({ message: "Failed to add proof of payment.", error: error.message });
   }
 });
+
 
 
 // Fetch proofs with optional filtering by username and approval status

@@ -70,9 +70,9 @@ const Others = () => {
 
   const unitLimits = {
     "Piece(s)": 1000000,
-    "Pack(s)": 100,
-    "Box(es)": 20,
-    "Sack(s)": 20,
+    "Pack(s)": 1000,
+    "Box(es)": 1000,
+    "Sack(s)": 1000,
     "Bottle(s)": 1000,
     "Can(s)": 1000,
   };
@@ -238,8 +238,8 @@ const Others = () => {
             setDate('');
             setError('');
 
-            alert('Please check and take note of the donation ID of these item/s from the profile page.');
-            alert('Thank you for your in-kind donation'); 
+            alert('Please check and take note of the donation ID of these item/s from the profile page. An email has also been sent to your email.\n\nThank you for your in-kind donation!');
+
             navigate('/profile');
         } catch (err) {
             console.error('Error submitting items:', err.response ? err.response.data : err.message);

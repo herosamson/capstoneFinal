@@ -121,7 +121,7 @@ const Medical = () => {
 
             alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Medical request added successfully.');
-            navigate('/home');
+            navigate('/medical');
         } catch (error) {
             console.error('Failed to add medical assistance:', error.response ? error.response.data : error.message);
             alert('Failed to add medical assistance. Please try again later.');

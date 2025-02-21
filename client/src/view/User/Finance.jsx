@@ -108,7 +108,7 @@ const Finance = () => {
 
             alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Financial request added successfully.');
-            navigate('/home');
+            navigate('/finance');
         } catch (error) {
             console.error('Failed to add financial request:', error.response ? error.response.data : error.message);
             setError('Failed to add financial request. Please try again later.');

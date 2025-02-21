@@ -579,7 +579,7 @@ function Administrator() {
               <h2 className="text-xl font-semibold mb-4">Please Enter your Password</h2>
               <input
                 type="password"
-                placeholder="Super Admin Password"
+                placeholder="Enter Password"
                 value={superAdminPassword}
                 onChange={(e) => setSuperAdminPassword(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded-md"

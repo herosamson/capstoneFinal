@@ -106,7 +106,7 @@ const Disaster = () => {
             setDisasterRequests([...disasterRequests, response.data]);
             alert('Please wait for a confirmation text from Quiapo Church on the contact number you provided, and kindly wait for further instructions.');
             alert('Disaster relief request added successfully.');
-            navigate('/home');
+            navigate('/disaster');
         } catch (error) {
             console.error('Failed to add disaster relief request:', error.response ? error.response.data : error.message);
             alert('Failed to add disaster relief request. Please try again later.');

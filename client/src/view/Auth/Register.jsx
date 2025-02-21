@@ -147,35 +147,19 @@ const Register = ({ onLogin }) => {
   console.log(formData);
 
   const handleChangeContact = (e) => {
-    let inputValue = e.target.value.replace(/\D/g, ''); 
+    let inputValue = e.target.value.replace(/\D/g, '');
   
-
-    if (selectedCountryCode in countryStartingDigits) {
-      const validStarts = countryStartingDigits[selectedCountryCode];
-  
-      if (inputValue.length > 0 && !validStarts.includes(inputValue[0])) {
-        inputValue = validStarts[0] + inputValue.slice(1);
+    if (selectedCountryCode === '+63') {
+      if (inputValue.length > 0 && inputValue[0] !== '9') {
+        inputValue = '9' + inputValue.slice(1);
       }
+  
+      inputValue = inputValue.substring(0, 10);
     }
   
-
-    const maxDigits = selectedCountryCode === '+63' ? 10 : 10; 
-    inputValue = inputValue.substring(0, maxDigits);
-  
-    let formattedNumber = '';
-    if (inputValue.length > 0) {
-      formattedNumber += inputValue.substring(0, 3);
-    }
-    if (inputValue.length > 3) {
-      formattedNumber += ' ' + inputValue.substring(3, 6);
-    }
-    if (inputValue.length > 6) {
-      formattedNumber += ' ' + inputValue.substring(6, maxDigits);
-    }
-  
-    setFormData({ ...formData, contact: formattedNumber });
-    
+    setFormData({ ...formData, contact: inputValue });
   };
+  
   
   
   const handleCountryChange = (e) => {
@@ -215,6 +199,13 @@ const Register = ({ onLogin }) => {
       errors.push('Please enter a valid Last name.');
     }
   
+    // Contact number validation (Only for Philippines)
+    if (selectedCountryCode === '+63') {
+      if (!/^\d{10}$/.test(formData.contact)) {
+        errors.push('Please enter a valid contact number.');
+      }
+    }
+
     // Email validation
     const emailPattern = /^[a-zA-Z0-9]+(?:[._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(formData.email.trim())) {
@@ -245,13 +236,19 @@ const Register = ({ onLogin }) => {
     if (!agreeTerms) {
       errors.push('You must agree to the Terms and Conditions.');
     }
+    
   
-    const fullContactNumber = `${selectedCountryCode} ${formData.contact}`;
+    const fullContactNumber = selectedCountryCode === '+63' 
+    ? `${selectedCountryCode} 0${formData.contact}` 
+    : `${selectedCountryCode} ${formData.contact}`;
+  
   
     const updatedFormData = {
       ...formData,
       contact: fullContactNumber,
     };
+
+    
   
     if (errors.length === 0) {
       setIsLoading(true); 

@@ -408,13 +408,7 @@ const Profile = ({ username }) => {
                 <p>Username: {user?.username}</p>
               </div>
               <div className="flex justify-center mt-6">
-              <button
-              type="button"
-                className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit
-              </button>
+              
             </div>
               </div>
             )}
