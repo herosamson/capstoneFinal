@@ -1076,7 +1076,8 @@ router.post('/medical-assistance/add', async (req, res) => {
       location,
       reason,
       targetDate,
-      username
+      username,
+      user: user._id,
     });
 
     const savedUser = await newRequest.save();
@@ -1178,7 +1179,8 @@ router.post('/food-assistance/add', async (req, res) => {
       location,
       targetDate,
       numberOfPax,
-      username
+      username,
+      user: user._id,
     });
 
     const savedUser = await newRequest.save();
@@ -1232,7 +1234,8 @@ router.post('/financial-assistance/add', async (req, res) => {
       contactNumber,
       reason,
       targetDate,
-      username
+      username,
+      user: user._id,
     });
 
     const savedUser = await newRequest.save();
@@ -1331,7 +1334,8 @@ router.post('/disaster-relief/add', async (req, res) => {
       contactNumber,
       location,
       targetDate,
-      username
+      username,
+      user: user._id,
     });
 
     const savedUser = await newRequest.save();
@@ -1426,7 +1430,8 @@ router.post('/legal-assistance/add', async (req, res) => {
       legalType,
       contactNumber,
       targetDate,
-      username
+      username,
+      user: user._id,
     });
 
     const savedUser = await newRequest.save();
