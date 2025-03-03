@@ -9,7 +9,8 @@ const FoodAssistanceSchema = new Schema({
   targetDate: { type: Date, required: true },
   numberOfPax: { type: Number, required: true },
   username: { type: String, required: true },
-  approved: { type: Boolean, default: false } // New field
+  approved: { type: Boolean, default: false },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'Register', required: true }, // New field
 }, { timestamps: true });
 
 module.exports = mongoose.model('FoodAssistance', FoodAssistanceSchema);
