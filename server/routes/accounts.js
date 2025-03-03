@@ -1038,6 +1038,8 @@ router.put('/medical-assistance/:id/approve', async (req, res) => {
         <p>Your medical assistance request has been approved.</p>
         <p>Medicine: <strong>${request.typeOfMedicine}</strong></p>
         <p>Quantity: <strong>${request.quantity}</strong></p>
+        <p>We will contact you soon with further details.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
         <p>Best regards,</p>
         <p><strong>iDonate Team</strong></p>
       `,
@@ -1141,6 +1143,8 @@ router.post('/food-assistance/approve/:id', async (req, res) => {
         <p>Dear ${foodRequest.name || "Recipient"},</p>
         <p>Your food assistance request has been approved.</p>
         <p>Items: <strong>${foodRequest.quantity} ${foodRequest.typesOfFood}</strong></p>
+        <p>We will contact you soon with further details.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
         <p>Best regards,</p>
         <p><strong>iDonate Team</strong></p>
       `,
@@ -1297,6 +1301,8 @@ router.patch('/financial-assistance/approve/:id', async (req, res) => {
       html: `
         <p>Dear ${request.name || "Recipient"},</p>
         <p>Your financial assistance request of ₱${request.amount.toLocaleString()} has been approved.</p>
+        <p>We will contact you soon with further details.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
         <p>Best regards,</p>
         <p><strong>iDonate Team</strong></p>
       `,
@@ -1394,7 +1400,9 @@ router.patch('/disaster-relief/approve/:id', async (req, res) => {
       subject: "Disaster Relief Request Approved",
       html: `
         <p>Dear ${request.name || "Recipient"},</p>
-        <p>Your disaster relief request has been approved.</p>
+        <p>Your Disaster Relief request has been approved.</p>
+         <p>We will contact you soon with further details.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
         <p>Best regards,</p>
         <p><strong>iDonate Team</strong></p>
       `,
@@ -1498,7 +1506,7 @@ router.put('/legal-assistance/:id/approve', async (req, res) => {
         <p>Dear ${request.name || "Recipient"},</p>
         <p>We are pleased to inform you that your legal assistance request has been successfully approved.</p>
         <p>Legal Matter: <strong>${request.legalType}</strong></p>
-        <p>Request Date: <strong>${new Date(request.date).toLocaleDateString()}</strong></p>
+        <p>Request Date: <strong>${new Date(request.targetDate).toLocaleDateString()}</strong></p>
         <p>We will contact you soon with further details and connect you with the appropriate legal resources.</p>
         <p>Thank you for your patience and trust in our support system.</p>
         <p>Best regards,</p>
