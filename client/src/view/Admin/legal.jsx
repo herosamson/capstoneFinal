@@ -59,15 +59,22 @@ function Legal() {
 
   const approveRequest = async (id) => {
     try {
-      await axios.put(`/routes/accounts/legal-assistance/${id}/approve`);
-      setLegalRequests(prevState => prevState.map(request =>
-        request._id === id ? { ...request, approved: true } : request
-      ));
+      const response = await axios.put(`/routes/accounts/legal-assistance/${id}/approve`);
+      
+      if (response.status === 200) {
+        alert('Request approved, and an email has been sent to the applicant!');
+        setLegalRequests(prevState =>
+          prevState.map(request =>
+            request._id === id ? { ...request, approved: true } : request
+          )
+        );
+      }
     } catch (error) {
       console.error('Failed to approve legal request:', error);
       alert('Failed to approve legal request. Please try again later.');
     }
   };
+  
   useEffect(() => {
     fetchLegalRequests();
   }, []);

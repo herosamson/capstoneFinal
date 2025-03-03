@@ -58,14 +58,22 @@ function Food() {
 
   const approveFoodRequest = async (id) => {
     try {
-      await axios.post(`/routes/accounts/food-assistance/approve/${id}`);
-      setFoodAssistance(prevState => prevState.map(request =>
-        request._id === id ? { ...request, approved: true } : request
-      ));
+      const response = await axios.post(`/routes/accounts/food-assistance/approve/${id}`);
+      
+      if (response.status === 200) {
+        alert('Request approved, and an email has been sent to the applicant!');
+        setFoodAssistance(prevState =>
+          prevState.map(request =>
+            request._id === id ? { ...request, approved: true } : request
+          )
+        );
+      }
     } catch (error) {
       console.error('Failed to approve food request:', error);
+      alert('Failed to approve food request. Please try again later.');
     }
   };
+  
 
   useEffect(() => {
     fetchFoodAssistance();

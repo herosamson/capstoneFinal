@@ -1007,17 +1007,35 @@ router.get('/events/history', async (req, res) => {
   }
 });
 
-// Approve a medical assistance request
+// Approve a medical assistance request and send an email
 router.put('/medical-assistance/:id/approve', async (req, res) => {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const request = await MedicalAssistance.findByIdAndUpdate(id, { approved: true }, { new: true });
+
     if (!request) {
       return res.status(404).json({ message: 'Medical assistance request not found' });
     }
+
+    // Email options
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: request.email, // Assuming the request object has an email field
+      subject: 'Medical Assistance Request Approved',
+      text: `Dear ${request.name},\n\nYour medical assistance request for ${request.typeOfMedicine} (Quantity: ${request.quantity}) has been approved. We will contact you soon with further details.\n\nBest regards,\nYour Team`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
+
     res.status(200).json(request);
   } catch (error) {
-    console.error('Failed to approve medical assistance request:', error);
     res.status(500).json({ message: 'Failed to approve medical assistance request', error: error.message });
   }
 });
@@ -1077,7 +1095,7 @@ router.get('/medical-assistance/all', async (req, res) => {
   }
 });
 
-// Approve a food request
+// Approve a food assistance request and send an email
 router.post('/food-assistance/approve/:id', async (req, res) => {
   try {
     const requestId = req.params.id;
@@ -1089,6 +1107,23 @@ router.post('/food-assistance/approve/:id', async (req, res) => {
 
     foodRequest.approved = true;
     await foodRequest.save();
+
+    // Email options
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: foodRequest.email, // Assuming the request object has an email field
+      subject: 'Food Assistance Request Approved',
+      text: `Dear ${foodRequest.name},\n\nYour food assistance request for ${foodRequest.quantity} ${foodRequest.typesOfFood} has been approved. We will contact you soon with further details.\n\nBest regards,\niDonate Team`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
 
     res.status(200).json({ message: 'Food request approved successfully', request: foodRequest });
   } catch (error) {
@@ -1204,7 +1239,8 @@ router.get('/financial-assistance/all', async (req, res) => {
   }
 });
 
-// Approve a financial assistance request
+
+// Approve a financial assistance request and send an email
 router.patch('/financial-assistance/approve/:id', async (req, res) => {
   try {
     const request = await FinancialAssistance.findByIdAndUpdate(
@@ -1212,9 +1248,28 @@ router.patch('/financial-assistance/approve/:id', async (req, res) => {
       { approved: true },
       { new: true }
     );
+
     if (!request) {
       return res.status(404).json({ message: 'Request not found' });
     }
+
+    // Email options
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: request.email, // Assuming the request has an email field
+      subject: 'Financial Assistance Request Approved',
+      text: `Dear ${request.name},\n\nYour financial assistance request of $${request.amount} has been approved. We will contact you soon with further details.\n\nBest regards,\niDonate Team`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
+
     res.status(200).json(request);
   } catch (error) {
     res.status(500).json({ message: 'Failed to approve financial assistance request', error: error.message });
@@ -1273,7 +1328,7 @@ router.get('/disaster-relief/all', async (req, res) => {
   }
 });
 
-// Approve a disaster relief request
+// Approve a disaster relief request and send an email
 router.patch('/disaster-relief/approve/:id', async (req, res) => {
   try {
     const request = await DisasterRelief.findByIdAndUpdate(
@@ -1281,9 +1336,28 @@ router.patch('/disaster-relief/approve/:id', async (req, res) => {
       { approved: true },
       { new: true }
     );
+
     if (!request) {
       return res.status(404).json({ message: 'Request not found' });
     }
+
+    // Email details
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: request.email, // Assuming the request object has an email field
+      subject: 'Disaster Relief Request Approved',
+      text: `Dear ${request.name},\n\nYour disaster relief request has been approved. We will reach out soon with further details.\n\nBest regards,\niDonate Team`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
+
     res.status(200).json(request);
   } catch (error) {
     res.status(500).json({ message: 'Failed to approve disaster relief request', error: error.message });
@@ -1340,14 +1414,33 @@ router.get('/legal-assistance/all', async (req, res) => {
   }
 });
 
-// Approve a legal assistance request
-router.put('/legal-assistance/:id/approve',async (req, res) => {
-  const { id } = req.params;
+// Approve a legal assistance request and send an email
+router.put('/legal-assistance/:id/approve', async (req, res) => {
   try {
+    const { id } = req.params;
     const request = await LegalAssistance.findByIdAndUpdate(id, { approved: true }, { new: true });
+
     if (!request) {
       return res.status(404).json({ message: 'Legal assistance request not found' });
     }
+
+    // Email options
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: request.email, // Assuming the request object has an email field
+      subject: 'Legal Assistance Request Approved',
+      text: `Dear ${request.name},\n\nYour legal assistance request for ${request.legalType} has been approved. We will contact you soon with further details.\n\nBest regards,\nYour Team`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
+
     res.status(200).json(request);
   } catch (error) {
     res.status(500).json({ message: 'Failed to approve legal assistance request', error: error.message });

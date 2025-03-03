@@ -60,16 +60,21 @@ function Medical() {
   const handleApprove = async (id) => {
     try {
       const response = await axios.put(`/routes/accounts/medical-assistance/${id}/approve`);
-      const updatedRequest = response.data;
-      setMedicalAssistance(medicalAssistance.map(request =>
-        request._id === id ? updatedRequest : request
-      ));
-      alert('Medical request approved successfully.');
+      
+      if (response.status === 200) {
+        alert('Request approved, and an email has been sent to the applicant!');
+        setMedicalAssistance(prevState =>
+          prevState.map(request =>
+            request._id === id ? { ...request, approved: true } : request
+          )
+        );
+      }
     } catch (error) {
       console.error('Failed to approve medical request:', error);
       alert('Failed to approve medical request. Please try again later.');
     }
   };
+  
 
   useEffect(() => {
     fetchMedicalAssistance(); // Fetch the medical requests when the component mounts

@@ -59,13 +59,18 @@ function Disaster() {
 
   const approveRequest = async (id) => {
     try {
-      await axios.patch(`/routes/accounts/disaster-relief/approve/${id}`);
-      fetchDisasterRequests(); // Refresh the list after approval
+      const response = await axios.patch(`/routes/accounts/disaster-relief/approve/${id}`);
+      
+      if (response.status === 200) {
+        alert('Request approved, and email sent to the donor!');
+        fetchDisasterRequests(); // Refresh the list
+      }
     } catch (error) {
       console.error('Failed to approve disaster request:', error);
       alert('Failed to approve disaster request. Please try again later.');
     }
   };
+  
 
   useEffect(() => {
     fetchDisasterRequests();

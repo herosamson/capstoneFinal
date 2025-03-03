@@ -62,15 +62,22 @@ function Financial() {
 
   const approveRequest = async (id) => {
     try {
-      await axios.patch(`/routes/accounts/financial-assistance/approve/${id}`);
-      setFinancialAssistance(prevState => prevState.map(request =>
-        request._id === id ? { ...request, approved: true } : request
-      ));
+      const response = await axios.patch(`/routes/accounts/financial-assistance/approve/${id}`);
+      
+      if (response.status === 200) {
+        alert('Request approved, and an email has been sent to the applicant!');
+        setFinancialAssistance(prevState =>
+          prevState.map(request =>
+            request._id === id ? { ...request, approved: true } : request
+          )
+        );
+      }
     } catch (error) {
       console.error('Failed to approve financial request:', error);
       alert('Failed to approve financial request. Please try again later.');
     }
   };
+  
 
   return (
     <div id="containerU">
