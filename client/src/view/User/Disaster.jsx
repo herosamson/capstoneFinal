@@ -55,7 +55,7 @@ const Disaster = () => {
         console.error('Failed to fetch disaster requests:', error);
         }
     };
-
+    const userId = localStorage.getItem('userId');
     const addDisasterRequest = async () => {
         const lettersOnlyRegex = /^[A-Za-z\s]{1,50}$/; // Name: Letters and spaces only, max 50 characters
         const contactNumberRegex = /^09\d{9}$/; // Contact number: 11 digits starting with 09
@@ -95,6 +95,7 @@ const Disaster = () => {
             location: `${selectedLocation} - ${barangay}, ${houseAddress}`,
             targetDate,
             username,
+            user: userId 
         };
     
         try {

@@ -62,7 +62,7 @@ const Medical = () => {
             console.error('Failed to fetch medical requests:', error);
         }
     };
-  
+    const userId = localStorage.getItem('userId');
     const addMedicalAssistance = async () => {
         const lettersOnlyRegex = /^[A-Za-z\s]+$/;
         if (!name || !typeOfMedicine || !quantity || !contactNumber || !location || !reason || !targetDate || (!barangay && location !== 'Others')) {
@@ -97,7 +97,7 @@ const Medical = () => {
         
 
         const fullLocation = location === "Others" ? customLocation : `${location} - ${barangay}, ${houseAddress}`;
-        const newRequest = { name, typeOfMedicine: typeOfMedicine === "Others" ? customTypeOfMedicine : typeOfMedicine, quantity, contactNumber, location: fullLocation, reason, targetDate, username };
+        const newRequest = { name, typeOfMedicine: typeOfMedicine === "Others" ? customTypeOfMedicine : typeOfMedicine, quantity, contactNumber, location: fullLocation, reason, targetDate, username,   user: userId  };
 
         try {
             setIsButtonDisabled(true);

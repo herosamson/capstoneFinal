@@ -46,7 +46,7 @@ const Legal = () => {
             console.error('Failed to fetch legal requests:', error);
         }
     };
-
+    const userId = localStorage.getItem('userId');
     const addLegalRequest = async () => {
 
         if (!name || !legalType || !contactNumber || !targetDate || (legalType === 'Others' && !customLegalType)) {
@@ -71,6 +71,7 @@ const Legal = () => {
             contactNumber, 
             targetDate, 
             username, 
+            user: userId 
         };
 
         try {

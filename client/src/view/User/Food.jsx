@@ -57,7 +57,7 @@ const Food = () => {
         }
     };
     
-  
+    const userId = localStorage.getItem('userId');
     const addFoodAssistance = async () => {
         // Validate Name
         const nameRegex = /^[A-Za-z\s]{1,50}$/;
@@ -100,6 +100,7 @@ const Food = () => {
             targetDate, 
             numberOfPax, 
             username,
+            user: userId 
         };
     
     

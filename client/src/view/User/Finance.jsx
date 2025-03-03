@@ -50,7 +50,7 @@ const Finance = () => {
             console.error('Failed to fetch financial requests:', error);
         }
     };
-
+    const userId = localStorage.getItem('userId');
     const addFinancialAssistance = async () => {
 
         const lettersOnlyRegex = /^[A-Za-z\s]+$/;
@@ -88,6 +88,7 @@ const Finance = () => {
             reason: finalReason, 
             targetDate, 
             username,
+            user: userId
         };
 
         try {
