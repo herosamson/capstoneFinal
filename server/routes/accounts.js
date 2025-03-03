@@ -1017,13 +1017,23 @@ router.put('/medical-assistance/:id/approve', async (req, res) => {
       return res.status(404).json({ message: 'Medical assistance request not found' });
     }
 
-    // Email options
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: request.email, // Assuming the request object has an email field
-      subject: 'Medical Assistance Request Approved',
-      text: `Dear ${request.name},\n\nYour medical assistance request for ${request.typeOfMedicine} (Quantity: ${request.quantity}) has been approved. We will contact you soon with further details.\n\nBest regards,\nYour Team`,
+      from: "idonate2024@gmail.com",
+      to: request.email,
+      subject: "Medical Assistance Request Approved",
+      html: `
+        <p>Dear ${request.name || "Recipient"},</p>
+        <p>We are pleased to inform you that your medical assistance request has been successfully approved.</p>
+        <p>Medicine Type: <strong>${request.typeOfMedicine}</strong></p>
+        <p>Quantity: <strong>${request.quantity}</strong></p>
+        <p>Request Date: <strong>${new Date(request.date).toLocaleDateString()}</strong></p>
+        <p>We will reach out to you soon with further details regarding the distribution.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
+        <p>Best regards,</p>
+        <p><strong>iDonate Team</strong></p>
+      `,
     };
+    
 
     // Send the email
     transporter.sendMail(mailOptions, (error, info) => {
@@ -1108,13 +1118,22 @@ router.post('/food-assistance/approve/:id', async (req, res) => {
     foodRequest.approved = true;
     await foodRequest.save();
 
-    // Email options
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: foodRequest.email, // Assuming the request object has an email field
-      subject: 'Food Assistance Request Approved',
-      text: `Dear ${foodRequest.name},\n\nYour food assistance request for ${foodRequest.quantity} ${foodRequest.typesOfFood} has been approved. We will contact you soon with further details.\n\nBest regards,\niDonate Team`,
+      from: "idonate2024@gmail.com",
+      to: foodRequest.email,
+      subject: "Food Assistance Request Approved",
+      html: `
+        <p>Dear ${foodRequest.name || "Recipient"},</p>
+        <p>We are pleased to inform you that your food assistance request has been successfully approved.</p>
+        <p>Requested Items: <strong>${foodRequest.quantity} ${foodRequest.typesOfFood}</strong></p>
+        <p>Request Date: <strong>${new Date(foodRequest.date).toLocaleDateString()}</strong></p>
+        <p>We will reach out to you soon with further details regarding the distribution.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
+        <p>Best regards,</p>
+        <p><strong>iDonate Team</strong></p>
+      `,
     };
+    
 
     // Send the email
     transporter.sendMail(mailOptions, (error, info) => {
@@ -1253,13 +1272,22 @@ router.patch('/financial-assistance/approve/:id', async (req, res) => {
       return res.status(404).json({ message: 'Request not found' });
     }
 
-    // Email options
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: request.email, // Assuming the request has an email field
-      subject: 'Financial Assistance Request Approved',
-      text: `Dear ${request.name},\n\nYour financial assistance request of $${request.amount} has been approved. We will contact you soon with further details.\n\nBest regards,\niDonate Team`,
+      from: "idonate2024@gmail.com",
+      to: request.email,
+      subject: "Financial Assistance Request Approved",
+      html: `
+        <p>Dear ${request.name || "Recipient"},</p>
+        <p>We are pleased to inform you that your financial assistance request has been successfully approved.</p>
+        <p>Approved Amount: <strong>₱${request.amount.toLocaleString()}</strong></p>
+        <p>Request Date: <strong>${new Date(request.date).toLocaleDateString()}</strong></p>
+        <p>We will contact you soon with further details regarding the disbursement.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
+        <p>Best regards,</p>
+        <p><strong>iDonate Team</strong></p>
+      `,
     };
+    
 
     // Send the email
     transporter.sendMail(mailOptions, (error, info) => {
@@ -1341,13 +1369,21 @@ router.patch('/disaster-relief/approve/:id', async (req, res) => {
       return res.status(404).json({ message: 'Request not found' });
     }
 
-    // Email details
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: request.email, // Assuming the request object has an email field
-      subject: 'Disaster Relief Request Approved',
-      text: `Dear ${request.name},\n\nYour disaster relief request has been approved. We will reach out soon with further details.\n\nBest regards,\niDonate Team`,
+      from: "idonate2024@gmail.com",
+      to: request.email,
+      subject: "Disaster Relief Request Approved",
+      html: `
+        <p>Dear ${request.name || "Recipient"},</p>
+        <p>We are pleased to inform you that your disaster relief request has been successfully approved.</p>
+        <p>Request Date: <strong>${new Date(request.date).toLocaleDateString()}</strong></p>
+        <p>We will reach out to you soon with further details regarding the assistance.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
+        <p>Best regards,</p>
+        <p><strong>iDonate Team</strong></p>
+      `,
     };
+    
 
     // Send the email
     transporter.sendMail(mailOptions, (error, info) => {
@@ -1424,13 +1460,22 @@ router.put('/legal-assistance/:id/approve', async (req, res) => {
       return res.status(404).json({ message: 'Legal assistance request not found' });
     }
 
-    // Email options
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: request.email, // Assuming the request object has an email field
-      subject: 'Legal Assistance Request Approved',
-      text: `Dear ${request.name},\n\nYour legal assistance request for ${request.legalType} has been approved. We will contact you soon with further details.\n\nBest regards,\nYour Team`,
+      from: "idonate2024@gmail.com",
+      to: request.email,
+      subject: "Legal Assistance Request Approved",
+      html: `
+        <p>Dear ${request.name || "Recipient"},</p>
+        <p>We are pleased to inform you that your legal assistance request has been successfully approved.</p>
+        <p>Legal Matter: <strong>${request.legalType}</strong></p>
+        <p>Request Date: <strong>${new Date(request.date).toLocaleDateString()}</strong></p>
+        <p>We will contact you soon with further details and connect you with the appropriate legal resources.</p>
+        <p>Thank you for your patience and trust in our support system.</p>
+        <p>Best regards,</p>
+        <p><strong>iDonate Team</strong></p>
+      `,
     };
+    
 
     // Send the email
     transporter.sendMail(mailOptions, (error, info) => {
