@@ -11,7 +11,7 @@ const port = process.env.PORT || 5001;
 
 // CORS Configuration
 app.use(cors({
-  origin: ['https://idonate-3zc8.onrender.com', 'http://localhost:5173'], // Replace with your frontend's actual URL
+  origin: ['https://idonate-3zc8.onrender.com', 'http://localhost:50841'], // Replace with your frontend's actual URL
   credentials: true,                          // Allow credentials (cookies, authorization headers, etc.)
 }));
 
