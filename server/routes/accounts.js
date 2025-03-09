@@ -144,6 +144,7 @@ router.post('/send-reset-otp', async (req, res) => {
 router.post('/verify-otp', async (req, res) => {
   try {
     const { userId, otp } = req.body;
+    console.log(userId, 'otp:',  otp)
 
     if (!userId || !otp) {
       return res.json({ error: "Empty OTP details are not allowed" });
