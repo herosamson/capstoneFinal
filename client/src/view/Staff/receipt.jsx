@@ -16,14 +16,17 @@ function ReceiptS() {
 
 
   const handleInvalidPayment = async (id) => {
+    if (!id) return;  // Prevent errors if `id` is undefined
+  
     try {
       await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/reject`);
-  
-      setProofs(prevProofs => prevProofs.filter(proof => proof._id !== id));
-      setFilteredProofs(prevFilteredProofs => prevFilteredProofs.filter(proof => proof._id !== id));
-  
+      
       alert("The donor has been notified that the proof of donation is invalid.");
-      setIsModalOpen(false); 
+      
+      setProofs((prev) => prev.filter(proof => proof._id !== id));
+      setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
+  
+      setIsModalOpen(false);  
     } catch (error) {
       console.error("Error rejecting donation:", error);
       alert("Failed to mark the donation as invalid. Please try again later.");
@@ -101,14 +104,17 @@ function ReceiptS() {
   };
 
   const approvePayment = async (id) => {
+    if (!id) return;  // Prevent errors if `id` is undefined
+  
     try {
       await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
-  
-      setProofs(prevProofs => prevProofs.filter(proof => proof._id !== id));
-      setFilteredProofs(prevFilteredProofs => prevFilteredProofs.filter(proof => proof._id !== id));
       
-      alert("Donation has been verified and an email has been sent to the donor.");
-      setIsModalOpen(false); 
+      alert("Donation has been verified. Email sent to the donor.");
+      
+      setProofs((prev) => prev.filter(proof => proof._id !== id));
+      setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
+  
+      setIsModalOpen(false);  
     } catch (error) {
       console.error("Error verifying donation:", error);
       alert("Failed to verify donation. Please try again later.");
@@ -206,15 +212,17 @@ function ReceiptS() {
                 <td className='px-10 py-2'>{new Date(proof.date).toLocaleDateString()}</td>
                 <td className='px-10 py-2'>
                   {proof.imagePath ? (
-                    <button 
-                      onClick={() => {
-                        setSelectedImage(`https://idonate1.onrender.com/${proof.imagePath}`);
-                        setIsModalOpen(true);
-                      }}
-                      className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200"
-                    >
-                      Verify Image
-                    </button>
+                   <button 
+                   onClick={() => {
+                     setSelectedProof(proof);  // Store the selected proof
+                     setSelectedImage(`https://idonate1.onrender.com/${proof.imagePath}`);
+                     setIsModalOpen(true);
+                   }}
+                   className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200"
+                 >
+                   Verify Image
+                 </button>
+                 
                   ) : 'No Image'}
                 </td>
               </tr>
@@ -272,20 +280,23 @@ function ReceiptS() {
 
               <div className="mt-4 flex justify-center gap-6">
               <button 
-                  type="button" 
-                  className="px-6 py-3 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md w-32 text-center"
-                  onClick={() => approvePayment(selectedProof._id)}
-                >
-                  Valid
-                </button>
+                type="button" 
+                className="px-6 py-3 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md w-32 text-center"
+                onClick={() => approvePayment(selectedProof?._id)} // Safe check with ?.
+                disabled={!selectedProof}
+              >
+                Valid
+              </button>
 
-                <button 
-                  type="button" 
-                  className="px-6 py-3 text-white bg-red-800 hover:bg-red-600 duration-200 rounded-md w-32 text-center"
-                  onClick={() => handleInvalidPayment(selectedProof._id)} 
-                >
-                  Invalid
-                </button>
+              <button 
+                type="button" 
+                className="px-6 py-3 text-white bg-red-800 hover:bg-red-600 duration-200 rounded-md w-32 text-center"
+                onClick={() => handleInvalidPayment(selectedProof?._id)} // Safe check with ?.
+                disabled={!selectedProof}
+              >
+                Invalid
+              </button>
+
 
               </div>
 
