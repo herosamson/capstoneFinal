@@ -43,8 +43,8 @@ function ReceiptS() {
         const sortedProofs = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
   
         // Filter out rejected donations & hide approved ones
-        const visibleProofs = sortedProofs.filter(proof => !proof.rejected); 
-  
+        const visibleProofs = sortedProofs.filter(proof => !proof.rejected && !proof.approved);
+
         setProofs(visibleProofs);
         setFilteredProofs(visibleProofs);
       } catch (error) {
