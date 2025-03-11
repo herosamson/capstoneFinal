@@ -271,14 +271,14 @@ function ReceiptS() {
                 <button 
                   type="button" 
                   className="px-6 py-3 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md w-32 text-center"
-                  onClick={() => approvePayment(selectedProofId)}
+                  onClick={() => (approvePayment)}
                 >
                   Valid
                 </button>
                 <button 
                   type="button" 
                   className="px-6 py-3 text-white bg-red-800 hover:bg-red-600 duration-200 rounded-md w-32 text-center"
-                  onClick={() => handleInvalidPayment(selectedProofId)}
+                  onClick={() => (handleInvalidPayment)}
                 >
                   Invalid
                 </button>
