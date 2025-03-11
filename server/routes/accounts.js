@@ -1710,7 +1710,7 @@ router.get('/proofs', async (req, res) => {
   }
 });
 
-router.patch('/proofs/:id/approve', async (req, res) => {
+router.post('/proofs/:id/approve', async (req, res) => {
   try {
     const proof = await ProofOfPayment.findById(req.params.id).populate({ path: 'user', select: 'email' });
 
@@ -1727,6 +1727,7 @@ router.patch('/proofs/:id/approve', async (req, res) => {
       return res.status(400).json({ message: "Donor email not found." });
     }
 
+    // Send verification email
     const mailOptions = {
       from: "idonate2024@gmail.com",
       to: donorEmail,
@@ -1742,6 +1743,11 @@ router.patch('/proofs/:id/approve', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
+    
+    // Mark as approved (if necessary)
+    proof.approved = true;
+    await proof.save();
+
     res.status(200).json({ message: "Donation verified and email sent.", proof });
   } catch (error) {
     console.error("Error approving proof of payment:", error);
@@ -1750,7 +1756,7 @@ router.patch('/proofs/:id/approve', async (req, res) => {
 });
 
 
-router.patch('/proofs/:id/reject', async (req, res) => { 
+router.delete('/proofs/:id/reject', async (req, res) => {
   try {
     const proof = await ProofOfPayment.findById(req.params.id).populate({ path: 'user', select: 'email' });
 
@@ -1758,15 +1764,12 @@ router.patch('/proofs/:id/reject', async (req, res) => {
       return res.status(404).json({ message: "Proof of payment not found." });
     }
 
-    if (proof.rejected) {
-      return res.status(400).json({ message: "This donation has already been marked as invalid." });
-    }
-
     const donorEmail = proof.user?.email;
     if (!donorEmail) {
       return res.status(400).json({ message: "Donor email not found." });
     }
 
+    // Send rejection email
     const mailOptions = {
       from: "idonate2024@gmail.com",
       to: donorEmail,
@@ -1789,7 +1792,11 @@ router.patch('/proofs/:id/reject', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "Donation marked as invalid and email sent.", proof });
+
+    // Delete the proof from the database
+    await ProofOfPayment.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ message: "Donation marked as invalid, email sent, and removed from database." });
   } catch (error) {
     console.error("Error rejecting proof of payment:", error);
     res.status(500).json({ message: "Failed to reject proof of payment.", error: error.message });

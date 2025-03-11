@@ -14,15 +14,16 @@ function ReceiptS() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedProof, setSelectedProof] = useState(null);
   const [hiddenProofs, setHiddenProofs] = useState([]);
+
   const handleInvalidPayment = async (id) => {
     if (!id) return;
   
     try {
-      await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/reject`);
+      await axios.delete(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/reject`);
   
-      alert("The donor has been notified that the proof of donation is invalid.");
+      alert("The donor has been notified that the proof of donation is invalid. Donation removed.");
   
-      // Remove permanently from UI
+      // Remove from UI
       setProofs((prev) => prev.filter(proof => proof._id !== id));
       setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
   
@@ -109,24 +110,24 @@ function ReceiptS() {
     }
   };
 
-  const approvePayment = async (id) => {
-    if (!id) return;
-  
-    try {
-      await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
-  
-      alert("Donation has been verified. Email sent to the donor.");
-  
-      // Filter out the approved donation from the visible list
-      setProofs((prev) => prev.filter(proof => proof._id !== id));
-      setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
-  
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error verifying donation:", error);
-      alert("Failed to verify donation. Please try again later.");
-    }
-  };
+ const approvePayment = async (id) => {
+  if (!id) return;
+
+  try {
+    await axios.post(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
+
+    alert("Donation has been verified. Email sent to the donor.");
+
+    // Remove from UI
+    setProofs((prev) => prev.filter(proof => proof._id !== id));
+    setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
+
+    setIsModalOpen(false);
+  } catch (error) {
+    console.error("Error verifying donation:", error);
+    alert("Failed to verify donation. Please try again later.");
+  }
+};
   
   
   
