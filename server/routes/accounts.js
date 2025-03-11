@@ -1722,16 +1722,15 @@ router.patch('/proofs/:id/approve', async (req, res) => {
       return res.status(400).json({ message: "This donation is already verified." });
     }
 
-    proof.set({ approved: true });
+    // Unset rejected if it was previously set
+    proof.set({ approved: true, rejected: false });
     await proof.save();
 
-    // Ensure email is retrieved from the user
     const donorEmail = proof.user?.email;
     if (!donorEmail) {
       return res.status(400).json({ message: "Donor email not found." });
     }
 
-    // Send verification email with donation details
     const mailOptions = {
       from: "idonate2024@gmail.com",
       to: donorEmail,
@@ -1747,13 +1746,13 @@ router.patch('/proofs/:id/approve', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-
     res.status(200).json({ message: "Donation verified and email sent.", proof });
   } catch (error) {
     console.error("Error approving proof of payment:", error);
     res.status(500).json({ message: "Failed to approve proof of payment.", error: error.message });
   }
 });
+
 
 router.patch('/proofs/:id/reject', async (req, res) => { 
   try {
@@ -1767,16 +1766,15 @@ router.patch('/proofs/:id/reject', async (req, res) => {
       return res.status(400).json({ message: "This donation has already been marked as invalid." });
     }
 
-    proof.set({ rejected: true });
+    // Unset approved if it was previously set
+    proof.set({ rejected: true, approved: false });
     await proof.save();
 
-    // Ensure donor email exists
     const donorEmail = proof.user?.email;
     if (!donorEmail) {
       return res.status(400).json({ message: "Donor email not found." });
     }
 
-    // Send rejection email
     const mailOptions = {
       from: "idonate2024@gmail.com",
       to: donorEmail,
@@ -1799,13 +1797,13 @@ router.patch('/proofs/:id/reject', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-
     res.status(200).json({ message: "Donation marked as invalid and email sent.", proof });
   } catch (error) {
     console.error("Error rejecting proof of payment:", error);
     res.status(500).json({ message: "Failed to reject proof of payment.", error: error.message });
   }
 });
+
 
 
 // Fetch all proofs of payment

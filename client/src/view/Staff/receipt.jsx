@@ -12,15 +12,18 @@ function ReceiptS() {
   const [filter, setFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedProof, setSelectedProof] = useState(null);
+
 
   const handleInvalidPayment = async (id) => {
     try {
-      const response = await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/reject`);
+      await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/reject`);
   
-      setProofs((prevProofs) => prevProofs.filter((proof) => proof._id !== id));
-      setFilteredProofs((prevFilteredProofs) => prevFilteredProofs.filter((proof) => proof._id !== id));
+      setProofs(prevProofs => prevProofs.filter(proof => proof._id !== id));
+      setFilteredProofs(prevFilteredProofs => prevFilteredProofs.filter(proof => proof._id !== id));
   
       alert("The donor has been notified that the proof of donation is invalid.");
+      setIsModalOpen(false); 
     } catch (error) {
       console.error("Error rejecting donation:", error);
       alert("Failed to mark the donation as invalid. Please try again later.");
@@ -99,13 +102,13 @@ function ReceiptS() {
 
   const approvePayment = async (id) => {
     try {
-      const response = await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
+      await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
   
-      // Remove from UI but keep in database
-      setProofs((prevProofs) => prevProofs.filter((proof) => proof._id !== id));
-      setFilteredProofs((prevFilteredProofs) => prevFilteredProofs.filter((proof) => proof._id !== id));
-  
+      setProofs(prevProofs => prevProofs.filter(proof => proof._id !== id));
+      setFilteredProofs(prevFilteredProofs => prevFilteredProofs.filter(proof => proof._id !== id));
+      
       alert("Donation has been verified and an email has been sent to the donor.");
+      setIsModalOpen(false); 
     } catch (error) {
       console.error("Error verifying donation:", error);
       alert("Failed to verify donation. Please try again later.");
@@ -268,20 +271,22 @@ function ReceiptS() {
               <center><p className="text-black font-semibold mt-6">Action: To validate and notify the donor.</p></center>
 
               <div className="mt-4 flex justify-center gap-6">
-                <button 
+              <button 
                   type="button" 
                   className="px-6 py-3 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md w-32 text-center"
-                  onClick={() => (approvePayment)}
+                  onClick={() => approvePayment(selectedProof._id)}
                 >
                   Valid
                 </button>
+
                 <button 
                   type="button" 
                   className="px-6 py-3 text-white bg-red-800 hover:bg-red-600 duration-200 rounded-md w-32 text-center"
-                  onClick={() => (handleInvalidPayment)}
+                  onClick={() => handleInvalidPayment(selectedProof._id)} 
                 >
                   Invalid
                 </button>
+
               </div>
 
             </div>
