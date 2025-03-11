@@ -1722,10 +1722,6 @@ router.patch('/proofs/:id/approve', async (req, res) => {
       return res.status(400).json({ message: "This donation is already verified." });
     }
 
-    // Unset rejected if it was previously set
-    proof.set({ approved: true, rejected: false });
-    await proof.save();
-
     const donorEmail = proof.user?.email;
     if (!donorEmail) {
       return res.status(400).json({ message: "Donor email not found." });
@@ -1765,10 +1761,6 @@ router.patch('/proofs/:id/reject', async (req, res) => {
     if (proof.rejected) {
       return res.status(400).json({ message: "This donation has already been marked as invalid." });
     }
-
-    // Unset approved if it was previously set
-    proof.set({ rejected: true, approved: false });
-    await proof.save();
 
     const donorEmail = proof.user?.email;
     if (!donorEmail) {
