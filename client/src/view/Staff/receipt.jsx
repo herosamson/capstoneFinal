@@ -22,6 +22,7 @@ function ReceiptS() {
   
       alert("The donor has been notified that the proof of donation is invalid.");
   
+      // Remove permanently from UI
       setProofs((prev) => prev.filter(proof => proof._id !== id));
       setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
   
@@ -34,13 +35,18 @@ function ReceiptS() {
   
   
   
+  
   useEffect(() => {
     const fetchProofs = async () => {
       try {
         const response = await axios.get(`https://idonate1.onrender.com/routes/accounts/proofs/all`);
         const sortedProofs = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
-        setProofs(sortedProofs);
-        setFilteredProofs(sortedProofs);
+  
+        // Filter out rejected donations & hide approved ones
+        const visibleProofs = sortedProofs.filter(proof => !proof.rejected); 
+  
+        setProofs(visibleProofs);
+        setFilteredProofs(visibleProofs);
       } catch (error) {
         console.error('Error fetching proofs of Donation Verification:', error);
         alert('Failed to fetch proofs of Donation Verification. Please try again later.');
@@ -111,7 +117,9 @@ function ReceiptS() {
   
       alert("Donation has been verified. Email sent to the donor.");
   
-      setHiddenProofs((prev) => [...prev, id]); // Hide donation instead of removing it
+      // Filter out the approved donation from the visible list
+      setProofs((prev) => prev.filter(proof => proof._id !== id));
+      setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
   
       setIsModalOpen(false);
     } catch (error) {
@@ -119,6 +127,7 @@ function ReceiptS() {
       alert("Failed to verify donation. Please try again later.");
     }
   };
+  
   
   
 
@@ -194,7 +203,7 @@ function ReceiptS() {
             <option value="This Month">This Month</option>
           </select>
         </div>
-        <button type="button" className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md mr-3 my-3" onClick={downloadReport}>Download PDF Report</button>
+        <button type="button" className="px-10 py-1.5 text-white bg-red-700 hover:bg-red-800 duration-200 rounded-md mr-3 my-3" onClick={downloadReport}>Download PDF Report</button>
         <table className='table-auto w-full'>
         <thead className='bg-red-800 text-white'>
             <tr>
@@ -220,7 +229,7 @@ function ReceiptS() {
                           setSelectedImage(`https://idonate1.onrender.com/${proof.imagePath}`);
                           setIsModalOpen(true);
                         }}
-                        className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200"
+                        className="bg-red-700 hover:bg-red-800 text-white px-4 text-sm py-2 duration-200 rounded-md"
                       >
                         Verify Image
                       </button>
