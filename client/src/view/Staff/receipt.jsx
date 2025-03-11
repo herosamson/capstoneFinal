@@ -13,25 +13,25 @@ function ReceiptS() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedProof, setSelectedProof] = useState(null);
-
-
+  const [hiddenProofs, setHiddenProofs] = useState([]);
   const handleInvalidPayment = async (id) => {
-    if (!id) return;  // Prevent errors if `id` is undefined
+    if (!id) return;
   
     try {
       await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/reject`);
-      
+  
       alert("The donor has been notified that the proof of donation is invalid.");
-      
+  
       setProofs((prev) => prev.filter(proof => proof._id !== id));
       setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
   
-      setIsModalOpen(false);  
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error rejecting donation:", error);
       alert("Failed to mark the donation as invalid. Please try again later.");
     }
   };
+  
   
   
   useEffect(() => {
@@ -104,22 +104,22 @@ function ReceiptS() {
   };
 
   const approvePayment = async (id) => {
-    if (!id) return;  // Prevent errors if `id` is undefined
+    if (!id) return;
   
     try {
       await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
-      
-      alert("Donation has been verified. Email sent to the donor.");
-      
-      setProofs((prev) => prev.filter(proof => proof._id !== id));
-      setFilteredProofs((prev) => prev.filter(proof => proof._id !== id));
   
-      setIsModalOpen(false);  
+      alert("Donation has been verified. Email sent to the donor.");
+  
+      setHiddenProofs((prev) => [...prev, id]); // Hide donation instead of removing it
+  
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error verifying donation:", error);
       alert("Failed to verify donation. Please try again later.");
     }
   };
+  
   
 
   const downloadReport = () => {
@@ -205,30 +205,31 @@ function ReceiptS() {
             </tr>
           </thead>
           <tbody>
-            {filteredProofs.map((proof) => (
-              <tr key={proof._id} className='even:bg-gray-200'>
-                <td className='px-10 py-2'>{proof.name || 'Anonymous'}</td>
-                <td className='px-10 py-2'>₱{parseFloat(proof.amount).toLocaleString()}</td>
-                <td className='px-10 py-2'>{new Date(proof.date).toLocaleDateString()}</td>
-                <td className='px-10 py-2'>
-                  {proof.imagePath ? (
-                   <button 
-                   onClick={() => {
-                     setSelectedProof(proof);  // Store the selected proof
-                     setSelectedImage(`https://idonate1.onrender.com/${proof.imagePath}`);
-                     setIsModalOpen(true);
-                   }}
-                   className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200"
-                 >
-                   Verify Image
-                 </button>
-                 
-                  ) : 'No Image'}
-                </td>
-              </tr>
+            {filteredProofs
+              .filter((proof) => !hiddenProofs.includes(proof._id)) // Hide approved donations
+              .map((proof) => (
+                <tr key={proof._id} className='even:bg-gray-200'>
+                  <td className='px-10 py-2'>{proof.name || 'Anonymous'}</td>
+                  <td className='px-10 py-2'>₱{parseFloat(proof.amount).toLocaleString()}</td>
+                  <td className='px-10 py-2'>{new Date(proof.date).toLocaleDateString()}</td>
+                  <td className='px-10 py-2'>
+                    {proof.imagePath ? (
+                      <button 
+                        onClick={() => {
+                          setSelectedProof(proof);  
+                          setSelectedImage(`https://idonate1.onrender.com/${proof.imagePath}`);
+                          setIsModalOpen(true);
+                        }}
+                        className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200"
+                      >
+                        Verify Image
+                      </button>
+                    ) : 'No Image'}
+                  </td>
+                </tr>
             ))}
-            
           </tbody>
+
         </table>
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
