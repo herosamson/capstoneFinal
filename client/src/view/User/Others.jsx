@@ -24,6 +24,7 @@ const Others = () => {
   const [category, setCategory] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categoryItems = {
     Food: [
@@ -207,17 +208,18 @@ const Others = () => {
     const submitItems = async () => {
         const username = localStorage.getItem('username');
         if (!username) {
-        setError('User not logged in');
-        return;
+            setError('User not logged in');
+            return;
         }
-
+    
         if (!date) {
-        alert('Date of Delivery is required.');
-        return;
+            alert('Date of Delivery is required.');
+            return;
         }
-
+    
         try {
-            setIsButtonDisabled(true);
+            setIsSubmitting(true); // Disable the button
+    
             const itemsToSubmit = pendingItems.map(pendingItem => ({
                 item: pendingItem.item,
                 quantity: pendingItem.quantity,
@@ -226,28 +228,29 @@ const Others = () => {
                 username,
                 category: pendingItem.category
             }));
-
+    
             const response = await axios.post('/routes/accounts/donations/add', {
                 items: itemsToSubmit,
                 date,
                 username
             });
-
+    
             setDonations([...donations, ...response.data.donations]);
             setPendingItems([]);
             setDate('');
             setError('');
-
-            alert('Please check and take note of the donation ID of these item/s from the profile page. An email has also been sent to your email.\n\nThank you for your in-kind donation!');
-
+    
+            alert('Please check and take note of the donation ID from your profile page. An email confirmation has been sent.\n\nThank you for your donation!');
+    
             navigate('/profile');
         } catch (err) {
             console.error('Error submitting items:', err.response ? err.response.data : err.message);
             alert('Error submitting items.');
         } finally {
-    setIsButtonDisabled(false); // Re-enable the button after the submission attempt
-  }
+            setIsSubmitting(false); // Re-enable the button after the process
+        }
     };
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -495,13 +498,14 @@ const Others = () => {
                             required
                             className="w-full border-2 py-2 px-2 text-xs"
                             />
-                            <button
+                           <button
                             className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200"
                             onClick={submitItems}
-                            disabled={isButtonDisabled}
+                            disabled={isSubmitting}
                             >
-                            Submit
+                            {isSubmitting ? 'Submitting...' : 'Submit'}
                             </button>
+
                         </div>
                         )}
 

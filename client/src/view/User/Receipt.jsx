@@ -28,7 +28,21 @@ const Receipt = () => {
     date: tobeSubmitted,
     image: null
   });
+  const [isLoading, setIsLoading] = useState(false);
 
+  const handleButtonClick = async () => {
+    setIsLoading(true); // Disable the button
+
+    try {
+      // Simulate an API call or any process
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false); // Re-enable the button if needed
+    }
+  };
   const [proofsOfPayment, setProofsOfPayment] = useState([]);
   const [error, setError] = useState('');
   const username = localStorage.getItem('username'); // Get the username from local storage
@@ -86,7 +100,7 @@ const Receipt = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
   
-      alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is approved. Thank you.');
+      alert('Your proof of donation has been submitted. Please wait for verification. You will receive an email once it is verified. Thank you.');
   
       // Reset form but KEEP the selected date
       setDonorDetails(prevDetails => ({
@@ -98,9 +112,9 @@ const Receipt = () => {
   
       setError('');
     } catch (error) {
-      console.error('Failed to add proof of payment:', error.response ? error.response.data : error.message);
-      setError('Failed to add proof of payment. Please try again later.');
-      alert('Failed to add proof of payment. Please try again later.');
+      console.error('Failed to add proof of donation:', error.response ? error.response.data : error.message);
+      setError('Failed to add proof of donation. Please try again later.');
+      alert('Failed to add proof of donation. Please try again later.');
     } finally {
       setIsButtonDisabled(false);
     }
@@ -135,10 +149,10 @@ const Receipt = () => {
     if (name === 'image') {
       const file = files[0];
       if (file && !['image/jpeg', 'image/png'].includes(file.type)) {
-        alert('Proof of payment must be in .jpg or .png format only.');
+        alert('Proof of donation must be in .jpg or .png format only.');
         return;
       }
-      if (window.confirm('Are you sure that this is the proof of payment?')) {
+      if (window.confirm('Are you sure that this is the proof of donation?')) {
         setDonorDetails({ ...donorDetails, [name]: file });
       }
     } else {
@@ -346,13 +360,19 @@ const Receipt = () => {
                 required
               />
             </div>
-            <button type="button" className="bg-red-800 text-white w-full py-1.5 rounded-md hover:bg-red-600 duration-200" onClick={addProofOfPayment} disabled={isButtonDisabled}>
-        Submit
-      </button>
+            <button
+              onClick={handleButtonClick}
+              disabled={isLoading}
+              className={`text-white w-full py-1.5 rounded-md duration-200 ${
+                isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-800 hover:bg-red-600'
+              }`}
+            >
+              {isLoading ? 'Processing...' : 'Submit'}
+            </button>
           </form>
 
           <div className="overflow-x-auto overflow-y-auto max-h-[400px] max-lg:w-full border-2">
-            <h3 className='bg-red-800 text-white px-4 py-3 text-xl'>Proof of Payment</h3>
+            <h3 className='bg-red-800 text-white px-4 py-3 text-xl'>Proof of Donation</h3>
             <table className='table-auto w-full'>
               <thead className='bg-gray-100'>
                 <tr>
@@ -386,14 +406,14 @@ const Receipt = () => {
                       </td>
                       <td className='px-10 py-2'>
                         {proof.approved && (
-                          <button className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200" onClick={() => generatePDF(proof)}>Get Proof</button>
+                          <button className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200" onClick={() => generatePDF(proof)}>Get Receipt</button>
                         )}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="text-center py-4">No proofs of payment found.</td>
+                    <td colSpan="6" className="text-center py-4">No proofs of donation found.</td>
                   </tr>
                 )}
               </tbody>

@@ -12,7 +12,23 @@ function ReceiptS() {
   const [filter, setFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const handleInvalidPayment = async (id) => {
+    try {
+      const response = await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/reject`);
+  
+      setProofs((prevProofs) =>
+        prevProofs.map((proof) =>
+          proof._id === id ? { ...proof, rejected: true } : proof
+        )
+      );
+  
+      alert("The donor has been notified that the proof of donation is invalid.");
+    } catch (error) {
+      console.error("Error rejecting donation verification:", error);
+      alert("Failed to mark the donation as invalid. Please try again later.");
+    }
+  };
+  
   useEffect(() => {
     const fetchProofs = async () => {
       try {
@@ -21,8 +37,8 @@ function ReceiptS() {
         setProofs(sortedProofs);
         setFilteredProofs(sortedProofs);
       } catch (error) {
-        console.error('Error fetching proofs of payment:', error);
-        alert('Failed to fetch proofs of payment. Please try again later.');
+        console.error('Error fetching proofs of Donation Verification:', error);
+        alert('Failed to fetch proofs of Donation Verification. Please try again later.');
       }
     };
 
@@ -83,7 +99,6 @@ function ReceiptS() {
   };
 
   const approvePayment = async (id) => {
-    if (!window.confirm("Are you sure you want to approve this payment?")) return;
   
     try {
       const response = await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
@@ -96,8 +111,8 @@ function ReceiptS() {
   
       alert("Donation has been verified and an email has been sent to the donor.");
     } catch (error) {
-      console.error("Error approving payment:", error);
-      alert("Failed to approve payment. Please try again later.");
+      console.error("Error verifying Donation Verification:", error);
+      alert("Failed to verifying Donation Verification. Please try again later.");
     }
   };
 
@@ -180,8 +195,7 @@ function ReceiptS() {
               <th className='font-normal py-1.5 px-2'>Name of Donor</th>
               <th className='font-normal py-1.5 px-2'>Amount of Donation</th>
               <th className='font-normal py-1.5 px-2'>Date of Donation</th>
-              <th className='font-normal py-1.5 px-2'>Proof of Payment</th>
-              <th className='font-normal py-1.5 px-2'>Action</th>
+              <th className='font-normal py-1.5 px-2'>Donation Verification</th>
             </tr>
           </thead>
           <tbody>
@@ -199,18 +213,9 @@ function ReceiptS() {
                       }}
                       className="view-image-button bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
                     >
-                      View Image
+                      Verify Image
                     </button>
                   ) : 'No Image'}
-                </td>
-                <td className='px-10 py-2'>
-                  {proof.approved ? (
-                    <span className="verified-status">Verified</span>
-                  ) : (
-                    <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md"  onClick={() => approvePayment(proof._id)}>
-                      Verify
-                    </button>
-                  )}
                 </td>
               </tr>
             ))}
@@ -226,20 +231,33 @@ function ReceiptS() {
                 >
                   ✖
                 </button>
-                <h2 className="text-xl font-semibold mb-4">Proof of Payment</h2>
-                <div className="flex justify-center">
+                <h2 className="text-xl font-semibold mb-4">Donation Verification</h2>
+                <div className="flex">
+                <div className="flex-1 flex justify-center">
                   <img 
                     src={selectedImage} 
-                    alt="Proof of Payment" 
+                    alt="Donation Verification" 
                     className="max-w-full h-auto rounded-md"
                   />
                 </div>
+                <div className="flex-1 p-4">
+                  <p className="text-black-700">Gcash:</p>
+                  <p className="text-black-700">Gcash:</p>
+                  <p className="text-black-700">Gcash:</p>
+                  <p className="text-black-700">Gcash:</p>
+                </div>
+                </div>
                 <div className="mt-4 flex justify-end">
-                  <button 
-                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                    onClick={() => setIsModalOpen(false)}
+                <h2 className="text-xl font-semibold mb-4">Action: To validate and notify the donor.</h2>
+                <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md"  onClick={() => approvePayment(proof._id)}>
+                      Valid
+                    </button>
+                    <button 
+                    type="button" 
+                    className="bg-red-800 text-white px-4 py-2 rounded-md hover:bg-red-600 duration-200"
+                    onClick={() => handleInvalidPayment(proof._id)}
                   >
-                    Close
+                    Invalid
                   </button>
                 </div>
               </div>

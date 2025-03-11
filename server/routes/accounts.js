@@ -800,7 +800,7 @@ router.post("/donations/add", async (req, res) => {
       subject: "Item Donation Request Received",
       html: `
         <p>Dear ${user.username},</p>
-        <p>We have received your request for an item donation. Here are the details:</p>
+        <p>We have received your item donations. Below are the details:</p>
         <ul>
           ${items
             .map(
@@ -1669,8 +1669,8 @@ router.post("/addProof", upload.single("image"), async (req, res) => {
       to: user.email,
       subject: "Proof of Cash Donation Submission Received",
       html: `<p>Dear ${user.username},</p>
-      <p>We have received your proof of cash donation of <strong>₱${amount}</strong> made on <strong>${date}</strong>. Please wait while we verify your submission.</p>
-      <p>You will receive another email once your donation is approved.</p>
+      <p>We have received your proof of cash donation worth <strong>₱${amount}</strong> made on <strong>${date}</strong>. Please wait while we verify your submission.</p>
+      <p>You will receive another email once your donation is verified.</p>
       <p>Thank you for your generosity!</p>
       <p>Best regards,</p>
       <p>iDonate Team</p>`,
@@ -1754,6 +1754,59 @@ router.patch('/proofs/:id/approve', async (req, res) => {
     res.status(500).json({ message: "Failed to approve proof of payment.", error: error.message });
   }
 });
+
+router.patch('/proofs/:id/reject', async (req, res) => { 
+  try {
+    const proof = await ProofOfPayment.findById(req.params.id).populate({ path: 'user', select: 'email' });
+
+    if (!proof) {
+      return res.status(404).json({ message: "Proof of payment not found." });
+    }
+
+    if (proof.rejected) {
+      return res.status(400).json({ message: "This donation has already been marked as invalid." });
+    }
+
+    proof.set({ rejected: true });
+    await proof.save();
+
+    // Ensure donor email exists
+    const donorEmail = proof.user?.email;
+    if (!donorEmail) {
+      return res.status(400).json({ message: "Donor email not found." });
+    }
+
+    // Send rejection email
+    const mailOptions = {
+      from: "idonate2024@gmail.com",
+      to: donorEmail,
+      subject: "Invalid Proof of Cash Donation",
+      html: `
+        <p>Dear ${proof.name || "Donor"},</p>
+        <p>This is to inform you that the attached proof of cash donation is <strong>not valid</strong> upon verification.</p>
+        <p>May we request you to resend us the valid proof/receipt of donation.</p>
+        <br/>
+        <p><strong>Legend:</strong></p>
+        <p><strong>Not valid means:</strong></p>
+        <ul>
+          <li>The amount you have input does not match the receipt.</li>
+          <li>The proof of donation does not match Quiapo remittance records (Gcash, Paymaya, BPI, BDO details).</li>
+        </ul>
+        <p>Thank you so much.</p>
+        <br/>
+        <p><strong>iDonate Team</strong></p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Donation marked as invalid and email sent.", proof });
+  } catch (error) {
+    console.error("Error rejecting proof of payment:", error);
+    res.status(500).json({ message: "Failed to reject proof of payment.", error: error.message });
+  }
+});
+
 
 // Fetch all proofs of payment
 router.get('/proofs/all', async (req, res) => {
