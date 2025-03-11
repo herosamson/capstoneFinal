@@ -12,22 +12,21 @@ function ReceiptS() {
   const [filter, setFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
   const handleInvalidPayment = async (id) => {
     try {
       const response = await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/reject`);
   
-      setProofs((prevProofs) =>
-        prevProofs.map((proof) =>
-          proof._id === id ? { ...proof, rejected: true } : proof
-        )
-      );
+      setProofs((prevProofs) => prevProofs.filter((proof) => proof._id !== id));
+      setFilteredProofs((prevFilteredProofs) => prevFilteredProofs.filter((proof) => proof._id !== id));
   
       alert("The donor has been notified that the proof of donation is invalid.");
     } catch (error) {
-      console.error("Error rejecting donation verification:", error);
+      console.error("Error rejecting donation:", error);
       alert("Failed to mark the donation as invalid. Please try again later.");
     }
   };
+  
   
   useEffect(() => {
     const fetchProofs = async () => {
@@ -99,22 +98,20 @@ function ReceiptS() {
   };
 
   const approvePayment = async (id) => {
-  
     try {
       const response = await axios.patch(`https://idonate1.onrender.com/routes/accounts/proofs/${id}/approve`);
-      
-      setProofs((prevProofs) =>
-        prevProofs.map((proof) =>
-          proof._id === id ? { ...proof, approved: true } : proof
-        )
-      );
+  
+      // Remove from UI but keep in database
+      setProofs((prevProofs) => prevProofs.filter((proof) => proof._id !== id));
+      setFilteredProofs((prevFilteredProofs) => prevFilteredProofs.filter((proof) => proof._id !== id));
   
       alert("Donation has been verified and an email has been sent to the donor.");
     } catch (error) {
-      console.error("Error verifying Donation Verification:", error);
-      alert("Failed to verifying Donation Verification. Please try again later.");
+      console.error("Error verifying donation:", error);
+      alert("Failed to verify donation. Please try again later.");
     }
   };
+  
 
   const downloadReport = () => {
     const doc = new jsPDF();
@@ -222,47 +219,82 @@ function ReceiptS() {
             
           </tbody>
         </table>
-          {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full relative">
-                <button 
-                  className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  ✖
-                </button>
-                <h2 className="text-xl font-semibold mb-4">Donation Verification</h2>
-                <div className="flex">
-                <div className="flex-1 flex justify-center">
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full relative">
+              
+              {/* Close Button */}
+              <button 
+                className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+                onClick={() => setIsModalOpen(false)}
+              >
+                ✖
+              </button>
+
+              {/* Title */}
+              <p className="text-xl font-semibold mb-4">Donation Verification</p>
+
+              {/* Flexbox for Left (Text) & Right (Image) */}
+              <div className="flex flex-wrap md:flex-nowrap gap-6">
+                
+                {/* Left Side - Gcash & Bank Details */}
+                <div className="w-full md:w-1/2">
+                  <p className="text-gray-700 font-semibold mb-2">Gcash:</p>
+                  <p className="text-gray-600 mb-2">📞 <strong>Mobile Number:</strong> 0966 863 9861</p>
+                  <p className="text-gray-600 mb-4">👤 <strong>Name:</strong> Rufino Sescon, Jr.</p>
+
+                  <p className="text-gray-700 font-semibold mb-2">Paymaya:</p>
+                  <p className="text-gray-600 mb-2">📞 <strong>Mobile Number:</strong> 0961 747 7003</p>
+                  <p className="text-gray-600 mb-4">👤 <strong>Name:</strong> Rufino Sescon, Jr.</p>
+
+                  <p className="text-gray-700 font-semibold mb-2">BDO:</p>
+                  <p className="text-gray-600 mb-2">🏦 <strong>Account Name:</strong> RCAM-Minor Basilica of the Black Nazarene</p>
+                  <p className="text-gray-600 mb-2">💰 <strong>Peso Savings:</strong> # 00454-0037-172</p>
+                  <p className="text-gray-600 mb-2">💵 <strong>Dollars Savings:</strong> # 10454-0037-164</p>
+                  <p className="text-gray-600 mb-4">🔗 <strong>Swift Code - BIC:</strong> BNORPHMM</p>
+
+                  <p className="text-gray-700 font-semibold mb-2">BPI:</p>
+                  <p className="text-gray-600 mb-2">🏦 <strong>Account Name:</strong> RCAM-Minor Basilica of the Black Nazarene</p>
+                  <p className="text-gray-600 mb-2">💰 <strong>Peso Savings:</strong> # 2273-0504-37</p>
+                  <p className="text-gray-600 mb-2">💵 <strong>Dollars Savings:</strong> # 2274-0026-22</p>
+                  <p className="text-gray-600 mb-4">🔗 <strong>Swift Code - BIC:</strong> BOPIPHMM</p>
+                </div>
+
+                {/* Right Side - Image */}
+                <div className="w-full md:w-1/2 flex justify-center">
                   <img 
                     src={selectedImage} 
                     alt="Donation Verification" 
-                    className="max-w-full h-auto rounded-md"
+                    className="w-full max-w-xs h-auto rounded-md border border-gray-300"
                   />
                 </div>
-                <div className="flex-1 p-4">
-                  <p className="text-black-700">Gcash:</p>
-                  <p className="text-black-700">Gcash:</p>
-                  <p className="text-black-700">Gcash:</p>
-                  <p className="text-black-700">Gcash:</p>
-                </div>
-                </div>
-                <div className="mt-4 flex justify-end">
-                <h2 className="text-xl font-semibold mb-4">Action: To validate and notify the donor.</h2>
-                <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md"  onClick={() => approvePayment(proof._id)}>
-                      Valid
-                    </button>
-                    <button 
-                    type="button" 
-                    className="bg-red-800 text-white px-4 py-2 rounded-md hover:bg-red-600 duration-200"
-                    onClick={() => handleInvalidPayment(proof._id)}
-                  >
-                    Invalid
-                  </button>
-                </div>
+
               </div>
+
+              {/* Action Text */}
+              <p className="text-black font-semibold mt-6">Action: To validate and notify the donor.</p>
+
+              {/* Buttons (Equal Size & Spaced) */}
+              <div className="mt-4 flex justify-center gap-6">
+                <button 
+                  type="button" 
+                  className="px-6 py-3 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md w-32 text-center"
+                  onClick={() => approvePayment(selectedProofId)}
+                >
+                  Valid
+                </button>
+                <button 
+                  type="button" 
+                  className="px-6 py-3 text-white bg-red-800 hover:bg-red-600 duration-200 rounded-md w-32 text-center"
+                  onClick={() => handleInvalidPayment(selectedProofId)}
+                >
+                  Invalid
+                </button>
+              </div>
+
             </div>
-          )}
+          </div>
+        )}
       </div>
     </div>
   );
