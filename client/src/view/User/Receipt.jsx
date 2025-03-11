@@ -29,20 +29,6 @@ const Receipt = () => {
     image: null
   });
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleButtonClick = async () => {
-    setIsLoading(true); // Disable the button
-
-    try {
-      // Simulate an API call or any process
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setIsLoading(false); // Re-enable the button if needed
-    }
-  };
   const [proofsOfPayment, setProofsOfPayment] = useState([]);
   const [error, setError] = useState('');
   const username = localStorage.getItem('username'); // Get the username from local storage
@@ -67,6 +53,7 @@ const Receipt = () => {
   };
   
   const addProofOfPayment = async () => {
+    setIsLoading(true); // Disable the button
     if (!donorDetails.amount || !donorDetails.date || !donorDetails.image) {
       alert('Amount, date, and image are required.');
       return;
@@ -361,7 +348,7 @@ const Receipt = () => {
               />
             </div>
             <button
-              onClick={handleButtonClick}
+              onClick={addProofOfPayment}
               disabled={isLoading}
               className={`text-white w-full py-1.5 rounded-md duration-200 ${
                 isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-800 hover:bg-red-600'

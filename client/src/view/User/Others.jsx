@@ -503,7 +503,7 @@ const Others = () => {
                             onClick={submitItems}
                             disabled={isSubmitting}
                             >
-                            {isSubmitting ? 'Submitting...' : 'Submit'}
+                            {isSubmitting ? 'Processing...' : 'Submit'}
                             </button>
 
                         </div>

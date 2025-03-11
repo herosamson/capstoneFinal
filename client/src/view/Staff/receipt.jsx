@@ -208,7 +208,7 @@ function ReceiptS() {
                         setSelectedImage(`https://idonate1.onrender.com/${proof.imagePath}`);
                         setIsModalOpen(true);
                       }}
-                      className="view-image-button bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                      className="bg-red-800 hover:bg-red-700 text-white px-4 text-sm py-2 duration-200"
                     >
                       Verify Image
                     </button>
@@ -221,7 +221,7 @@ function ReceiptS() {
         </table>
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-           <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full relative max-h-[70vh] overflow-y-auto">
+           <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full relative max-h-[80vh] overflow-y-auto">
               
               <button 
                 className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
@@ -230,42 +230,42 @@ function ReceiptS() {
                 ✖
               </button>
 
-              <p className="text-xl font-semibold mb-4">Donation Verification</p>
+             <center><p className="text-xl font-semibold mb-4">Donation Verification</p></center> 
               <div className="flex flex-wrap md:flex-nowrap gap-6">
                 
                 <div className="w-full md:w-1/2">
-                  <p className="text-gray-700 font-semibold mb-2">Gcash:</p>
-                  <p className="text-gray-600 mb-2"><strong>Mobile Number:</strong> 0966 863 9861</p>
-                  <p className="text-gray-600 mb-4"><strong>Name:</strong> Rufino Sescon, Jr.</p>
+                  <p className="text-black-700 font-semibold mb-2">Gcash:</p>
+                  <p className="text-black-600 mb-2"><strong>Mobile Number:</strong> 0966 863 9861</p>
+                  <p className="text-black-600 mb-4"><strong>Name:</strong> Rufino Sescon, Jr.</p>
 
-                  <p className="text-gray-700 font-semibold mb-2">Paymaya:</p>
-                  <p className="text-gray-600 mb-2"><strong>Mobile Number:</strong> 0961 747 7003</p>
-                  <p className="text-gray-600 mb-4"><strong>Name:</strong> Rufino Sescon, Jr.</p>
+                  <p className="text-black-700 font-semibold mb-2">Paymaya:</p>
+                  <p className="text-black-600 mb-2"><strong>Mobile Number:</strong> 0961 747 7003</p>
+                  <p className="text-black-600 mb-4"><strong>Name:</strong> Rufino Sescon, Jr.</p>
 
-                  <p className="text-gray-700 font-semibold mb-2">BDO:</p>
-                  <p className="text-gray-600 mb-2"><strong>Account Name:</strong> RCAM-Minor Basilica of the Black Nazarene</p>
-                  <p className="text-gray-600 mb-2"><strong>Peso Savings:</strong> # 00454-0037-172</p>
-                  <p className="text-gray-600 mb-2"><strong>Dollars Savings:</strong> # 10454-0037-164</p>
-                  <p className="text-gray-600 mb-4"><strong>Swift Code - BIC:</strong> BNORPHMM</p>
+                  <p className="text-black-700 font-semibold mb-2">BDO:</p>
+                  <p className="text-black-600 mb-2"><strong>Account Name:</strong> RCAM-Minor Basilica of the Black Nazarene</p>
+                  <p className="text-black-600 mb-2"><strong>Peso Savings:</strong> # 00454-0037-172</p>
+                  <p className="text-black-600 mb-2"><strong>Dollars Savings:</strong> # 10454-0037-164</p>
+                  <p className="text-black-600 mb-4"><strong>Swift Code - BIC:</strong> BNORPHMM</p>
 
-                  <p className="text-gray-700 font-semibold mb-2">BPI:</p>
-                  <p className="text-gray-600 mb-2"><strong>Account Name:</strong> RCAM-Minor Basilica of the Black Nazarene</p>
-                  <p className="text-gray-600 mb-2"><strong>Peso Savings:</strong> # 2273-0504-37</p>
-                  <p className="text-gray-600 mb-2"> <strong>Dollars Savings:</strong> # 2274-0026-22</p>
-                  <p className="text-gray-600 mb-4"><strong>Swift Code - BIC:</strong> BOPIPHMM</p>
+                  <p className="text-black-700 font-semibold mb-2">BPI:</p>
+                  <p className="text-black-600 mb-2"><strong>Account Name:</strong> RCAM-Minor Basilica of the Black Nazarene</p>
+                  <p className="text-black-600 mb-2"><strong>Peso Savings:</strong> # 2273-0504-37</p>
+                  <p className="text-black-600 mb-2"> <strong>Dollars Savings:</strong> # 2274-0026-22</p>
+                  <p className="text-black-600 mb-4"><strong>Swift Code - BIC:</strong> BOPIPHMM</p>
                 </div>
 
                 <div className="w-full md:w-1/2 flex justify-center">
                   <img 
                     src={selectedImage} 
-                    alt="Donation Verification" 
+                    alt="Donation Verification image" 
                     className="w-full max-w-xs h-auto rounded-md border border-gray-300"
                   />
                 </div>
 
               </div>
 
-              <p className="text-black font-semibold mt-6">Action: To validate and notify the donor.</p>
+              <center><p className="text-black font-semibold mt-6">Action: To validate and notify the donor.</p></center>
 
               <div className="mt-4 flex justify-center gap-6">
                 <button 
