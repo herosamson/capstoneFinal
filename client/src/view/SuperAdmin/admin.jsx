@@ -605,16 +605,14 @@ function Administrator() {
         <h2 className="text-2xl mb-4"><strong>Add New Administrator</strong></h2>
 
         <div className="authContainer">
-          <input 
-            type="text" name="firstname" placeholder="First Name" 
+          <input type="text" name="firstname" placeholder="First Name" 
             value={newAdmin.firstname} onChange={(e) => handleInputChange(e, 'admin')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="lastname" placeholder="Last Name" 
+          <input type="text" name="lastname" placeholder="Last Name" 
             value={newAdmin.lastname} onChange={(e) => handleInputChange(e, 'admin')}
             className="authFields"
           />
@@ -622,44 +620,39 @@ function Administrator() {
 
         <div className="authContainer flex gap-2 w-full">
           <span className="p-3 bg-gray-100 border rounded-l-md">+63</span>
-          <input
-            type="text" name="contact" placeholder="9123456789" 
+          <input type="text" name="contact" placeholder="9123456789" 
             value={newAdmin.contact} onChange={(e) => handleContactChange(e, 'admin')}
             className="authFields border-l-0 rounded-r-md flex-grow"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="email" placeholder="Email" 
+          <input type="text" name="email" placeholder="Email" 
             value={newAdmin.email} onChange={(e) => handleInputChange(e, 'admin')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="username" placeholder="Username" 
+          <input type="text" name="username" placeholder="Username" 
             value={newAdmin.username} onChange={(e) => handleInputChange(e, 'admin')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer relative">
-          <input 
-            type={showAdminPassword ? 'text' : 'password'} name="password" placeholder="Password"
+          <input type={showAdminPassword ? 'text' : 'password'} name="password" placeholder="Password"
             value={newAdmin.password} onChange={(e) => handleInputChange(e, 'admin')}
             className="authFields pr-10"
           />
-          <span className="absolute right-3 top-3 cursor-pointer text-gray-500" 
+          <span className="absolute right-3 top-3 cursor-pointer text-gray-500"
             onClick={() => setShowAdminPassword(!showAdminPassword)}
           >
             {showAdminPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
 
-        <button 
-          type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+        <button type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
           onClick={handleAddAdmin}
         >
           Save
@@ -669,6 +662,7 @@ function Administrator() {
   </div>
 )}
 
+
 {showSuperAdminModal && (
   <div className="modal-overlayAccounts">
     <div className="modalAccounts">
@@ -677,16 +671,14 @@ function Administrator() {
         <h2 className="text-2xl mb-4"><strong>Add New Super Administrator</strong></h2>
 
         <div className="authContainer">
-          <input 
-            type="text" name="firstname" placeholder="First Name" 
+          <input type="text" name="firstname" placeholder="First Name" 
             value={newSuperAdmin.firstname} onChange={(e) => handleInputChange(e, 'superadmin')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="lastname" placeholder="Last Name" 
+          <input type="text" name="lastname" placeholder="Last Name" 
             value={newSuperAdmin.lastname} onChange={(e) => handleInputChange(e, 'superadmin')}
             className="authFields"
           />
@@ -694,36 +686,29 @@ function Administrator() {
 
         <div className="authContainer flex gap-2 w-full">
           <span className="p-3 bg-gray-100 border rounded-l-md">+63</span>
-          <input
-            type="text" name="contact" placeholder="9123456789" 
+          <input type="text" name="contact" placeholder="9123456789" 
             value={newSuperAdmin.contact} onChange={(e) => handleContactChange(e, 'superadmin')}
             className="authFields border-l-0 rounded-r-md flex-grow"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="email" placeholder="Email" 
+          <input type="text" name="email" placeholder="Email" 
             value={newSuperAdmin.email} onChange={(e) => handleInputChange(e, 'superadmin')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="username" placeholder="Username" 
+          <input type="text" name="username" placeholder="Username" 
             value={newSuperAdmin.username} onChange={(e) => handleInputChange(e, 'superadmin')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer relative">
-          <input 
-            type={showSuperAdminPassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Password"
-            value={newSuperAdmin.password}
-            onChange={(e) => handleInputChange(e, 'superadmin')}
+          <input type={showSuperAdminPassword ? 'text' : 'password'} name="password" placeholder="Password"
+            value={newSuperAdmin.password} onChange={(e) => handleInputChange(e, 'superadmin')}
             className="authFields pr-10"
           />
           <span className="absolute right-3 top-3 cursor-pointer text-gray-500"
@@ -733,8 +718,7 @@ function Administrator() {
           </span>
         </div>
 
-        <button 
-          type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+        <button type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
           onClick={handleAddSuperAdmin}
         >
           Save
@@ -743,6 +727,7 @@ function Administrator() {
     </div>
   </div>
 )}
+
 
 
 

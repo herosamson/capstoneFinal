@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './dashboard.css';
 import logo2 from './logo2.png';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -380,16 +381,14 @@ function Admin() {
         <h2 className="text-2xl mb-4"><strong>Add New User</strong></h2>
 
         <div className="authContainer">
-          <input 
-            type="text" name="firstname" placeholder="First Name" 
+          <input type="text" name="firstname" placeholder="First Name" 
             value={newUser.firstname} onChange={(e) => handleInputChange(e, 'user')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="lastname" placeholder="Last Name" 
+          <input type="text" name="lastname" placeholder="Last Name" 
             value={newUser.lastname} onChange={(e) => handleInputChange(e, 'user')}
             className="authFields"
           />
@@ -397,44 +396,39 @@ function Admin() {
 
         <div className="authContainer flex gap-2 w-full">
           <span className="p-3 bg-gray-100 border rounded-l-md">+63</span>
-          <input
-            type="text" name="contact" placeholder="9123456789" 
+          <input type="text" name="contact" placeholder="9123456789" 
             value={newUser.contact} onChange={(e) => handleContactChange(e, 'user')}
             className="authFields border-l-0 rounded-r-md flex-grow"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="email" placeholder="Email" 
+          <input type="text" name="email" placeholder="Email" 
             value={newUser.email} onChange={(e) => handleInputChange(e, 'user')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="username" placeholder="Username" 
+          <input type="text" name="username" placeholder="Username" 
             value={newUser.username} onChange={(e) => handleInputChange(e, 'user')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer relative">
-          <input 
-            type={showUserPassword ? 'text' : 'password'} name="password" placeholder="Password"
+          <input type={showUserPassword ? 'text' : 'password'} name="password" placeholder="Password"
             value={newUser.password} onChange={(e) => handleInputChange(e, 'user')}
             className="authFields pr-10"
           />
-          <span className="absolute right-3 top-3 cursor-pointer text-gray-500" 
+          <span className="absolute right-3 top-3 cursor-pointer text-gray-500"
             onClick={() => setShowUserPassword(!showUserPassword)}
           >
             {showUserPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
 
-        <button 
-          type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+        <button type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
           onClick={handleAddUser}
         >
           Save
@@ -443,6 +437,7 @@ function Admin() {
     </div>
   </div>
 )}
+
 
 
       {showPasswordModal && (

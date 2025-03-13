@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './staffA.css';
 import logo2 from './logo2.png';
 import axios from 'axios';
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 function Staff() {
   const [staff, setStaff] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -456,61 +456,46 @@ const handleRequestDelete = (id) => {
         <h2 className="text-2xl mb-4"><strong>Add New Staff</strong></h2>
 
         <div className="authContainer">
-          <input 
-            type="text" name="firstname" placeholder="First Name" 
+          <input type="text" name="firstname" placeholder="First Name" 
             value={newStaff.firstname} onChange={(e) => handleInputChange(e, 'staff')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="lastname" placeholder="Last Name" 
+          <input type="text" name="lastname" placeholder="Last Name" 
             value={newStaff.lastname} onChange={(e) => handleInputChange(e, 'staff')}
             className="authFields"
           />
         </div>
 
-        <div className="authContainer flex gap-2 w-full">
-          <span className="p-3 bg-gray-100 border rounded-l-md">+63</span>
-          <input
-            type="text" name="contact" placeholder="9123456789" 
-            value={newStaff.contact} onChange={(e) => handleContactChange(e, 'staff')}
-            className="authFields border-l-0 rounded-r-md flex-grow"
-          />
-        </div>
-
         <div className="authContainer">
-          <input 
-            type="text" name="email" placeholder="Email" 
+          <input type="text" name="email" placeholder="Email" 
             value={newStaff.email} onChange={(e) => handleInputChange(e, 'staff')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer">
-          <input 
-            type="text" name="username" placeholder="Username" 
+          <input type="text" name="username" placeholder="Username" 
             value={newStaff.username} onChange={(e) => handleInputChange(e, 'staff')}
             className="authFields"
           />
         </div>
 
         <div className="authContainer relative">
-          <input 
-            type={showStaffPassword ? 'text' : 'password'} name="password" placeholder="Password"
+          <input type={showStaffPassword ? 'text' : 'password'} name="password" placeholder="Password"
             value={newStaff.password} onChange={(e) => handleInputChange(e, 'staff')}
             className="authFields pr-10"
           />
-          <span className="absolute right-3 top-3 cursor-pointer text-gray-500" 
+          <span className="absolute right-3 top-3 cursor-pointer text-gray-500"
             onClick={() => setShowStaffPassword(!showStaffPassword)}
           >
             {showStaffPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
 
-        <button 
-          type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+        <button type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
           onClick={handleAddStaff}
         >
           Save
@@ -519,6 +504,7 @@ const handleRequestDelete = (id) => {
     </div>
   </div>
 )}
+
 
 
 
