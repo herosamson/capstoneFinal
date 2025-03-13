@@ -76,9 +76,14 @@ function Staff() {
         return false;
     }
 
-    if (!isValidPassword(password)) {
-        alert('Password must be at least 8 characters long and contain at least 1 number.');
-        return false;
+    if (
+      !password.trim() ||
+      password.length < 8 ||
+      !/\d/.test(password) ||
+      !/[A-Z]/.test(password) ||
+      !/[\W_]/.test(password) 
+    ) {
+      error.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
     }
 
     return true;

@@ -771,6 +771,9 @@ router.put("/donations/accept/:id", async (req, res) => {
 
 router.post("/donations/add", async (req, res) => {
   const { items, date, username } = req.body;
+  console.log(items)
+  console.log(date)
+  console.log(username)
 
   try {
     // Find the user by username
