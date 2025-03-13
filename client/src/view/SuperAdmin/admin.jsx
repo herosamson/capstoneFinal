@@ -608,23 +608,23 @@ function Administrator() {
         <input 
           type="text" name="firstname" placeholder="First Name" 
           value={newAdmin.firstname} onChange={(e) => handleInputChange(e, 'admin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Last Name */}
         <input 
           type="text" name="lastname" placeholder="Last Name" 
           value={newAdmin.lastname} onChange={(e) => handleInputChange(e, 'admin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
-        {/* Contact Number with +63 Prefix */}
+        {/* Contact Number */}
         <div className="relative flex items-center w-full">
           <span className="absolute left-3 text-gray-500">+63</span>
           <input
             type="text" name="contact" placeholder="9123456789" 
             value={newAdmin.contact} onChange={(e) => handleContactChange(e, 'admin')}
-            className="pl-10 p-2 border border-gray-300 rounded-md w-full"
+            className="pl-12 p-3 border border-gray-300 rounded-md w-full"
           />
         </div>
 
@@ -632,21 +632,21 @@ function Administrator() {
         <input 
           type="text" name="address" placeholder="Address" 
           value={newAdmin.address} onChange={(e) => handleInputChange(e, 'admin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Email */}
         <input 
           type="text" name="email" placeholder="Email" 
           value={newAdmin.email} onChange={(e) => handleInputChange(e, 'admin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Username */}
         <input 
           type="text" name="username" placeholder="Username" 
           value={newAdmin.username} onChange={(e) => handleInputChange(e, 'admin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Password Field */}
@@ -654,16 +654,18 @@ function Administrator() {
           <input 
             type={showAdminPassword ? 'text' : 'password'} name="password" placeholder="Password"
             value={newAdmin.password} onChange={(e) => handleInputChange(e, 'admin')}
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-3 pr-10 border border-gray-300 rounded-md"
           />
-          <span className="absolute right-3 cursor-pointer text-gray-500" onClick={() => setShowAdminPassword(!showAdminPassword)}>
+          <span className="absolute right-3 cursor-pointer text-gray-500" 
+            onClick={() => setShowAdminPassword(!showAdminPassword)}
+          >
             {showAdminPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
 
         {/* Save Button */}
         <button 
-          type="button" className="w-full px-10 py-2 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+          type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
           onClick={handleAddAdmin}
         >
           Save
@@ -674,7 +676,8 @@ function Administrator() {
 )}
 
 
- {/* SUPER ADMIN MODAL */}
+
+{/* SUPER ADMIN MODAL */}
 {showSuperAdminModal && (
   <div className="modal-overlayAccounts">
     <div className="modalAccounts">
@@ -682,14 +685,18 @@ function Administrator() {
         <span className="close-icon" onClick={() => setShowSuperAdminModal(false)}>&times;</span>
         <h2 className="text-2xl mb-4"><strong>Add New Super Administrator</strong></h2>
 
-        <input type="text" name="firstname" placeholder="First Name"
+        {/* First Name */}
+        <input 
+          type="text" name="firstname" placeholder="First Name"
           value={newSuperAdmin.firstname} onChange={(e) => handleInputChange(e, 'superadmin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
-        <input type="text" name="lastname" placeholder="Last Name"
+        {/* Last Name */}
+        <input 
+          type="text" name="lastname" placeholder="Last Name"
           value={newSuperAdmin.lastname} onChange={(e) => handleInputChange(e, 'superadmin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Contact Number */}
@@ -698,29 +705,33 @@ function Administrator() {
           <input
             type="text" name="contact" placeholder="9123456789"
             value={newSuperAdmin.contact} onChange={(e) => handleContactChange(e, 'superadmin')}
-            className="pl-10 p-2 border border-gray-300 rounded-md w-full"
+            className="pl-12 p-3 border border-gray-300 rounded-md w-full"
           />
         </div>
 
-        <input type="text" name="email" placeholder="Email"
+        {/* Email */}
+        <input 
+          type="text" name="email" placeholder="Email"
           value={newSuperAdmin.email} onChange={(e) => handleInputChange(e, 'superadmin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
-        <input type="text" name="username" placeholder="Username"
+        {/* Username */}
+        <input 
+          type="text" name="username" placeholder="Username"
           value={newSuperAdmin.username} onChange={(e) => handleInputChange(e, 'superadmin')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Password Field with Show/Hide Toggle */}
-        <div className="relative flex items-center">
+        <div className="relative flex items-center w-full">
           <input 
             type={showSuperAdminPassword ? 'text' : 'password'}
             name="password"
             placeholder="Password"
             value={newSuperAdmin.password}
             onChange={(e) => handleInputChange(e, 'superadmin')}
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-3 pr-10 border border-gray-300 rounded-md"
           />
           <span
             className="absolute right-3 cursor-pointer text-gray-500"
@@ -730,7 +741,9 @@ function Administrator() {
           </span>
         </div>
 
-        <button type="button" className="w-full px-10 py-2 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+        {/* Save Button */}
+        <button 
+          type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
           onClick={handleAddSuperAdmin}
         >
           Save
@@ -739,6 +752,7 @@ function Administrator() {
     </div>
   </div>
 )}
+
 
 
         {showPasswordModal && (

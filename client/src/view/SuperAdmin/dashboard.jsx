@@ -157,35 +157,67 @@ function Admin() {
   };
 
   const validateUserInput = () => {
-    const { firstname, lastname, contact, email, username, password } = newUser;
+    const { firstname, lastname, contact, email, username, password, confirmPassword } = newUser;
+    let errors = [];
 
-    const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
-    const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
-    const isUniqueUsername = (username) => !users.some((user) => user.username === username);
-    const isValidPassword = (password) => /^(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
-
-    if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
-        alert('First name and Last name should contain letters only (spaces are allowed).');
-        return false;
+    // ✅ First name validation
+    if (!firstname.trim() || !/^[a-zA-Z\s]*$/.test(firstname)) {
+        errors.push('Please enter a valid First name.');
     }
 
-    if (contact.length !== 11 || isNaN(contact) || !/^09\d{9}$/.test(contact)) {
-        alert('Please enter a valid Contact Number.');
-        return false;
+    // ✅ Last name validation
+    if (!lastname.trim() || !/^[a-zA-Z\s]*$/.test(lastname)) {
+        errors.push('Please enter a valid Last name.');
     }
 
-    if (!isValidEmail(email)) {
-        alert('Email should be either @gmail.com or @yahoo.com.');
-        return false;
+    // ✅ Contact number validation (Philippines format - 10 digits)
+    if (!/^\d{10}$/.test(contact)) {
+        errors.push('Please enter a valid contact number (10 digits).');
     }
 
+    // ✅ Email validation (Strict Pattern)
+    const emailPattern = /^[a-zA-Z0-9]+(?:[._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(email.trim())) {
+        errors.push('Please enter a valid email address.');
+    }
+
+    // ✅ Username validation (No < or > characters)
+    if (!username.trim() || /[<>]/.test(username)) {
+        errors.push('Please enter a valid Username.');
+    }
+
+    // ✅ Password validation (8+ characters, 1 uppercase, 1 number, 1 special character)
+    if (
+        !password.trim() ||
+        password.length < 8 ||
+        !/\d/.test(password) || // At least one number
+        !/[A-Z]/.test(password) || // At least one uppercase letter
+        !/[\W_]/.test(password) // At least one special character
+    ) {
+        errors.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+    }
+
+    // ✅ Confirm Password match
+    if (password !== confirmPassword) {
+        errors.push('Passwords do not match.');
+    }
+
+    // ✅ Unique checks for Username, Email, and Contact
     if (!isUniqueUsername(username)) {
-        alert('Username must be unique.');
-        return false;
+        errors.push('Username must be unique.');
     }
 
-    if (!isValidPassword(password)) {
-        alert('Password must be at least 8 characters long and contain at least 1 number.');
+    if (!isUniqueEmail(email)) {
+        errors.push('Email is already registered.');
+    }
+
+    if (!isUniqueContact(contact)) {
+        errors.push('Contact number is already registered.');
+    }
+
+    // ❌ If errors exist, show alert
+    if (errors.length > 0) {
+        alert(errors.join('\n'));
         return false;
     }
 
@@ -340,25 +372,88 @@ function Admin() {
         </table>
         <button type="button" className="px-10 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-3 ml-1" onClick={() => setShowUserModal(true)}>Add Donor</button>
       </div>
-        {/* User Modal */}
-        {showUserModal && (
-     <div className="modal-overlayAccounts">
-        <div className="modalAccounts">
-          <div className="modal-headerAccounts">
-          <span className="close-icon" onClick={() => setShowUserModal(false)}>&times;</span>
-            <h2 className='text-2xl mb-2'><strong>Add New Donor</strong></h2>
-            <input type="text" name="firstname" placeholder="First Name" value={newUser.firstname} onChange={(e) => handleInputChange(e, 'user')} />
-            <input type="text" name="lastname" placeholder="Last Name" value={newUser.lastname} onChange={(e) => handleInputChange(e, 'user')} />
-            <input type="text" name="contact" placeholder="Contact Number" value={newUser.contact} onChange={(e) => handleInputChange(e, 'user')} />
-            <input type="text" name="address" placeholder="Address" value={newUser.address} onChange={(e) => handleInputChange(e, 'user')} />
-            <input type="text" name="email" placeholder="Email" value={newUser.email} onChange={(e) => handleInputChange(e, 'user')} />
-            <input type="text" name="username" placeholder="Username" value={newUser.username} onChange={(e) => handleInputChange(e, 'user')} />
-            <input type="password" name="password" placeholder="Password" value={newUser.password} onChange={(e) => handleInputChange(e, 'user')} />
-            <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md mt-3 ml-1" onClick={handleAddUser}>Save</button>
-          </div>
-          </div>
+  {/* User Modal */}
+{showUserModal && (
+  <div className="modal-overlayAccounts">
+    <div className="modalAccounts">
+      <div className="modal-headerAccounts">
+        <span className="close-icon" onClick={() => setShowUserModal(false)}>&times;</span>
+        <h2 className="text-2xl mb-4"><strong>Add New Donor</strong></h2>
+
+        {/* First Name */}
+        <input 
+          type="text" name="firstname" placeholder="First Name"
+          value={newUser.firstname} onChange={(e) => handleInputChange(e, 'user')}
+          className="w-full p-3 border border-gray-300 rounded-md"
+        />
+
+        {/* Last Name */}
+        <input 
+          type="text" name="lastname" placeholder="Last Name"
+          value={newUser.lastname} onChange={(e) => handleInputChange(e, 'user')}
+          className="w-full p-3 border border-gray-300 rounded-md"
+        />
+
+        {/* Contact Number with +63 Prefix */}
+        <div className="relative flex items-center w-full">
+          <span className="absolute left-3 text-gray-500">+63</span>
+          <input 
+            type="text" name="contact" placeholder="9123456789"
+            value={newUser.contact} onChange={(e) => handleInputChange(e, 'user')}
+            className="pl-12 p-3 border border-gray-300 rounded-md w-full"
+          />
         </div>
-      )}
+
+        {/* Address */}
+        <input 
+          type="text" name="address" placeholder="Address"
+          value={newUser.address} onChange={(e) => handleInputChange(e, 'user')}
+          className="w-full p-3 border border-gray-300 rounded-md"
+        />
+
+        {/* Email */}
+        <input 
+          type="text" name="email" placeholder="Email"
+          value={newUser.email} onChange={(e) => handleInputChange(e, 'user')}
+          className="w-full p-3 border border-gray-300 rounded-md"
+        />
+
+        {/* Username */}
+        <input 
+          type="text" name="username" placeholder="Username"
+          value={newUser.username} onChange={(e) => handleInputChange(e, 'user')}
+          className="w-full p-3 border border-gray-300 rounded-md"
+        />
+
+        {/* Password Field with Show/Hide Toggle */}
+        <div className="relative flex items-center w-full">
+          <input 
+            type={showUserPassword ? 'text' : 'password'}
+            name="password"
+            placeholder="Password"
+            value={newUser.password}
+            onChange={(e) => handleInputChange(e, 'user')}
+            className="w-full p-3 pr-10 border border-gray-300 rounded-md"
+          />
+          <span
+            className="absolute right-3 cursor-pointer text-gray-500"
+            onClick={() => setShowUserPassword(!showUserPassword)}
+          >
+            {showUserPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+
+        {/* Save Button */}
+        <button 
+          type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+          onClick={handleAddUser}
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {showPasswordModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

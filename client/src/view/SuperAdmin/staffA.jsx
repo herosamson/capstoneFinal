@@ -17,6 +17,7 @@ function Staff() {
   const [isDropdownOpenA, setIsDropdownOpenA] = useState(false);
   const [users, setUsers] = useState([]);
   const [admins, setAdmins] = useState([]);
+    const [showStaffPassword, setShowStaffPassword] = useState(false);
   const [newStaff, setNewStaff] = useState({
     firstname: '',
     lastname: '',
@@ -447,7 +448,7 @@ const handleRequestDelete = (id) => {
         </table>
         <button type="button" className="px-10 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-3 ml-1" onClick={() => setShowStaffModal(true)}>Add Staff</button>
       </div>
- {/* STAFF MODAL */}
+{/* STAFF MODAL */}
 {showStaffModal && (
   <div className="modal-overlayAccounts">
     <div className="modalAccounts">
@@ -455,14 +456,18 @@ const handleRequestDelete = (id) => {
         <span className="close-icon" onClick={() => setShowStaffModal(false)}>&times;</span>
         <h2 className="text-2xl mb-4"><strong>Add New Staff</strong></h2>
 
-        <input type="text" name="firstname" placeholder="First Name"
+        {/* First Name */}
+        <input 
+          type="text" name="firstname" placeholder="First Name"
           value={newStaff.firstname} onChange={(e) => handleInputChange(e, 'staff')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
-        <input type="text" name="lastname" placeholder="Last Name"
+        {/* Last Name */}
+        <input 
+          type="text" name="lastname" placeholder="Last Name"
           value={newStaff.lastname} onChange={(e) => handleInputChange(e, 'staff')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Contact Number */}
@@ -471,35 +476,40 @@ const handleRequestDelete = (id) => {
           <input
             type="text" name="contact" placeholder="9123456789"
             value={newStaff.contact} onChange={(e) => handleContactChange(e, 'staff')}
-            className="pl-10 p-2 border border-gray-300 rounded-md w-full"
+            className="pl-12 p-3 border border-gray-300 rounded-md w-full"
           />
         </div>
 
-        <input type="text" name="address" placeholder="Address"
+        {/* Address */}
+        <input 
+          type="text" name="address" placeholder="Address"
           value={newStaff.address} onChange={(e) => handleInputChange(e, 'staff')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
-        <input type="text" name="email" placeholder="Email"
+        {/* Email */}
+        <input 
+          type="text" name="email" placeholder="Email"
           value={newStaff.email} onChange={(e) => handleInputChange(e, 'staff')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Username */}
-        <input type="text" name="username" placeholder="Username"
+        <input 
+          type="text" name="username" placeholder="Username"
           value={newStaff.username} onChange={(e) => handleInputChange(e, 'staff')}
-          className="w-full p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md"
         />
 
         {/* Password Field with Show/Hide Toggle */}
-        <div className="relative flex items-center">
+        <div className="relative flex items-center w-full">
           <input 
             type={showStaffPassword ? 'text' : 'password'}
             name="password"
             placeholder="Password"
             value={newStaff.password}
             onChange={(e) => handleInputChange(e, 'staff')}
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-3 pr-10 border border-gray-300 rounded-md"
           />
           <span
             className="absolute right-3 cursor-pointer text-gray-500"
@@ -509,7 +519,9 @@ const handleRequestDelete = (id) => {
           </span>
         </div>
 
-        <button type="button" className="w-full px-10 py-2 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+        {/* Save Button */}
+        <button 
+          type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
           onClick={handleAddStaff}
         >
           Save
@@ -518,6 +530,7 @@ const handleRequestDelete = (id) => {
     </div>
   </div>
 )}
+
 
       {showPasswordModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
