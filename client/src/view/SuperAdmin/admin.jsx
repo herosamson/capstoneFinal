@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './admin.css';
 import logo2 from './logo2.png';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function Administrator() {
   const [users, setUsers] = useState([]);
@@ -19,10 +18,6 @@ function Administrator() {
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [showSuperAdminModal, setShowSuperAdminModal] = useState(false); 
   const [isDropdownOpenA, setIsDropdownOpenA] = useState(false);
-  const [showAdminPassword, setShowAdminPassword] = useState(false);
-  const [showSuperAdminPassword, setShowSuperAdminPassword] = useState(false);
-  
-
   const toggleDropdownA = () => {
     setIsDropdownOpenA(!isDropdownOpenA);
   };
@@ -52,164 +47,127 @@ function Administrator() {
   });
 
   const validateAdminInput = () => {
-    const { firstname, lastname, contact, email, username, password, confirmPassword } = newAdmin;
-    let errors = [];
-  
-    // ✅ First name validation
-    if (!firstname.trim() || !/^[a-zA-Z\s]*$/.test(firstname)) {
-      errors.push('Please enter a valid First name.');
+    const { firstname, lastname, contact, email, username, password } = newAdmin;
+
+    const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
+    const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
+    const isUniqueUsername = (username) => 
+        !users.some((user) => user.username === username) &&
+        !staff.some((staff) => staff.username === username) &&
+        !admins.some((admin) => admin.username === username) &&
+        !superAdmins.some((sa) => sa.username === username); // Ensure uniqueness across SuperAdmins
+    const isUniqueContact = (contact) => 
+        !users.some((user) => user.contact === contact) &&
+        !staff.some((staff) => staff.contact === contact) &&
+        !admins.some((admin) => admin.contact === contact) &&
+        !superAdmins.some((sa) => sa.contact === contact);
+    const isUniqueEmail = (email) => 
+        !users.some((user) => user.email === email) &&
+        !staff.some((staff) => staff.email === email) &&
+        !admins.some((admin) => admin.email === email) &&
+        !superAdmins.some((sa) => sa.email === email);
+    const isValidPassword = (password) => /^(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
+
+    if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
+        alert('First name and Last name should contain letters only (spaces are allowed).');
+        return false;
     }
-  
-    // ✅ Last name validation
-    if (!lastname.trim() || !/^[a-zA-Z\s]*$/.test(lastname)) {
-      errors.push('Please enter a valid Last name.');
+
+    if (contact.length !== 11 || isNaN(contact) || !isUniqueContact(contact) || !/^09\d{9}$/.test(contact)) {
+        alert('Please enter a valid Contact Number.');
+        return false;
     }
-  
-    // ✅ Contact number validation (Philippines +63 format - 10 digits)
-    if (!/^\d{10}$/.test(contact)) {
-      errors.push('Please enter a valid contact number (10 digits).');
+
+    if (!isValidEmail(email) || !isUniqueEmail(email)) {
+        alert('Email should be @gmail.com and unique.');
+        return false;
     }
-  
-    // ✅ Email validation (Strict Pattern)
-    const emailPattern = /^[a-zA-Z0-9]+(?:[._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(email.trim())) {
-      errors.push('Please enter a valid email address.');
-    }
-  
-    // ✅ Username validation (No < or > characters)
-    if (!username.trim() || /[<>]/.test(username)) {
-      errors.push('Please enter a valid Username.');
-    }
-  
-    // ✅ Password validation (8+ characters, 1 uppercase, 1 number, 1 special character)
-    if (
-      !password.trim() ||
-      password.length < 8 ||
-      !/\d/.test(password) || // At least one number
-      !/[A-Z]/.test(password) || // At least one uppercase letter
-      !/[\W_]/.test(password) // At least one special character
-    ) {
-      errors.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
-    }
-  
-    // ✅ Confirm Password match
-    if (password !== confirmPassword) {
-      errors.push('Passwords do not match.');
-    }
-  
-    // ✅ Unique checks for Username, Email, and Contact
+
     if (!isUniqueUsername(username)) {
-      errors.push('Username must be unique.');
+        alert('Username must be unique.');
+        return false;
     }
-  
-    if (!isUniqueEmail(email)) {
-      errors.push('Email is already registered.');
+
+    if (!isValidPassword(password)) {
+        alert('Password must be at least 8 characters long and contain at least 1 number.');
+        return false;
     }
-  
-    if (!isUniqueContact(contact)) {
-      errors.push('Contact number is already registered.');
-    }
-  
-    // ❌ If errors exist, show alert
-    if (errors.length > 0) {
-      alert(errors.join('\n'));
-      return false;
-    }
-  
+
     return true;
   };
-  
+
   const validateSuperAdminInput = () => {
-    const { firstname, lastname, contact, email, username, password, confirmPassword } = newSuperAdmin;
-    let errors = [];
-  
-    // ✅ First name validation
-    if (!firstname.trim() || !/^[a-zA-Z\s]*$/.test(firstname)) {
-      errors.push('Please enter a valid First name.');
+    const { firstname, lastname, contact, email, username, password } = newSuperAdmin;
+
+    const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
+    const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
+    const isUniqueUsername = (username) => 
+        !users.some((user) => user.username === username) &&
+        !staff.some((staff) => staff.username === username) &&
+        !admins.some((admin) => admin.username === username) &&
+        !superAdmins.some((sa) => sa.username === username);
+    const isUniqueContact = (contact) => 
+        !users.some((user) => user.contact === contact) &&
+        !staff.some((staff) => staff.contact === contact) &&
+        !admins.some((admin) => admin.contact === contact) &&
+        !superAdmins.some((sa) => sa.contact === contact);
+    const isUniqueEmail = (email) => 
+        !users.some((user) => user.email === email) &&
+        !staff.some((staff) => staff.email === email) &&
+        !admins.some((admin) => admin.email === email) &&
+        !superAdmins.some((sa) => sa.email === email);
+    const isValidPassword = (password) => /^(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
+
+    if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
+        alert('First name and Last name should contain letters only (spaces are allowed).');
+        return false;
     }
-  
-    // ✅ Last name validation
-    if (!lastname.trim() || !/^[a-zA-Z\s]*$/.test(lastname)) {
-      errors.push('Please enter a valid Last name.');
+
+    if (contact.length !== 11 || isNaN(contact) || !isUniqueContact(contact) || !/^09\d{9}$/.test(contact)) {
+        alert('Please enter a valid Contact Number.');
+        return false;
     }
-  
-    // ✅ Contact number validation (Philippines +63 format - 10 digits)
-    if (!/^\d{10}$/.test(contact)) {
-      errors.push('Please enter a valid contact number (10 digits).');
+
+    if (!isValidEmail(email) || !isUniqueEmail(email)) {
+        alert('Email should be @gmail.com and unique.');
+        return false;
     }
-  
-    // ✅ Email validation (Strict Pattern)
-    const emailPattern = /^[a-zA-Z0-9]+(?:[._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(email.trim())) {
-      errors.push('Please enter a valid email address.');
-    }
-  
-    // ✅ Username validation (No < or > characters)
-    if (!username.trim() || /[<>]/.test(username)) {
-      errors.push('Please enter a valid Username.');
-    }
-  
-    // ✅ Password validation (8+ characters, 1 uppercase, 1 number, 1 special character)
-    if (
-      !password.trim() ||
-      password.length < 8 ||
-      !/\d/.test(password) || // At least one number
-      !/[A-Z]/.test(password) || // At least one uppercase letter
-      !/[\W_]/.test(password) // At least one special character
-    ) {
-      errors.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
-    }
-  
-    // ✅ Confirm Password match
-    if (password !== confirmPassword) {
-      errors.push('Passwords do not match.');
-    }
-  
-    // ✅ Unique checks for Username, Email, and Contact
+
     if (!isUniqueUsername(username)) {
-      errors.push('Username must be unique.');
+        alert('Username must be unique.');
+        return false;
     }
-  
-    if (!isUniqueEmail(email)) {
-      errors.push('Email is already registered.');
+
+    if (!isValidPassword(password)) {
+        alert('Password must be at least 8 characters long and contain at least 1 number.');
+        return false;
     }
-  
-    if (!isUniqueContact(contact)) {
-      errors.push('Contact number is already registered.');
-    }
-  
-    // ❌ If errors exist, show alert
-    if (errors.length > 0) {
-      alert(errors.join('\n'));
-      return false;
-    }
-  
+
     return true;
   };
-  
-  
 
   const handleAddAdmin = async () => {
     if (Object.values(newAdmin).some((field) => field === '')) {
       alert('Please fill in all fields');
       return;
     }
-  
+
     if (!validateAdminInput()) {
       return;
     }
-  
+
     try {
       const response = await fetch('https://idonate1.onrender.com/routes/accounts/admin', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(newAdmin),
       });
-  
-      const data = await response.json();
-  
+
       if (response.ok) {
-        setAdmins((prevAdmins) => [...prevAdmins, data]);
+        const addedAdmin = await response.json();
+        setAdmins((prevAdmins) => [...prevAdmins, addedAdmin]);
         setShowAdminModal(false);
         setNewAdmin({
           firstname: '',
@@ -220,16 +178,13 @@ function Administrator() {
           username: '',
           password: '',
         });
-        alert('Administrator added successfully!'); // ✅ Alert on success
       } else {
-        alert(`Failed to add administrator: ${data.message}`); // ❌ Show error message
+        console.error('Failed to add admin');
       }
     } catch (error) {
       console.error('Error adding admin:', error);
-      alert('An error occurred while adding the administrator. Please try again.');
     }
   };
-  
 
   const handleVerifySuperAdmin = async () => {
     try {
@@ -262,23 +217,23 @@ function Administrator() {
       alert('Please fill in all fields');
       return;
     }
-    
-  
+
     if (!validateSuperAdminInput()) {
       return;
     }
-  
+
     try {
       const response = await fetch('https://idonate1.onrender.com/routes/accounts/superadmin/add', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(newSuperAdmin),
       });
-  
-      const data = await response.json();
-  
+
       if (response.ok) {
-        setSuperAdmins((prevSuperAdmins) => [...prevSuperAdmins, data]);
+        const addedSuperAdmin = await response.json();
+        setSuperAdmins((prevSuperAdmins) => [...prevSuperAdmins, addedSuperAdmin]);
         setShowSuperAdminModal(false);
         setNewSuperAdmin({
           firstname: '',
@@ -288,16 +243,13 @@ function Administrator() {
           username: '',
           password: '',
         });
-        alert('Super Administrator added successfully!'); // ✅ Success message
       } else {
-        alert(`Failed to add super administrator: ${data.message}`); // ❌ Show error message
+        console.error('Failed to add superadmin');
       }
     } catch (error) {
       console.error('Error adding superadmin:', error);
-      alert('An error occurred while adding the super administrator. Please try again.');
     }
   };
-  
 
   const handleInputChange = (e, type) => {
     const { name, value } = e.target;
@@ -495,18 +447,6 @@ function Administrator() {
     }
   };
 
-  const handleContactChange = (e, type) => {
-    let value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
-    if (value.startsWith('63')) value = value.slice(2); // Remove "63" if user types it manually
-    if (value.length > 10) value = value.slice(0, 10); // Limit to 10 digits
-  
-    if (type === 'admin') {
-      setNewAdmin((prevAdmin) => ({ ...prevAdmin, contact: value }));
-    } else if (type === 'superadmin') {
-      setNewSuperAdmin((prevSuperAdmin) => ({ ...prevSuperAdmin, contact: value }));
-    } 
-  };
-  
   return (
     <div id="container">
       <div id="sidebar">
@@ -598,138 +538,40 @@ function Administrator() {
         </table>
         <button type="button" className="px-10 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-3 ml-1" onClick={() => setShowAdminModal(true)}>Add Administrator</button>
         {showAdminModal && (
-  <div className="modal-overlayAccounts">
-    <div className="modalAccounts">
-      <div className="modal-headerAccounts">
-        <span className="close-icon" onClick={() => setShowAdminModal(false)}>&times;</span>
-        <h2 className="text-2xl mb-4"><strong>Add New Administrator</strong></h2>
-
-        <div className="authContainer">
-          <input type="text" name="firstname" placeholder="First Name" 
-            value={newAdmin.firstname} onChange={(e) => handleInputChange(e, 'admin')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer">
-          <input type="text" name="lastname" placeholder="Last Name" 
-            value={newAdmin.lastname} onChange={(e) => handleInputChange(e, 'admin')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer flex gap-2 w-full">
-          <span className="p-3 bg-gray-100 border rounded-l-md">+63</span>
-          <input type="text" name="contact" placeholder="9123456789" 
-            value={newAdmin.contact} onChange={(e) => handleContactChange(e, 'admin')}
-            className="authFields border-l-0 rounded-r-md flex-grow"
-          />
-        </div>
-
-        <div className="authContainer">
-          <input type="text" name="email" placeholder="Email" 
-            value={newAdmin.email} onChange={(e) => handleInputChange(e, 'admin')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer">
-          <input type="text" name="username" placeholder="Username" 
-            value={newAdmin.username} onChange={(e) => handleInputChange(e, 'admin')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer relative">
-          <input type={showAdminPassword ? 'text' : 'password'} name="password" placeholder="Password"
-            value={newAdmin.password} onChange={(e) => handleInputChange(e, 'admin')}
-            className="authFields pr-10"
-          />
-          <span className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            onClick={() => setShowAdminPassword(!showAdminPassword)}
-          >
-            {showAdminPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-
-        <button type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
-          onClick={handleAddAdmin}
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-
-{showSuperAdminModal && (
-  <div className="modal-overlayAccounts">
-    <div className="modalAccounts">
-      <div className="modal-headerAccounts">
-        <span className="close-icon" onClick={() => setShowSuperAdminModal(false)}>&times;</span>
-        <h2 className="text-2xl mb-4"><strong>Add New Super Administrator</strong></h2>
-
-        <div className="authContainer">
-          <input type="text" name="firstname" placeholder="First Name" 
-            value={newSuperAdmin.firstname} onChange={(e) => handleInputChange(e, 'superadmin')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer">
-          <input type="text" name="lastname" placeholder="Last Name" 
-            value={newSuperAdmin.lastname} onChange={(e) => handleInputChange(e, 'superadmin')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer flex gap-2 w-full">
-          <span className="p-3 bg-gray-100 border rounded-l-md">+63</span>
-          <input type="text" name="contact" placeholder="9123456789" 
-            value={newSuperAdmin.contact} onChange={(e) => handleContactChange(e, 'superadmin')}
-            className="authFields border-l-0 rounded-r-md flex-grow"
-          />
-        </div>
-
-        <div className="authContainer">
-          <input type="text" name="email" placeholder="Email" 
-            value={newSuperAdmin.email} onChange={(e) => handleInputChange(e, 'superadmin')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer">
-          <input type="text" name="username" placeholder="Username" 
-            value={newSuperAdmin.username} onChange={(e) => handleInputChange(e, 'superadmin')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer relative">
-          <input type={showSuperAdminPassword ? 'text' : 'password'} name="password" placeholder="Password"
-            value={newSuperAdmin.password} onChange={(e) => handleInputChange(e, 'superadmin')}
-            className="authFields pr-10"
-          />
-          <span className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            onClick={() => setShowSuperAdminPassword(!showSuperAdminPassword)}
-          >
-            {showSuperAdminPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-
-        <button type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
-          onClick={handleAddSuperAdmin}
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-
-
+          <div className="modal-overlayAccounts">
+            <div className="modalAccounts">
+              <div className="modal-headerAccounts">
+              <span className="close-icon" onClick={() => setShowAdminModal(false)}>&times;</span>
+                <h2 className='text-2xl mb-4'><strong>Add New Administrator</strong></h2>
+                <input type="text" name="firstname" placeholder="First Name" value={newAdmin.firstname} onChange={(e) => handleInputChange(e, 'admin')} />
+                <input type="text" name="lastname" placeholder="Last Name" value={newAdmin.lastname} onChange={(e) => handleInputChange(e, 'admin')} />
+                <input type="text" name="contact" placeholder="Contact Number" value={newAdmin.contact} onChange={(e) => handleInputChange(e, 'admin')} />
+                <input type="text" name="address" placeholder="Address" value={newAdmin.address} onChange={(e) => handleInputChange(e, 'admin')} />
+                <input type="text" name="email" placeholder="Email" value={newAdmin.email} onChange={(e) => handleInputChange(e, 'admin')} />
+                <input type="text" name="username" placeholder="Username" value={newAdmin.username} onChange={(e) => handleInputChange(e, 'admin')} />
+                <input type="password" name="password" placeholder="Password" value={newAdmin.password} onChange={(e) => handleInputChange(e, 'admin')} />
+                <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md mt-3 ml-1" onClick={handleAddAdmin}>Save</button>
+              </div>
+            </div>
+          </div>
+        )}
+        {showSuperAdminModal && (
+          <div className="modal-overlayAccounts">
+            <div className="modalAccounts">
+              <div className="modal-headerAccounts">
+              <span className="close-icon" onClick={() => setShowSuperAdminModal(false)}>&times;</span>
+                <h2 className='text-2xl mb-4'><strong>Add New Super Administrator</strong></h2>
+                <input type="text" name="firstname" placeholder="First Name" value={newSuperAdmin.firstname} onChange={(e) => handleInputChange(e, 'superadmin')} />
+                <input type="text" name="lastname" placeholder="Last Name" value={newSuperAdmin.lastname} onChange={(e) => handleInputChange(e, 'superadmin')} />
+                <input type="text" name="contact" placeholder="Contact Number" value={newSuperAdmin.contact} onChange={(e) => handleInputChange(e, 'superadmin')} />
+                <input type="text" name="email" placeholder="Email" value={newSuperAdmin.email} onChange={(e) => handleInputChange(e, 'superadmin')} />
+                <input type="text" name="username" placeholder="Username" value={newSuperAdmin.username} onChange={(e) => handleInputChange(e, 'superadmin')} />
+                <input type="password" name="password" placeholder="Password" value={newSuperAdmin.password} onChange={(e) => handleInputChange(e, 'superadmin')} />
+                <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md mt-3 ml-1" onClick={handleAddSuperAdmin}>Save</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {showPasswordModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

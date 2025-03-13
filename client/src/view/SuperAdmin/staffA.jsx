@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './staffA.css';
 import logo2 from './logo2.png';
 import axios from 'axios';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+
 function Staff() {
   const [staff, setStaff] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,7 +17,6 @@ function Staff() {
   const [isDropdownOpenA, setIsDropdownOpenA] = useState(false);
   const [users, setUsers] = useState([]);
   const [admins, setAdmins] = useState([]);
-    const [showStaffPassword, setShowStaffPassword] = useState(false);
   const [newStaff, setNewStaff] = useState({
     firstname: '',
     lastname: '',
@@ -40,67 +39,50 @@ function Staff() {
   };
   const validateStaffInput = () => {
     const { firstname, lastname, contact, email, username, password } = newStaff;
-    let errors = [];
-  
-    // ✅ First name validation
-    if (!firstname.trim() || !/^[a-zA-Z\s]*$/.test(firstname)) {
-      errors.push('Please enter a valid First name.');
+
+    const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
+    const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
+    const isUniqueUsername = (username) => 
+        !users.some((user) => user.username === username) &&
+        !staff.some((staff) => staff.username === username) &&
+        !admins.some((admin) => admin.username === username);
+    const isUniqueContact = (contact) => 
+        !users.some((user) => user.contact === contact) &&
+        !staff.some((staff) => staff.contact === contact) &&
+        !admins.some((admin) => admin.contact === contact);
+    const isUniqueEmail = (email) => 
+        !users.some((user) => user.email === email) &&
+        !staff.some((staff) => staff.email === email) &&
+        !admins.some((admin) => admin.email === email);
+    const isValidPassword = (password) => /^(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
+
+    if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
+        alert('First name and Last name should contain letters only (spaces are allowed).');
+        return false;
     }
-  
-    // ✅ Last name validation
-    if (!lastname.trim() || !/^[a-zA-Z\s]*$/.test(lastname)) {
-      errors.push('Please enter a valid Last name.');
+
+    if (contact.length !== 11 || isNaN(contact) || !isUniqueContact(contact) || !/^09\d{9}$/.test(contact)) {
+        alert('Please enter a valid Contact Number.');
+        return false;
     }
-  
-    // ✅ Contact number validation (Philippines +63 format - 10 digits)
-    if (!/^\d{10}$/.test(contact)) {
-      errors.push('Please enter a valid contact number (10 digits).');
+
+    if (!isValidEmail(email) || !isUniqueEmail(email)) {
+        alert('Email should be either @gmail.com or @yahoo.com and unique.');
+        return false;
     }
-  
-    // ✅ Email validation (Strict Pattern)
-    const emailPattern = /^[a-zA-Z0-9]+(?:[._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(email.trim())) {
-      errors.push('Please enter a valid email address.');
-    }
-  
-    // ✅ Username validation (No < or > characters)
-    if (!username.trim() || /[<>]/.test(username)) {
-      errors.push('Please enter a valid Username.');
-    }
-  
-    // ✅ Password validation (8+ characters, 1 uppercase, 1 number, 1 special character)
-    if (
-      !password.trim() ||
-      password.length < 8 ||
-      !/\d/.test(password) || // At least one number
-      !/[A-Z]/.test(password) || // At least one uppercase letter
-      !/[\W_]/.test(password) // At least one special character
-    ) {
-      errors.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
-    }
-  
-    // ✅ Unique checks for Username, Email, and Contact
+
     if (!isUniqueUsername(username)) {
-      errors.push('Username must be unique.');
+        alert('Username must be unique.');
+        return false;
     }
-  
-    if (!isUniqueEmail(email)) {
-      errors.push('Email is already registered.');
+
+    if (!isValidPassword(password)) {
+        alert('Password must be at least 8 characters long and contain at least 1 number.');
+        return false;
     }
-  
-    if (!isUniqueContact(contact)) {
-      errors.push('Contact number is already registered.');
-    }
-  
-    // ❌ If errors exist, show alert
-    if (errors.length > 0) {
-      alert(errors.join('\n'));
-      return false;
-    }
-  
+
     return true;
-  };
-  
+};
 
 const handleVerifySuperAdmin = async () => {
   try {
@@ -340,16 +322,7 @@ const handleRequestDelete = (id) => {
     const usernameMatch = staffMember.username.toLowerCase().includes(searchLower);
     return firstnameMatch || lastnameMatch || emailMatch || contactMatch || usernameMatch;
   });
-  const handleContactChange = (e, type) => {
-    let value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
-    if (value.startsWith('63')) value = value.slice(2); // Remove "63" if user types it manually
-    if (value.length > 10) value = value.slice(0, 10); // Limit to 10 digits
-  
-    if (type === 'staff') {
-      setNewStaff((prevStaff) => ({ ...prevStaff, contact: value }));
-    } 
-  };
-  
+
   return (
     <div id="container">
       <div id="sidebar">
@@ -448,65 +421,25 @@ const handleRequestDelete = (id) => {
         </table>
         <button type="button" className="px-10 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-3 ml-1" onClick={() => setShowStaffModal(true)}>Add Staff</button>
       </div>
+      {/* Staff Modal */}
       {showStaffModal && (
-  <div className="modal-overlayAccounts">
-    <div className="modalAccounts">
-      <div className="modal-headerAccounts">
-        <span className="close-icon" onClick={() => setShowStaffModal(false)}>&times;</span>
-        <h2 className="text-2xl mb-4"><strong>Add New Staff</strong></h2>
-
-        <div className="authContainer">
-          <input type="text" name="firstname" placeholder="First Name" 
-            value={newStaff.firstname} onChange={(e) => handleInputChange(e, 'staff')}
-            className="authFields"
-          />
+        <div className="modal-overlayAccounts">
+        <div className="modalAccounts">
+          <div className="modal-headerAccounts">
+          <span className="close-icon" onClick={() => setShowStaffModal(false)}>&times;</span>
+            <h2 className='text-2xl mb-4'><strong>Add New Staff</strong></h2>
+            <input type="text" name="firstname" placeholder="First Name" value={newStaff.firstname} onChange={(e) => handleInputChange(e, 'staff')} />
+            <input type="text" name="lastname" placeholder="Last Name" value={newStaff.lastname} onChange={(e) => handleInputChange(e, 'staff')} />
+            <input type="text" name="contact" placeholder="Contact Number" value={newStaff.contact} onChange={(e) => handleInputChange(e, 'staff')} />
+            <input type="text" name="address" placeholder="Address" value={newStaff.address} onChange={(e) => handleInputChange(e, 'staff')} />
+            <input type="text" name="email" placeholder="Email" value={newStaff.email} onChange={(e) => handleInputChange(e, 'staff')} />
+            <input type="text" name="username" placeholder="Username" value={newStaff.username} onChange={(e) => handleInputChange(e, 'staff')} />
+            <input type="password" name="password" placeholder="Password" value={newStaff.password} onChange={(e) => handleInputChange(e, 'staff')} />
+            <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md mt-3 ml-1" onClick={handleAddStaff}>Save</button>
+          </div>
+          </div>
         </div>
-
-        <div className="authContainer">
-          <input type="text" name="lastname" placeholder="Last Name" 
-            value={newStaff.lastname} onChange={(e) => handleInputChange(e, 'staff')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer">
-          <input type="text" name="email" placeholder="Email" 
-            value={newStaff.email} onChange={(e) => handleInputChange(e, 'staff')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer">
-          <input type="text" name="username" placeholder="Username" 
-            value={newStaff.username} onChange={(e) => handleInputChange(e, 'staff')}
-            className="authFields"
-          />
-        </div>
-
-        <div className="authContainer relative">
-          <input type={showStaffPassword ? 'text' : 'password'} name="password" placeholder="Password"
-            value={newStaff.password} onChange={(e) => handleInputChange(e, 'staff')}
-            className="authFields pr-10"
-          />
-          <span className="absolute right-3 top-3 cursor-pointer text-gray-500"
-            onClick={() => setShowStaffPassword(!showStaffPassword)}
-          >
-            {showStaffPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-
-        <button type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
-          onClick={handleAddStaff}
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-
-
+      )}
 
       {showPasswordModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
