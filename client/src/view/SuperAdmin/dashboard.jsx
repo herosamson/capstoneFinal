@@ -9,7 +9,7 @@ function Admin() {
   const [superAdminPassword, setSuperAdminPassword] = useState('');   
   const [deleteUserId, setDeleteUserId] = useState(null);  
   const [isAuthorized, setIsAuthorized] = useState(false); 
-
+   const [showUserPassword, setShowUserPassword] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [newUser, setNewUser] = useState({
     firstname: '',
@@ -372,78 +372,67 @@ function Admin() {
         </table>
         <button type="button" className="px-10 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-3 ml-1" onClick={() => setShowUserModal(true)}>Add Donor</button>
       </div>
-  {/* User Modal */}
-{showUserModal && (
+      {showUserModal && (
   <div className="modal-overlayAccounts">
     <div className="modalAccounts">
       <div className="modal-headerAccounts">
         <span className="close-icon" onClick={() => setShowUserModal(false)}>&times;</span>
-        <h2 className="text-2xl mb-4"><strong>Add New Donor</strong></h2>
+        <h2 className="text-2xl mb-4"><strong>Add New User</strong></h2>
 
-        {/* First Name */}
-        <input 
-          type="text" name="firstname" placeholder="First Name"
-          value={newUser.firstname} onChange={(e) => handleInputChange(e, 'user')}
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
-
-        {/* Last Name */}
-        <input 
-          type="text" name="lastname" placeholder="Last Name"
-          value={newUser.lastname} onChange={(e) => handleInputChange(e, 'user')}
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
-
-        {/* Contact Number with +63 Prefix */}
-        <div className="relative flex items-center w-full">
-          <span className="absolute left-3 text-gray-500">+63</span>
+        <div className="authContainer">
           <input 
-            type="text" name="contact" placeholder="9123456789"
-            value={newUser.contact} onChange={(e) => handleInputChange(e, 'user')}
-            className="pl-12 p-3 border border-gray-300 rounded-md w-full"
+            type="text" name="firstname" placeholder="First Name" 
+            value={newUser.firstname} onChange={(e) => handleInputChange(e, 'user')}
+            className="authFields"
           />
         </div>
 
-        {/* Address */}
-        <input 
-          type="text" name="address" placeholder="Address"
-          value={newUser.address} onChange={(e) => handleInputChange(e, 'user')}
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
-
-        {/* Email */}
-        <input 
-          type="text" name="email" placeholder="Email"
-          value={newUser.email} onChange={(e) => handleInputChange(e, 'user')}
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
-
-        {/* Username */}
-        <input 
-          type="text" name="username" placeholder="Username"
-          value={newUser.username} onChange={(e) => handleInputChange(e, 'user')}
-          className="w-full p-3 border border-gray-300 rounded-md"
-        />
-
-        {/* Password Field with Show/Hide Toggle */}
-        <div className="relative flex items-center w-full">
+        <div className="authContainer">
           <input 
-            type={showUserPassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Password"
-            value={newUser.password}
-            onChange={(e) => handleInputChange(e, 'user')}
-            className="w-full p-3 pr-10 border border-gray-300 rounded-md"
+            type="text" name="lastname" placeholder="Last Name" 
+            value={newUser.lastname} onChange={(e) => handleInputChange(e, 'user')}
+            className="authFields"
           />
-          <span
-            className="absolute right-3 cursor-pointer text-gray-500"
+        </div>
+
+        <div className="authContainer flex gap-2 w-full">
+          <span className="p-3 bg-gray-100 border rounded-l-md">+63</span>
+          <input
+            type="text" name="contact" placeholder="9123456789" 
+            value={newUser.contact} onChange={(e) => handleContactChange(e, 'user')}
+            className="authFields border-l-0 rounded-r-md flex-grow"
+          />
+        </div>
+
+        <div className="authContainer">
+          <input 
+            type="text" name="email" placeholder="Email" 
+            value={newUser.email} onChange={(e) => handleInputChange(e, 'user')}
+            className="authFields"
+          />
+        </div>
+
+        <div className="authContainer">
+          <input 
+            type="text" name="username" placeholder="Username" 
+            value={newUser.username} onChange={(e) => handleInputChange(e, 'user')}
+            className="authFields"
+          />
+        </div>
+
+        <div className="authContainer relative">
+          <input 
+            type={showUserPassword ? 'text' : 'password'} name="password" placeholder="Password"
+            value={newUser.password} onChange={(e) => handleInputChange(e, 'user')}
+            className="authFields pr-10"
+          />
+          <span className="absolute right-3 top-3 cursor-pointer text-gray-500" 
             onClick={() => setShowUserPassword(!showUserPassword)}
           >
             {showUserPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
 
-        {/* Save Button */}
         <button 
           type="button" className="w-full px-10 py-3 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
           onClick={handleAddUser}
@@ -454,6 +443,7 @@ function Admin() {
     </div>
   </div>
 )}
+
 
       {showPasswordModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
