@@ -162,7 +162,6 @@ function Admin() {
     const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
     const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
     const isUniqueUsername = (username) => !users.some((user) => user.username === username);
-    const isValidPassword = (password) => /^(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
 
     if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
         alert('First name and Last name should contain letters only (spaces are allowed).');
@@ -183,11 +182,16 @@ function Admin() {
         alert('Username must be unique.');
         return false;
     }
-
-    if (!isValidPassword(password)) {
-        alert('Password must be at least 8 characters long and contain at least 1 number.');
-        return false;
-    }
+// Password validation (at least 8 characters, one uppercase, one number, and one special character)
+if (
+  !password.trim() ||
+  password.length < 8 ||
+  !/\d/.test(password) ||
+  !/[A-Z]/.test(password) ||
+  !/[\W_]/.test(password) 
+) {
+  errors.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+}
 
     return true;
 };
