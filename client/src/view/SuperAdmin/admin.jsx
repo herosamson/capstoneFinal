@@ -95,7 +95,7 @@ if (
   !/[A-Z]/.test(password) ||
   !/[\W_]/.test(password) 
 ) {
-  errors.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+  error.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
 }
     return true;
   };
@@ -149,7 +149,7 @@ if (
   !/[A-Z]/.test(password) ||
   !/[\W_]/.test(password) 
 ) {
-  errors.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+  error.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
 }
 
     return true;
