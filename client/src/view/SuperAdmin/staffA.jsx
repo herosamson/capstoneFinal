@@ -80,7 +80,36 @@ function Staff() {
 
     return true;
   };
-
+  const handleLogout = async () => {
+    const username = localStorage.getItem('username'); 
+    const role = localStorage.getItem('userRole'); 
+  
+    try {
+      const response = await fetch('https://idonate1.onrender.com/routes/accounts/logout', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, role }), 
+      });
+  
+      if (response.ok) {
+        alert("You have successfully logged out!");
+        localStorage.removeItem('userId');
+        localStorage.removeItem('username');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('firstname');
+        localStorage.removeItem('lastname');
+        localStorage.removeItem('contact');
+        localStorage.removeItem('lastVisitedPath');
+        window.location.href = '/'; 
+      } else {
+        alert("Logout failed");
+      }
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
   const handleAddStaff = async () => {
     if (Object.values(newStaff).some((field) => field === '')) {
       alert('Please fill in all fields');
