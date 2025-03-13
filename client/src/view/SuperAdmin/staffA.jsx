@@ -420,7 +420,7 @@ const handleRequestDelete = (id) => {
                       {isAuthorized === staffMember._id ? (
                       <button
                         type="button"
-                        className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
+                        className="px-4 py-2 text-white bg-red-700 hover:bg-red-800 duration-200 rounded-md mr-2"
                         onClick={() => handleDelete(staffMember._id)}
                       >
                         Delete
@@ -428,7 +428,7 @@ const handleRequestDelete = (id) => {
                     ) : (
                       <button
                         type="button"
-                        className="px-4 py-2 text-white bg-red-600 hover:bg-red-800 duration-200 rounded-md mr-2"
+                        className="px-4 py-2 text-white bg-red-400 hover:bg-red-600 duration-200 rounded-md mr-2"
                         onClick={() => {
                           setDeleteUserId(staffMember._id); // ✅ Store the ID of the user requesting deletion
                           setShowPasswordModal(true);
@@ -447,34 +447,71 @@ const handleRequestDelete = (id) => {
         </table>
         <button type="button" className="px-10 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-3 ml-1" onClick={() => setShowStaffModal(true)}>Add Staff</button>
       </div>
-      {/* Staff Modal */}
-      {showStaffModal && (
+ {/* STAFF MODAL */}
+{showStaffModal && (
   <div className="modal-overlayAccounts">
     <div className="modalAccounts">
       <div className="modal-headerAccounts">
         <span className="close-icon" onClick={() => setShowStaffModal(false)}>&times;</span>
         <h2 className="text-2xl mb-4"><strong>Add New Staff</strong></h2>
-        <input type="text" name="firstname" placeholder="First Name" value={newStaff.firstname} onChange={(e) => handleInputChange(e, 'staff')} />
-        <input type="text" name="lastname" placeholder="Last Name" value={newStaff.lastname} onChange={(e) => handleInputChange(e, 'staff')} />
 
-        {/* Contact Number with +63 Prefix */}
-        <div className="relative flex items-center">
+        <input type="text" name="firstname" placeholder="First Name"
+          value={newStaff.firstname} onChange={(e) => handleInputChange(e, 'staff')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+
+        <input type="text" name="lastname" placeholder="Last Name"
+          value={newStaff.lastname} onChange={(e) => handleInputChange(e, 'staff')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+
+        {/* Contact Number */}
+        <div className="relative flex items-center w-full">
           <span className="absolute left-3 text-gray-500">+63</span>
           <input
-            type="text"
-            name="contact"
-            placeholder="9123456789"
-            value={newStaff.contact}
-            onChange={(e) => handleContactChange(e, 'staff')}
+            type="text" name="contact" placeholder="9123456789"
+            value={newStaff.contact} onChange={(e) => handleContactChange(e, 'staff')}
             className="pl-10 p-2 border border-gray-300 rounded-md w-full"
           />
         </div>
 
-        <input type="text" name="address" placeholder="Address" value={newStaff.address} onChange={(e) => handleInputChange(e, 'staff')} />
-        <input type="text" name="email" placeholder="Email" value={newStaff.email} onChange={(e) => handleInputChange(e, 'staff')} />
-        <input type="text" name="username" placeholder="Username" value={newStaff.username} onChange={(e) => handleInputChange(e, 'staff')} />
+        <input type="text" name="address" placeholder="Address"
+          value={newStaff.address} onChange={(e) => handleInputChange(e, 'staff')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
 
-        <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3" onClick={handleAddStaff}>
+        <input type="text" name="email" placeholder="Email"
+          value={newStaff.email} onChange={(e) => handleInputChange(e, 'staff')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+
+        {/* Username */}
+        <input type="text" name="username" placeholder="Username"
+          value={newStaff.username} onChange={(e) => handleInputChange(e, 'staff')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+
+        {/* Password Field with Show/Hide Toggle */}
+        <div className="relative flex items-center">
+          <input 
+            type={showStaffPassword ? 'text' : 'password'}
+            name="password"
+            placeholder="Password"
+            value={newStaff.password}
+            onChange={(e) => handleInputChange(e, 'staff')}
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <span
+            className="absolute right-3 cursor-pointer text-gray-500"
+            onClick={() => setShowStaffPassword(!showStaffPassword)}
+          >
+            {showStaffPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+
+        <button type="button" className="w-full px-10 py-2 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+          onClick={handleAddStaff}
+        >
           Save
         </button>
       </div>

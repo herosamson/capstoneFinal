@@ -581,7 +581,7 @@ function Administrator() {
                           </button>
                         ) : (
                           <button 
-                            className="px-4 py-2 text-white bg-red-500 hover:bg-red-700 duration-200 rounded-md mr-2"
+                            className="px-4 py-2 text-white bg-red-400 hover:bg-red-600 duration-200 rounded-md mr-2"
                             onClick={deleteUser} // ✅ Don't pass params here since `deleteUserId` is already set
                           >
                             Delete
@@ -598,107 +598,147 @@ function Administrator() {
         </table>
         <button type="button" className="px-10 py-1.5 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mt-3 ml-1" onClick={() => setShowAdminModal(true)}>Add Administrator</button>
         {showAdminModal && (
-          <div className="modal-overlayAccounts">
-            <div className="modalAccounts">
-              <div className="modal-headerAccounts">
-                <span className="close-icon" onClick={() => setShowAdminModal(false)}>&times;</span>
-                <h2 className="text-2xl mb-4"><strong>Add New Administrator</strong></h2>
-                <input type="text" name="firstname" placeholder="First Name" value={newAdmin.firstname} onChange={(e) => handleInputChange(e, 'admin')} />
-                <input type="text" name="lastname" placeholder="Last Name" value={newAdmin.lastname} onChange={(e) => handleInputChange(e, 'admin')} />
-                
-                {/* Contact Number with +63 Prefix */}
-                <div className="relative flex items-center">
-                  <span className="absolute left-3 text-gray-500">+63</span>
-                  <input
-                    type="text"
-                    name="contact"
-                    placeholder="9123456789"
-                    value={newAdmin.contact}
-                    onChange={(e) => handleContactChange(e, 'admin')}
-                    className="pl-10 p-2 border border-gray-300 rounded-md w-full"
-                  />
-                </div>
+  <div className="modal-overlayAccounts">
+    <div className="modalAccounts">
+      <div className="modal-headerAccounts">
+        <span className="close-icon" onClick={() => setShowAdminModal(false)}>&times;</span>
+        <h2 className="text-2xl mb-4"><strong>Add New Administrator</strong></h2>
 
-                <input type="text" name="address" placeholder="Address" value={newAdmin.address} onChange={(e) => handleInputChange(e, 'admin')} />
-                <input type="text" name="email" placeholder="Email" value={newAdmin.email} onChange={(e) => handleInputChange(e, 'admin')} />
-                <input type="text" name="username" placeholder="Username" value={newAdmin.username} onChange={(e) => handleInputChange(e, 'admin')} />
+        {/* First Name */}
+        <input 
+          type="text" name="firstname" placeholder="First Name" 
+          value={newAdmin.firstname} onChange={(e) => handleInputChange(e, 'admin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
 
-                {/* Password Field with Show/Hide Toggle */}
-                <div className="relative flex items-center">
-                  <input 
-                    type={showAdminPassword ? 'text' : 'password'}
-                    name="password"
-                    placeholder="Password"
-                    value={newAdmin.password}
-                    onChange={(e) => handleInputChange(e, 'admin')}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                  <span
-                    className="absolute right-3 cursor-pointer text-gray-500"
-                    onClick={() => setShowAdminPassword(!showAdminPassword)}
-                  >
-                    {showAdminPassword ? <FaEyeSlash /> : <FaEye />}
-                  </span>
-                </div>
+        {/* Last Name */}
+        <input 
+          type="text" name="lastname" placeholder="Last Name" 
+          value={newAdmin.lastname} onChange={(e) => handleInputChange(e, 'admin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
 
-                <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3" onClick={handleAddAdmin}>
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Contact Number with +63 Prefix */}
+        <div className="relative flex items-center w-full">
+          <span className="absolute left-3 text-gray-500">+63</span>
+          <input
+            type="text" name="contact" placeholder="9123456789" 
+            value={newAdmin.contact} onChange={(e) => handleContactChange(e, 'admin')}
+            className="pl-10 p-2 border border-gray-300 rounded-md w-full"
+          />
+        </div>
 
-        {showSuperAdminModal && (
-          <div className="modal-overlayAccounts">
-            <div className="modalAccounts">
-              <div className="modal-headerAccounts">
-                <span className="close-icon" onClick={() => setShowSuperAdminModal(false)}>&times;</span>
-                <h2 className="text-2xl mb-4"><strong>Add New Super Administrator</strong></h2>
-                <input type="text" name="firstname" placeholder="First Name" value={newSuperAdmin.firstname} onChange={(e) => handleInputChange(e, 'superadmin')} />
-                <input type="text" name="lastname" placeholder="Last Name" value={newSuperAdmin.lastname} onChange={(e) => handleInputChange(e, 'superadmin')} />
+        {/* Address */}
+        <input 
+          type="text" name="address" placeholder="Address" 
+          value={newAdmin.address} onChange={(e) => handleInputChange(e, 'admin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
 
-                {/* Contact Number with +63 Prefix */}
-                <div className="relative flex items-center">
-                  <span className="absolute left-3 text-gray-500">+63</span>
-                  <input
-                    type="text"
-                    name="contact"
-                    placeholder="9123456789"
-                    value={newSuperAdmin.contact}
-                    onChange={(e) => handleContactChange(e, 'superadmin')}
-                    className="pl-10 p-2 border border-gray-300 rounded-md w-full"
-                  />
-                </div>
+        {/* Email */}
+        <input 
+          type="text" name="email" placeholder="Email" 
+          value={newAdmin.email} onChange={(e) => handleInputChange(e, 'admin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
 
-                <input type="text" name="email" placeholder="Email" value={newSuperAdmin.email} onChange={(e) => handleInputChange(e, 'superadmin')} />
-                <input type="text" name="username" placeholder="Username" value={newSuperAdmin.username} onChange={(e) => handleInputChange(e, 'superadmin')} />
+        {/* Username */}
+        <input 
+          type="text" name="username" placeholder="Username" 
+          value={newAdmin.username} onChange={(e) => handleInputChange(e, 'admin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
 
-                {/* Password Field with Show/Hide Toggle */}
-                <div className="relative flex items-center">
-                  <input 
-                    type={showSuperAdminPassword ? 'text' : 'password'}
-                    name="password"
-                    placeholder="Password"
-                    value={newSuperAdmin.password}
-                    onChange={(e) => handleInputChange(e, 'superadmin')}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                  <span
-                    className="absolute right-3 cursor-pointer text-gray-500"
-                    onClick={() => setShowSuperAdminPassword(!showSuperAdminPassword)}
-                  >
-                    {showSuperAdminPassword ? <FaEyeSlash /> : <FaEye />}
-                  </span>
-                </div>
+        {/* Password Field */}
+        <div className="relative flex items-center w-full">
+          <input 
+            type={showAdminPassword ? 'text' : 'password'} name="password" placeholder="Password"
+            value={newAdmin.password} onChange={(e) => handleInputChange(e, 'admin')}
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <span className="absolute right-3 cursor-pointer text-gray-500" onClick={() => setShowAdminPassword(!showAdminPassword)}>
+            {showAdminPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
 
-                <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3" onClick={handleAddSuperAdmin}>
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Save Button */}
+        <button 
+          type="button" className="w-full px-10 py-2 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+          onClick={handleAddAdmin}
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+ {/* SUPER ADMIN MODAL */}
+{showSuperAdminModal && (
+  <div className="modal-overlayAccounts">
+    <div className="modalAccounts">
+      <div className="modal-headerAccounts">
+        <span className="close-icon" onClick={() => setShowSuperAdminModal(false)}>&times;</span>
+        <h2 className="text-2xl mb-4"><strong>Add New Super Administrator</strong></h2>
+
+        <input type="text" name="firstname" placeholder="First Name"
+          value={newSuperAdmin.firstname} onChange={(e) => handleInputChange(e, 'superadmin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+
+        <input type="text" name="lastname" placeholder="Last Name"
+          value={newSuperAdmin.lastname} onChange={(e) => handleInputChange(e, 'superadmin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+
+        {/* Contact Number */}
+        <div className="relative flex items-center w-full">
+          <span className="absolute left-3 text-gray-500">+63</span>
+          <input
+            type="text" name="contact" placeholder="9123456789"
+            value={newSuperAdmin.contact} onChange={(e) => handleContactChange(e, 'superadmin')}
+            className="pl-10 p-2 border border-gray-300 rounded-md w-full"
+          />
+        </div>
+
+        <input type="text" name="email" placeholder="Email"
+          value={newSuperAdmin.email} onChange={(e) => handleInputChange(e, 'superadmin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+
+        <input type="text" name="username" placeholder="Username"
+          value={newSuperAdmin.username} onChange={(e) => handleInputChange(e, 'superadmin')}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        />
+
+        {/* Password Field with Show/Hide Toggle */}
+        <div className="relative flex items-center">
+          <input 
+            type={showSuperAdminPassword ? 'text' : 'password'}
+            name="password"
+            placeholder="Password"
+            value={newSuperAdmin.password}
+            onChange={(e) => handleInputChange(e, 'superadmin')}
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+          <span
+            className="absolute right-3 cursor-pointer text-gray-500"
+            onClick={() => setShowSuperAdminPassword(!showSuperAdminPassword)}
+          >
+            {showSuperAdminPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+
+        <button type="button" className="w-full px-10 py-2 text-white bg-red-800 hover:bg-red-700 rounded-md mt-3"
+          onClick={handleAddSuperAdmin}
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
 
         {showPasswordModal && (

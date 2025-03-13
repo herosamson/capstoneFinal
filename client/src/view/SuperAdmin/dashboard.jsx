@@ -315,7 +315,7 @@ function Admin() {
                 {isAuthorized === user._id ? (
                   <button
                     type="button"
-                    className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2"
+                    className="px-4 py-2 text-white bg-red-700 hover:bg-red-800 duration-200 rounded-md mr-2"
                     onClick={() => deleteUser(user._id)}
                   >
                     Delete
@@ -323,7 +323,7 @@ function Admin() {
                 ) : (
                   <button
                     type="button"
-                    className="px-4 py-2 text-white bg-red-600 hover:bg-red-800 duration-200 rounded-md mr-2"
+                    className="px-4 py-2 text-white bg-red-400 hover:bg-red-600 duration-200 rounded-md mr-2"
                     onClick={() => {
                       setDeleteUserId(user._id); // Set the user ID to be deleted
                       setShowPasswordModal(true);
