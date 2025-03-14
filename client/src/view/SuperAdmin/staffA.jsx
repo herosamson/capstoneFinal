@@ -145,7 +145,6 @@ const handleRequestDelete = (id) => {
         firstname: '',
         lastname: '',
         contact: '',
-        address: '',
         email: '',
         username: '',
         password: '',
@@ -444,7 +443,7 @@ const handleRequestDelete = (id) => {
                   onChange={(e) => handleInputChange(e, 'staff')} 
                 />
                 <FontAwesomeIcon 
-                  icon={showStaffPassword ? faEyeSlash : faEye} 
+                  icon={showStaffPassword ? faEye : faEyeSlash}
                   className="eye-icon"
                   onClick={() => setShowStaffPassword(!showStaffPassword)}
                 />

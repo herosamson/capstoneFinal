@@ -182,7 +182,6 @@ const handleAddAdmin = async () => {
         firstname: '',
         lastname: '',
         contact: '',
-        address: '',
         email: '',
         username: '',
         password: '',
@@ -356,7 +355,7 @@ const handleAddAdmin = async () => {
   const handleEditClick = (admin) => {
     setEditAdminId(admin._id);
     setEditFormData({
-      firstname: admin.firstname, lastname: admin.lastname, contact: admin.contact, address: admin.address,
+      firstname: admin.firstname, lastname: admin.lastname, contact: admin.contact,
       email: admin.email, username: admin.username, password: ''
     });
   };
@@ -399,7 +398,7 @@ const handleAddAdmin = async () => {
       if (response.ok) {
         setAdmins(admins.map(admin => (admin._id === editAdminId ? data : admin)));
         setEditAdminId(null);
-        setEditFormData({ firstname: '', lastname: '', contact: '', address: '', email: '', username: '', password: '' });
+        setEditFormData({ firstname: '', lastname: '', contact: '', email: '', username: '', password: '' });
       } else {
         alert(data.message);
       }
@@ -519,7 +518,6 @@ const handleAddAdmin = async () => {
                     <>
                       <td className='px-10 py-2'>{admin.firstname}</td>
                       <td className='px-10 py-2'>{admin.lastname}</td>
-                      <td className='px-10 py-2'>{admin.address}</td>
                       <td className='px-10 py-2'>{admin.email}</td>
                       <td className='px-10 py-2'>
                         <button type="button" className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 duration-200 rounded-md mr-2" onClick={() => handleEditClick(admin)}>Edit</button>
@@ -570,7 +568,7 @@ const handleAddAdmin = async () => {
                   onChange={(e) => handleInputChange(e, 'admin')} 
                 />
                 <FontAwesomeIcon 
-                  icon={showAdminPassword ? faEyeSlash : faEye} 
+                  icon={showAdminPassword ? faEye : faEyeSlash} 
                   className="eye-icon"
                   onClick={() => setShowAdminPassword(!showAdminPassword)}
                 />
@@ -600,7 +598,7 @@ const handleAddAdmin = async () => {
                   onChange={(e) => handleInputChange(e, 'superadmin')} 
                 />
                 <FontAwesomeIcon 
-                  icon={showSuperAdminPassword ? faEyeSlash : faEye} 
+                  icon={showSuperAdminPassword ? faEye : faEyeSlash} 
                   className="eye-icon"
                   onClick={() => setShowSuperAdminPassword(!showSuperAdminPassword)}
                 />

@@ -17,7 +17,6 @@ function Admin() {
     firstname: '',
     lastname: '',
     contact: '',
-    address: '',
     email: '',
     username: '',
     password: '',
@@ -26,7 +25,6 @@ function Admin() {
     firstname: '',
     lastname: '',
     contact: '',
-    address: '',
     email: '',
     username: '',
     password: '',
@@ -35,7 +33,6 @@ function Admin() {
     firstname: '',
     lastname: '',
     contact: '',
-    address: '',
     email: '',
     username: '',
     password: '',
@@ -224,7 +221,6 @@ function Admin() {
           firstname: '',
           lastname: '',
           contact: '',
-          address: '',
           email: '',
           username: '',
           password: '',
@@ -250,11 +246,10 @@ function Admin() {
       const firstnameMatch = typeof user.firstname === 'string' && user.firstname.toLowerCase().includes(lowerCaseQuery);
       const lastnameMatch = typeof user.lastname === 'string' && user.lastname.toLowerCase().includes(lowerCaseQuery);
       const contactMatch = user.contact && user.contact.toString().toLowerCase().includes(lowerCaseQuery);
-      const addressMatch = typeof user.address === 'string' && user.address.toLowerCase().includes(lowerCaseQuery);
       const emailMatch = typeof user.email === 'string' && user.email.toLowerCase().includes(lowerCaseQuery);
       const usernameMatch = typeof user.username === 'string' && user.username.toLowerCase().includes(lowerCaseQuery);
       
-      return firstnameMatch || lastnameMatch || contactMatch || addressMatch || emailMatch || usernameMatch;
+      return firstnameMatch || lastnameMatch || contactMatch || emailMatch || usernameMatch;
     });
   
     setFilteredUsers(filteredData);
@@ -300,7 +295,6 @@ function Admin() {
             <tr>
               <th className='font-normal py-1.5 px-2'>First Name</th>
               <th className='font-normal py-1.5 px-2'>Last Name</th>
-              <th className='font-normal py-1.5 px-2'>Address</th>
               <th className='font-normal py-1.5 px-2'>Contact</th>
               <th className='font-normal py-1.5 px-2'>Email</th>
               <th className='font-normal py-1.5 px-2'>Action</th>
@@ -311,7 +305,6 @@ function Admin() {
               <tr key={user._id} className='even:bg-gray-200'>
                 <td className='px-10 py-2'>{user.firstname}</td>
                 <td className='px-10 py-2'>{user.lastname}</td>
-                <td className='px-10 py-2'>{user.address}</td>
                 <td className='px-10 py-2'>{user.contact}</td>
                 <td className='px-10 py-2'>{user.email}</td>
                 <td className='px-10 py-2'>
@@ -353,7 +346,7 @@ function Admin() {
             <input type="text" name="firstname" placeholder="First Name" value={newUser.firstname} onChange={(e) => handleInputChange(e, 'user')} />
             <input type="text" name="lastname" placeholder="Last Name" value={newUser.lastname} onChange={(e) => handleInputChange(e, 'user')} />
             <input type="text" name="contact" placeholder="Contact Number" value={newUser.contact} onChange={(e) => handleInputChange(e, 'user')} />
-            <input type="text" name="address" placeholder="Address" value={newUser.address} onChange={(e) => handleInputChange(e, 'user')} />
+        
             <input type="text" name="email" placeholder="Email" value={newUser.email} onChange={(e) => handleInputChange(e, 'user')} />
             <input type="text" name="username" placeholder="Username" value={newUser.username} onChange={(e) => handleInputChange(e, 'user')} />
             <div className="password-container">
@@ -365,7 +358,7 @@ function Admin() {
                   onChange={(e) => handleInputChange(e, 'user')} 
                 />
                 <FontAwesomeIcon 
-                  icon={showUserPassword ? faEyeSlash : faEye} 
+                  icon={showUserPassword ? faEye : faEyeSlash}
                   className="eye-icon"
                   onClick={() => setShowUserPassword(!showUserPassword)}
                 />
