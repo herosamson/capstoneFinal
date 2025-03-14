@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './admin.css';
 import logo2 from './logo2.png';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 
 function Administrator() {
   const [users, setUsers] = useState([]);

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './staffA.css';
 import logo2 from './logo2.png';
-import axios from 'axios';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 
 function Staff() {
   const [showStaffPassword, setShowStaffPassword] = useState(false);
