@@ -162,38 +162,37 @@ function Admin() {
     const { firstname, lastname, contact, email, username, password } = newUser;
   
     const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
-    const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
     const isUniqueUsername = (username) => !users.some((user) => user.username === username);
-    const isValidPassword = (password) => 
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password); // Updated regex for password validation
-  
+    const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+
     if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
-      alert('First name and Last name should contain letters only (spaces are allowed).');
-      return false;
+        alert('First name and Last name should contain letters only (spaces are allowed).');
+        return false;
     }
-  
+
     if (contact.length !== 11 || isNaN(contact) || !/^09\d{9}$/.test(contact)) {
-      alert('Please enter a valid Contact Number.');
-      return false;
+        alert('Please enter a valid Contact Number.');
+        return false;
     }
-  
+
     if (!isValidEmail(email)) {
-      alert('Please Enter a Valid Email.');
-      return false;
+        alert('Please enter a valid email address.');
+        return false;
     }
-  
+
     if (!isUniqueUsername(username)) {
-      alert('Username must be unique.');
-      return false;
+        alert('Username must be unique.');
+        return false;
     }
-  
+
     if (!isValidPassword(password)) {
-      alert('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
-      return false;
+        alert('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+        return false;
     }
-  
+
     return true;
-  };
+};
+
   
 
   const handleAddUser = async () => {

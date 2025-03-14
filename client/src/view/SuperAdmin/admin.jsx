@@ -26,7 +26,7 @@ function Administrator() {
     setIsDropdownOpenA(!isDropdownOpenA);
   };
   const [editFormData, setEditFormData] = useState({
-    firstname: '', lastname: '', contact: '', address: '', email: '', username: '', password: ''
+    firstname: '', lastname: '', contact: '', email: '', username: '', password: ''
   });
   const [editSuperAdminFormData, setEditSuperAdminFormData] = useState({
     firstname: '', lastname: '', contact: '', email: '', username: '', password: ''
@@ -36,7 +36,6 @@ function Administrator() {
     firstname: '',
     lastname: '',
     contact: '',
-    address: '',
     email: '',
     username: '',
     password: '',
@@ -54,7 +53,6 @@ function Administrator() {
     const { firstname, lastname, contact, email, username, password } = newAdmin;
 
     const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
-    const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
     const isUniqueUsername = (username) => 
         !users.some((user) => user.username === username) &&
         !staff.some((staff) => staff.username === username) &&
@@ -70,8 +68,6 @@ function Administrator() {
         !staff.some((staff) => staff.email === email) &&
         !admins.some((admin) => admin.email === email) &&
         !superAdmins.some((sa) => sa.email === email);
-
-    // Updated password validation regex
     const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 
     if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
@@ -85,7 +81,7 @@ function Administrator() {
     }
 
     if (!isValidEmail(email) || !isUniqueEmail(email)) {
-        alert('Please enter a Valid Email and it must be unique.');
+        alert('Please enter a valid email address and ensure it is unique.');
         return false;
     }
 
@@ -102,11 +98,11 @@ function Administrator() {
     return true;
 };
 
+
 const validateSuperAdminInput = () => {
   const { firstname, lastname, contact, email, username, password } = newSuperAdmin;
 
   const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
-  const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
   const isUniqueUsername = (username) => 
       !users.some((user) => user.username === username) &&
       !staff.some((staff) => staff.username === username) &&
@@ -123,7 +119,10 @@ const validateSuperAdminInput = () => {
       !admins.some((admin) => admin.email === email) &&
       !superAdmins.some((sa) => sa.email === email);
 
-  // Updated password validation regex
+  // ✅ Allow any valid email format
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  // ✅ Updated password validation regex
   const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 
   if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
@@ -137,7 +136,7 @@ const validateSuperAdminInput = () => {
   }
 
   if (!isValidEmail(email) || !isUniqueEmail(email)) {
-      alert('Please enter a Valid Email and it must be unique.');
+      alert('Please enter a valid email address and ensure it is unique.');
       return false;
   }
 
@@ -153,6 +152,7 @@ const validateSuperAdminInput = () => {
 
   return true;
 };
+
 
 const handleAddAdmin = async () => {
   if (Object.values(newAdmin).some((field) => field === '')) {
@@ -491,7 +491,7 @@ const handleAddAdmin = async () => {
             <tr>
               <th className='font-normal py-1.5 px-2'>Firstname</th>
               <th className='font-normal py-1.5 px-2'>Lastname</th>
-              <th className='font-normal py-1.5 px-2'>Address</th>
+    
               <th className='font-normal py-1.5 px-2'>Email</th>
               <th className='font-normal py-1.5 px-2'>Actions</th>
             </tr>
@@ -508,7 +508,6 @@ const handleAddAdmin = async () => {
                     <>
                       <td className='px-10 py-2'><input className="w-40" type="text" name="firstname" value={editFormData.firstname} onChange={handleEditFormChange} /></td>
                       <td className='px-10 py-2'><input className="w-40" type="text" name="lastname" value={editFormData.lastname} onChange={handleEditFormChange} /></td>
-                      <td className='px-10 py-2'><input className="w-60" type="text" name="address" value={editFormData.address} onChange={handleEditFormChange} /></td>
                       <td className='px-10 py-2'><input readOnly
     className="w-60 bg-gray-100 text-gray-500 cursor-not-allowed" type="email" name="email" value={editFormData.email} onChange={handleEditFormChange} /></td>
                       <td className='px-10 py-2'>
@@ -559,7 +558,7 @@ const handleAddAdmin = async () => {
                 <input type="text" name="firstname" placeholder="First Name" value={newAdmin.firstname} onChange={(e) => handleInputChange(e, 'admin')} />
                 <input type="text" name="lastname" placeholder="Last Name" value={newAdmin.lastname} onChange={(e) => handleInputChange(e, 'admin')} />
                 <input type="text" name="contact" placeholder="Contact Number" value={newAdmin.contact} onChange={(e) => handleInputChange(e, 'admin')} />
-                <input type="text" name="address" placeholder="Address" value={newAdmin.address} onChange={(e) => handleInputChange(e, 'admin')} />
+            
                 <input type="text" name="email" placeholder="Email" value={newAdmin.email} onChange={(e) => handleInputChange(e, 'admin')} />
                 <input type="text" name="username" placeholder="Username" value={newAdmin.username} onChange={(e) => handleInputChange(e, 'admin')} />
                 <div className="password-container">

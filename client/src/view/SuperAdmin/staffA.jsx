@@ -23,7 +23,6 @@ function Staff() {
     firstname: '',
     lastname: '',
     contact: '',
-    address: '',
     email: '',
     username: '',
     password: '',
@@ -40,7 +39,6 @@ function Staff() {
     const { firstname, lastname, contact, email, username, password } = newStaff;
 
     const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
-    const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
     const isUniqueUsername = (username) => 
         !users.some((user) => user.username === username) &&
         !staff.some((staff) => staff.username === username) &&
@@ -53,8 +51,6 @@ function Staff() {
         !users.some((user) => user.email === email) &&
         !staff.some((staff) => staff.email === email) &&
         !admins.some((admin) => admin.email === email);
-    
-    // Updated password validation
     const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 
     if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
@@ -68,7 +64,7 @@ function Staff() {
     }
 
     if (!isValidEmail(email) || !isUniqueEmail(email)) {
-        alert('Email should be either @gmail.com or @yahoo.com and unique.');
+        alert('Please enter a valid email address and ensure it is unique.');
         return false;
     }
 
@@ -437,7 +433,6 @@ const handleRequestDelete = (id) => {
             <input type="text" name="firstname" placeholder="First Name" value={newStaff.firstname} onChange={(e) => handleInputChange(e, 'staff')} />
             <input type="text" name="lastname" placeholder="Last Name" value={newStaff.lastname} onChange={(e) => handleInputChange(e, 'staff')} />
             <input type="text" name="contact" placeholder="Contact Number" value={newStaff.contact} onChange={(e) => handleInputChange(e, 'staff')} />
-            <input type="text" name="address" placeholder="Address" value={newStaff.address} onChange={(e) => handleInputChange(e, 'staff')} />
             <input type="text" name="email" placeholder="Email" value={newStaff.email} onChange={(e) => handleInputChange(e, 'staff')} />
             <input type="text" name="username" placeholder="Username" value={newStaff.username} onChange={(e) => handleInputChange(e, 'staff')} />
             <div className="password-container">
