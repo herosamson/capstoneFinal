@@ -13,12 +13,12 @@ body {
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 95%;
   }
   
   .password-container input {
     width: 100%;
-    padding-right: 2rem; /* Space for the eye icon */
+    padding-right: 2.5rem; /* Space for the eye icon */
   }
   
   .eye-icon {

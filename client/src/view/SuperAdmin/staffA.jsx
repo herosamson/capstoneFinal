@@ -52,7 +52,8 @@ function Staff() {
         !staff.some((staff) => staff.email === email) &&
         !admins.some((admin) => admin.email === email);
     const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
-
+  // ✅ Allow any valid email format
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
         alert('First name and Last name should contain letters only (spaces are allowed).');
         return false;

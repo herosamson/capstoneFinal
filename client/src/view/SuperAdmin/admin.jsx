@@ -51,7 +51,8 @@ function Administrator() {
 
   const validateAdminInput = () => {
     const { firstname, lastname, contact, email, username, password } = newAdmin;
-
+  // ✅ Allow any valid email format
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
     const isUniqueUsername = (username) => 
         !users.some((user) => user.username === username) &&
