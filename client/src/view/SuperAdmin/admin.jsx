@@ -55,60 +55,6 @@ function Administrator() {
         !users.some((user) => user.username === username) &&
         !staff.some((staff) => staff.username === username) &&
         !admins.some((admin) => admin.username === username) &&
-        !superAdmins.some((sa) => sa.username === username); // Ensure uniqueness across SuperAdmins
-    const isUniqueContact = (contact) => 
-        !users.some((user) => user.contact === contact) &&
-        !staff.some((staff) => staff.contact === contact) &&
-        !admins.some((admin) => admin.contact === contact) &&
-        !superAdmins.some((sa) => sa.contact === contact);
-    const isUniqueEmail = (email) => 
-        !users.some((user) => user.email === email) &&
-        !staff.some((staff) => staff.email === email) &&
-        !admins.some((admin) => admin.email === email) &&
-        !superAdmins.some((sa) => sa.email === email);
-
-    if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
-        alert('First name and Last name should contain letters only (spaces are allowed).');
-        return false;
-    }
-
-    if (contact.length !== 11 || isNaN(contact) || !isUniqueContact(contact) || !/^09\d{9}$/.test(contact)) {
-        alert('Please enter a valid Contact Number.');
-        return false;
-    }
-
-    if (!isValidEmail(email) || !isUniqueEmail(email)) {
-        alert('Email should be @gmail.com and unique.');
-        return false;
-    }
-
-    if (!isUniqueUsername(username)) {
-        alert('Username must be unique.');
-        return false;
-    }
-
- // Password validation (at least 8 characters, one uppercase, one number, and one special character)
-if (
-  !password.trim() ||
-  password.length < 8 ||
-  !/\d/.test(password) ||
-  !/[A-Z]/.test(password) ||
-  !/[\W_]/.test(password) 
-) {
-  error.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
-}
-    return true;
-  };
-
-  const validateSuperAdminInput = () => {
-    const { firstname, lastname, contact, email, username, password } = newSuperAdmin;
-
-    const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
-    const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
-    const isUniqueUsername = (username) => 
-        !users.some((user) => user.username === username) &&
-        !staff.some((staff) => staff.username === username) &&
-        !admins.some((admin) => admin.username === username) &&
         !superAdmins.some((sa) => sa.username === username);
     const isUniqueContact = (contact) => 
         !users.some((user) => user.contact === contact) &&
@@ -121,6 +67,9 @@ if (
         !admins.some((admin) => admin.email === email) &&
         !superAdmins.some((sa) => sa.email === email);
 
+    // Updated password validation regex
+    const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+
     if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
         alert('First name and Last name should contain letters only (spaces are allowed).');
         return false;
@@ -132,7 +81,7 @@ if (
     }
 
     if (!isValidEmail(email) || !isUniqueEmail(email)) {
-        alert('Email should be @gmail.com and unique.');
+        alert('Please enter a Valid Email and it must be unique.');
         return false;
     }
 
@@ -141,19 +90,65 @@ if (
         return false;
     }
 
-// Password validation (at least 8 characters, one uppercase, one number, and one special character)
-if (
-  !password.trim() ||
-  password.length < 8 ||
-  !/\d/.test(password) ||
-  !/[A-Z]/.test(password) ||
-  !/[\W_]/.test(password) 
-) {
-  error.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
-}
+    if (!isValidPassword(password)) {
+        alert('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+        return false;
+    }
 
     return true;
-  };
+};
+
+const validateSuperAdminInput = () => {
+  const { firstname, lastname, contact, email, username, password } = newSuperAdmin;
+
+  const isAlphaWithSpaces = (str) => /^[A-Za-z\s]+$/.test(str);
+  const isValidEmail = (email) => email.endsWith('@gmail.com') || email.endsWith('@yahoo.com');
+  const isUniqueUsername = (username) => 
+      !users.some((user) => user.username === username) &&
+      !staff.some((staff) => staff.username === username) &&
+      !admins.some((admin) => admin.username === username) &&
+      !superAdmins.some((sa) => sa.username === username);
+  const isUniqueContact = (contact) => 
+      !users.some((user) => user.contact === contact) &&
+      !staff.some((staff) => staff.contact === contact) &&
+      !admins.some((admin) => admin.contact === contact) &&
+      !superAdmins.some((sa) => sa.contact === contact);
+  const isUniqueEmail = (email) => 
+      !users.some((user) => user.email === email) &&
+      !staff.some((staff) => staff.email === email) &&
+      !admins.some((admin) => admin.email === email) &&
+      !superAdmins.some((sa) => sa.email === email);
+
+  // Updated password validation regex
+  const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+
+  if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
+      alert('First name and Last name should contain letters only (spaces are allowed).');
+      return false;
+  }
+
+  if (contact.length !== 11 || isNaN(contact) || !isUniqueContact(contact) || !/^09\d{9}$/.test(contact)) {
+      alert('Please enter a valid Contact Number.');
+      return false;
+  }
+
+  if (!isValidEmail(email) || !isUniqueEmail(email)) {
+      alert('Please enter a Valid Email and it must be unique.');
+      return false;
+  }
+
+  if (!isUniqueUsername(username)) {
+      alert('Username must be unique.');
+      return false;
+  }
+
+  if (!isValidPassword(password)) {
+      alert('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+      return false;
+  }
+
+  return true;
+};
 
   const handleAddAdmin = async () => {
     if (Object.values(newAdmin).some((field) => field === '')) {

@@ -37,6 +37,8 @@ function Staff() {
       setNewAdmin((prevAdmin) => ({ ...prevAdmin, [name]: value }));
     }
   };
+
+  
   const validateStaffInput = () => {
     const { firstname, lastname, contact, email, username, password } = newStaff;
 
@@ -54,7 +56,9 @@ function Staff() {
         !users.some((user) => user.email === email) &&
         !staff.some((staff) => staff.email === email) &&
         !admins.some((admin) => admin.email === email);
-    const isValidPassword = (password) => /^(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
+    
+    // Updated password validation
+    const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 
     if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
         alert('First name and Last name should contain letters only (spaces are allowed).');
@@ -76,18 +80,14 @@ function Staff() {
         return false;
     }
 
-    if (
-      !password.trim() ||
-      password.length < 8 ||
-      !/\d/.test(password) ||
-      !/[A-Z]/.test(password) ||
-      !/[\W_]/.test(password) 
-    ) {
-      error.push('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+    if (!isValidPassword(password)) {
+        alert('Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
+        return false;
     }
 
     return true;
 };
+
 
 const handleVerifySuperAdmin = async () => {
   try {
