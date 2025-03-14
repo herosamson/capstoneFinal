@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import './staffA.css';
 import logo2 from './logo2.png';
 import axios from 'axios';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function Staff() {
+  const [showStaffPassword, setShowStaffPassword] = useState(false);
   const [staff, setStaff] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [editStaffId, setEditStaffId] = useState(null);
@@ -27,18 +29,13 @@ function Staff() {
     password: '',
   });
   const [showStaffModal, setShowStaffModal] = useState(false);
-  const handleInputChange = (e, type) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (type === 'user') {
-      setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
-    } else if (type === 'staff') {
-      setNewStaff((prevStaff) => ({ ...prevStaff, [name]: value }));
-    } else if (type === 'admin') {
-      setNewAdmin((prevAdmin) => ({ ...prevAdmin, [name]: value }));
-    }
+    setNewStaff((prevStaff) => ({ ...prevStaff, [name]: value }));
   };
-
   
+
+
   const validateStaffInput = () => {
     const { firstname, lastname, contact, email, username, password } = newStaff;
 
@@ -124,45 +121,49 @@ const handleRequestDelete = (id) => {
   setIsAuthorized(false); // Reset authorization when a new request is made
 };
 
-  const handleAddStaff = async () => {
-    if (Object.values(newStaff).some((field) => field === '')) {
-      alert('Please fill in all fields');
-      return;
-    }
+ const handleAddStaff = async () => {
+  if (Object.values(newStaff).some((field) => field === '')) {
+    alert('Please fill in all fields');
+    return;
+  }
 
-    if (!validateStaffInput()) {
-      return;
-    }
+  if (!validateStaffInput()) {
+    return;
+  }
 
-    try {
-      const response = await fetch('https://idonate1.onrender.com/routes/accounts/stafff', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newStaff),
+  try {
+    const response = await fetch('https://idonate1.onrender.com/routes/accounts/stafff', { // ✅ Correct endpoint
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newStaff),
+    });
+
+    const data = await response.json(); // ✅ Read JSON response
+
+    if (response.ok) {
+      setStaff((prevStaff) => [...prevStaff, data]); // ✅ Update state
+      setShowStaffModal(false);
+      setNewStaff({
+        firstname: '',
+        lastname: '',
+        contact: '',
+        address: '',
+        email: '',
+        username: '',
+        password: '',
       });
-
-      if (response.ok) {
-        const addedStaff = await response.json();
-        setStaff((prevStaff) => [...prevStaff, addedStaff]);
-        setShowStaffModal(false);
-        setNewStaff({
-          firstname: '',
-          lastname: '',
-          contact: '',
-          address: '',
-          email: '',
-          username: '',
-          password: '',
-        });
-      } else {
-        console.error('Failed to add staff');
-      }
-    } catch (error) {
-      console.error('Error adding staff:', error);
+      alert('Staff added successfully');
+    } else {
+      console.error('Failed to add staff:', data.message);
+      alert(`Error: ${data.message || 'Failed to add staff'}`);
     }
-  };
+  } catch (error) {
+    console.error('Error adding staff:', error);
+    alert('An unexpected error occurred while adding staff.');
+  }
+};
 
   const toggleDropdownA = () => {
     setIsDropdownOpenA(!isDropdownOpenA);
@@ -439,7 +440,20 @@ const handleRequestDelete = (id) => {
             <input type="text" name="address" placeholder="Address" value={newStaff.address} onChange={(e) => handleInputChange(e, 'staff')} />
             <input type="text" name="email" placeholder="Email" value={newStaff.email} onChange={(e) => handleInputChange(e, 'staff')} />
             <input type="text" name="username" placeholder="Username" value={newStaff.username} onChange={(e) => handleInputChange(e, 'staff')} />
-            <input type="password" name="password" placeholder="Password" value={newStaff.password} onChange={(e) => handleInputChange(e, 'staff')} />
+            <div className="password-container">
+                <input 
+                  type={showStaffPassword ? "text" : "password"} 
+                  name="password" 
+                  placeholder="Password" 
+                  value={newStaff.password} 
+                  onChange={(e) => handleInputChange(e, 'staff')} 
+                />
+                <FontAwesomeIcon 
+                  icon={showStaffPassword ? faEyeSlash : faEye} 
+                  className="eye-icon"
+                  onClick={() => setShowStaffPassword(!showStaffPassword)}
+                />
+              </div>
             <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md mt-3 ml-1" onClick={handleAddStaff}>Save</button>
           </div>
           </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './admin.css';
 import logo2 from './logo2.png';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function Administrator() {
   const [users, setUsers] = useState([]);
@@ -17,6 +18,8 @@ function Administrator() {
   const [editSuperAdminId, setEditSuperAdminId] = useState(null); 
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [showSuperAdminModal, setShowSuperAdminModal] = useState(false); 
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
+  const [showSuperAdminPassword, setShowSuperAdminPassword] = useState(false);
   const [isDropdownOpenA, setIsDropdownOpenA] = useState(false);
   const toggleDropdownA = () => {
     setIsDropdownOpenA(!isDropdownOpenA);
@@ -150,45 +153,50 @@ const validateSuperAdminInput = () => {
   return true;
 };
 
-  const handleAddAdmin = async () => {
-    if (Object.values(newAdmin).some((field) => field === '')) {
-      alert('Please fill in all fields');
-      return;
-    }
+const handleAddAdmin = async () => {
+  if (Object.values(newAdmin).some((field) => field === '')) {
+    alert('Please fill in all fields');
+    return;
+  }
 
-    if (!validateAdminInput()) {
-      return;
-    }
+  if (!validateAdminInput()) {
+    return;
+  }
 
-    try {
-      const response = await fetch('https://idonate1.onrender.com/routes/accounts/admin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newAdmin),
+  try {
+    const response = await fetch('https://idonate1.onrender.com/routes/accounts/admin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newAdmin),
+    });
+
+    const data = await response.json(); // Read response JSON
+
+    if (response.ok) {
+      setAdmins((prevAdmins) => [...prevAdmins, data]); // ✅ Add admin to state
+      setShowAdminModal(false);
+      setNewAdmin({
+        firstname: '',
+        lastname: '',
+        contact: '',
+        address: '',
+        email: '',
+        username: '',
+        password: '',
       });
-
-      if (response.ok) {
-        const addedAdmin = await response.json();
-        setAdmins((prevAdmins) => [...prevAdmins, addedAdmin]);
-        setShowAdminModal(false);
-        setNewAdmin({
-          firstname: '',
-          lastname: '',
-          contact: '',
-          address: '',
-          email: '',
-          username: '',
-          password: '',
-        });
-      } else {
-        console.error('Failed to add admin');
-      }
-    } catch (error) {
-      console.error('Error adding admin:', error);
+      alert('Administrator added successfully');
+    } else {
+      console.error('Failed to add admin:', data.message); // ✅ Log server error
+      alert(`Error: ${data.message || 'Failed to add administrator'}`);
     }
-  };
+  } catch (error) {
+    console.error('Error adding admin:', error);
+    alert('An unexpected error occurred while adding the administrator.');
+  }
+};
+
 
   const handleVerifySuperAdmin = async () => {
     try {
@@ -553,7 +561,20 @@ const validateSuperAdminInput = () => {
                 <input type="text" name="address" placeholder="Address" value={newAdmin.address} onChange={(e) => handleInputChange(e, 'admin')} />
                 <input type="text" name="email" placeholder="Email" value={newAdmin.email} onChange={(e) => handleInputChange(e, 'admin')} />
                 <input type="text" name="username" placeholder="Username" value={newAdmin.username} onChange={(e) => handleInputChange(e, 'admin')} />
-                <input type="password" name="password" placeholder="Password" value={newAdmin.password} onChange={(e) => handleInputChange(e, 'admin')} />
+                <div className="password-container">
+                <input 
+                  type={showAdminPassword ? "text" : "password"} 
+                  name="password" 
+                  placeholder="Password" 
+                  value={newAdmin.password} 
+                  onChange={(e) => handleInputChange(e, 'admin')} 
+                />
+                <FontAwesomeIcon 
+                  icon={showAdminPassword ? faEyeSlash : faEye} 
+                  className="eye-icon"
+                  onClick={() => setShowAdminPassword(!showAdminPassword)}
+                />
+              </div>
                 <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md mt-3 ml-1" onClick={handleAddAdmin}>Save</button>
               </div>
             </div>
@@ -570,7 +591,20 @@ const validateSuperAdminInput = () => {
                 <input type="text" name="contact" placeholder="Contact Number" value={newSuperAdmin.contact} onChange={(e) => handleInputChange(e, 'superadmin')} />
                 <input type="text" name="email" placeholder="Email" value={newSuperAdmin.email} onChange={(e) => handleInputChange(e, 'superadmin')} />
                 <input type="text" name="username" placeholder="Username" value={newSuperAdmin.username} onChange={(e) => handleInputChange(e, 'superadmin')} />
-                <input type="password" name="password" placeholder="Password" value={newSuperAdmin.password} onChange={(e) => handleInputChange(e, 'superadmin')} />
+                <div className="password-container">
+                <input 
+                  type={showSuperAdminPassword ? "text" : "password"} 
+                  name="password" 
+                  placeholder="Password" 
+                  value={newSuperAdmin.password} 
+                  onChange={(e) => handleInputChange(e, 'superadmin')} 
+                />
+                <FontAwesomeIcon 
+                  icon={showSuperAdminPassword ? faEyeSlash : faEye} 
+                  className="eye-icon"
+                  onClick={() => setShowSuperAdminPassword(!showSuperAdminPassword)}
+                />
+              </div>
                 <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md mt-3 ml-1" onClick={handleAddSuperAdmin}>Save</button>
               </div>
             </div>

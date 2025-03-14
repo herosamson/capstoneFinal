@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './dashboard.css';
 import logo2 from './logo2.png';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -9,7 +10,7 @@ function Admin() {
   const [superAdminPassword, setSuperAdminPassword] = useState('');   
   const [deleteUserId, setDeleteUserId] = useState(null);  
   const [isAuthorized, setIsAuthorized] = useState(false); 
-
+  const [showUserPassword, setShowUserPassword] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [newUser, setNewUser] = useState({
     firstname: '',
@@ -355,7 +356,20 @@ function Admin() {
             <input type="text" name="address" placeholder="Address" value={newUser.address} onChange={(e) => handleInputChange(e, 'user')} />
             <input type="text" name="email" placeholder="Email" value={newUser.email} onChange={(e) => handleInputChange(e, 'user')} />
             <input type="text" name="username" placeholder="Username" value={newUser.username} onChange={(e) => handleInputChange(e, 'user')} />
-            <input type="password" name="password" placeholder="Password" value={newUser.password} onChange={(e) => handleInputChange(e, 'user')} />
+            <div className="password-container">
+                <input 
+                  type={showUserPassword ? "text" : "password"} 
+                  name="password" 
+                  placeholder="Password" 
+                  value={newUser.password} 
+                  onChange={(e) => handleInputChange(e, 'user')} 
+                />
+                <FontAwesomeIcon 
+                  icon={showUserPassword ? faEyeSlash : faEye} 
+                  className="eye-icon"
+                  onClick={() => setShowUserPassword(!showUserPassword)}
+                />
+              </div>
             <button type="button" className="px-10 py-1.5 text-white bg-red-800 hover:bg-red-700 duration-200 rounded-md mt-3 ml-1" onClick={handleAddUser}>Save</button>
           </div>
           </div>
