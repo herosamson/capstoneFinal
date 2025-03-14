@@ -10,6 +10,7 @@ function Administrator() {
   const [staff, setStaff] = useState([]);
   const [admins, setAdmins] = useState([]);
   const [showPasswordModal, setShowPasswordModal] = useState(false); 
+  
   const [superAdminPassword, setSuperAdminPassword] = useState('');  
   const [deleteUserId, setDeleteUserId] = useState(null); 
   const [deleteUserRole, setDeleteUserRole] = useState(''); 
@@ -614,13 +615,21 @@ const handleAddAdmin = async () => {
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
               <h2 className="text-xl font-semibold mb-4">Please Enter your Password</h2>
+              <div className="relative">
               <input
-                type="password"
+                type={showSuperAdminPassword ? "text" : "password"}
                 placeholder="Enter Password"
                 value={superAdminPassword}
                 onChange={(e) => setSuperAdminPassword(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-md pr-10"
               />
+              <FontAwesomeIcon
+                icon={showSuperAdminPassword ? faEyeSlash : faEye}
+                className="absolute right-3 top-3 cursor-pointer text-gray-600"
+                onClick={() => setShowSuperAdminPassword(!showSuperAdminPassword)}
+              />
+            </div>
+
               <div className="flex justify-end mt-4">
               <button
                   className="px-4 py-2 bg-gray-400 text-white rounded-md mr-2"

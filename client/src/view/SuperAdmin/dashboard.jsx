@@ -9,6 +9,8 @@ function Admin() {
   const [users, setUsers] = useState([]);
   const [showPasswordModal, setShowPasswordModal] = useState(false);  
   const [superAdminPassword, setSuperAdminPassword] = useState('');   
+  const [showSuperAdminPassword, setShowSuperAdminPassword] = useState(false);
+
   const [deleteUserId, setDeleteUserId] = useState(null);  
   const [isAuthorized, setIsAuthorized] = useState(false); 
   const [showUserPassword, setShowUserPassword] = useState(false);
@@ -163,7 +165,7 @@ function Admin() {
     const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
   // ✅ Allow any valid email format
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  
+
     if (!isAlphaWithSpaces(firstname) || !isAlphaWithSpaces(lastname)) {
         alert('First name and Last name should contain letters only (spaces are allowed).');
         return false;
@@ -375,13 +377,21 @@ function Admin() {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-semibold mb-4">Enter your Password</h2>
+            <div className="password-container relative">
             <input
-              type="password"
+              type={showSuperAdminPassword ? "text" : "password"}
               placeholder="Enter Password"
               value={superAdminPassword}
               onChange={(e) => setSuperAdminPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-2 border border-gray-300 rounded-md pr-10"
             />
+            <FontAwesomeIcon
+              icon={showSuperAdminPassword ? faEyeSlash : faEye}
+              className="absolute right-3 top-3 cursor-pointer text-gray-600"
+              onClick={() => setShowSuperAdminPassword(!showSuperAdminPassword)}
+            />
+          </div>
+
             <div className="flex justify-end mt-4">
             <button
                 className="px-4 py-2 bg-gray-400 text-white rounded-md mr-2"
