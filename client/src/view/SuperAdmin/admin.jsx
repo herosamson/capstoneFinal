@@ -624,7 +624,7 @@ const handleAddAdmin = async () => {
                 className="w-full p-2 border border-gray-300 rounded-md pr-10"
               />
               <FontAwesomeIcon
-                icon={showSuperAdminPassword ? faEyeSlash : faEye}
+                icon={showSuperAdminPassword ? faEye : faEyeSlash}
                 className="absolute right-3 top-3 cursor-pointer text-gray-600"
                 onClick={() => setShowSuperAdminPassword(!showSuperAdminPassword)}
               />

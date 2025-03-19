@@ -27,6 +27,10 @@ function EventsA() {
   const toggleDropdownA = () => {
     setIsDropdownOpenA(!isDropdownOpenA);
   };
+  const [showCustomModal, setShowCustomModal] = useState(false);
+const [customMaterials, setCustomMaterials] = useState([]);
+const [customMaterialInput, setCustomMaterialInput] = useState("");
+
   const materialsOptions = [
     'Plates',
     'Plastic Cups',
@@ -92,13 +96,14 @@ function EventsA() {
     'Drink dispensers',
     'Catering supplies (for serving food)',
     'Food trays',
-    'Serving utensils'
+    'Serving utensils',
+    "None",  
+    "Others",  
   ];
   
   useEffect(() => {
     axios.get(`/routes/accounts/events`)
       .then(response => {
-        // Sorting events: Upcoming events at the top, past events at the bottom
         const sortedEvents = response.data.sort((a, b) => {
           const eventDateA = new Date(a.eventDate);
           const eventDateB = new Date(b.eventDate);
@@ -257,14 +262,34 @@ function EventsA() {
 
   const handleCheckboxChange1 = (e) => {
     const { value, checked } = e.target;
-    setNewEvent(prevState => {
-      const updatedMaterials = checked
-        ? [...prevState.materialsNeeded, value]
-        : prevState.materialsNeeded.filter(material => material !== value);
-
-      return { ...prevState, materialsNeeded: updatedMaterials };
-    });
+  
+    if (value === "None" && checked) {
+      setNewEvent((prevState) => ({
+        ...prevState,
+        materialsNeeded: ["None"], // Only "None" is selected
+      }));
+    } else if (value === "None" && !checked) {
+      setNewEvent((prevState) => ({
+        ...prevState,
+        materialsNeeded: [],
+      }));
+    } else if (value === "Others" && checked) {
+      setShowCustomModal(true); // Open modal when "Others" is checked
+    } else {
+      setNewEvent((prevState) => {
+        let updatedMaterials = checked
+          ? [...prevState.materialsNeeded, value]
+          : prevState.materialsNeeded.filter((material) => material !== value);
+  
+        if (updatedMaterials.includes("None")) {
+          updatedMaterials = updatedMaterials.filter((m) => m !== "None");
+        }
+  
+        return { ...prevState, materialsNeeded: updatedMaterials };
+      });
+    }
   };
+  
 
   const handleCheckboxChange = (event, isChecked) => {
     if (isChecked) {
@@ -421,19 +446,23 @@ function EventsA() {
             />
           </div>
           <div className="materials-list">
-            <span>Materials Needed:</span>
-            {materialsOptions.map(option => (
-              <label key={option}>
-                <input
-                  type="checkbox"
-                  value={option}
-                  checked={newEvent.materialsNeeded.includes(option)}
-                  onChange={handleCheckboxChange1}
-                />
-                {option}
-              </label>
-            ))}
-          </div>
+  <span>Materials Needed:</span>
+  {materialsOptions.map((option) => (
+    <label key={option}>
+      <input
+        type="checkbox"
+        value={option}
+        checked={newEvent.materialsNeeded.includes(option)}
+        onChange={handleCheckboxChange1}
+        disabled={
+          newEvent.materialsNeeded.includes("None") && option !== "None"
+        }
+      />
+      {option}
+    </label>
+  ))}
+</div>
+
           <button className="eventsupdate duration-200 rounded-md" type="submit">{editingEventId ? 'Update Event' : 'Add Event'}</button>
 
           {editingEventId && <button className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2" type="button" onClick={handleCancelEdit}>Cancel</button>}
@@ -505,6 +534,68 @@ function EventsA() {
           <button  className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md" onClick={showModalHistory}>View Events History</button>
         </div>
       </div>
+
+      {showCustomModal && (
+  <div className="modal-overlay">
+    <div className="modalevents">
+      <span className="close-button" onClick={() => setShowCustomModal(false)}>
+        &times;
+      </span>
+      <h2 className="text-2xl mb-5"><strong>Add Materials</strong></h2>
+
+      <input
+        type="text"
+        value={customMaterialInput}
+        onChange={(e) => setCustomMaterialInput(e.target.value)}
+        placeholder="Enter Material"
+      />
+      <button
+        className="px-4 py-2 bg-green-600 text-white rounded-md mt-2"
+        onClick={() => {
+          if (customMaterialInput.trim() !== "") {
+            setCustomMaterials([...customMaterials, customMaterialInput.trim()]);
+            setCustomMaterialInput("");
+          }
+        }}
+      >
+        Add Item
+      </button>
+
+      {customMaterials.length > 0 && (
+        <>
+          <table className="table-auto w-full mt-3">
+            <thead className="bg-gray-300">
+              <tr>
+                <th className="px-4 py-2">Custom Materials</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customMaterials.map((material, index) => (
+                <tr key={index} className="even:bg-gray-100">
+                  <td className="px-4 py-2">{material}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded-md mt-3"
+            onClick={() => {
+              setNewEvent((prevState) => ({
+                ...prevState,
+                materialsNeeded: [...prevState.materialsNeeded, ...customMaterials],
+              }));
+              setShowCustomModal(false);
+            }}
+          >
+            Submit 
+          </button>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
 
      {showModal && (
         <div className="modal-overlay">
