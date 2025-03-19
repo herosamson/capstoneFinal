@@ -96,22 +96,36 @@ body {
   }
   #eventForm .form-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    align-items: center;
     justify-content: space-between;
-}
-#eventForm input[type="text"],
-#eventForm input[type="date"],
-#eventForm input[type="number"],
-#eventForm select {
-    width: 100%; /* Full width on small screens */
-    max-width: 250px; /* Prevent them from being too wide */
+    flex-wrap: nowrap;
+    gap: 15px;
+  }
+  
+  #eventForm input[type="text"],
+  #eventForm input[type="date"],
+  #eventForm input[type="number"],
+  #eventForm select {
+    flex: 1; /* Make all inputs expand equally */
+    min-width: 300px; /* Ensure good width */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-    background: #fff;
-}
+  }
+  
+  @media (max-width: 768px) {
+    #eventForm .form-row {
+      flex-wrap: wrap;
+    }
+  
+    #eventForm input,
+    #eventForm select {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+  
   
   
   #eventForm .materials-list span {

@@ -460,33 +460,43 @@ const submitVolunteers = () => {
       maxLength="50"
       required
     />
+    
     <input
       type="date"
       name="eventDate"
       value={newEvent.eventDate}
       onChange={handleChange}
-      placeholder="Event Date"
       min={today}
       required
     />
+    
+    {/* Number of Pax Field */}
+    <input
+      type="number"
+      name="numberOfPax"
+      value={newEvent.numberOfPax || ""}
+      onChange={(e) =>
+        setNewEvent((prev) => ({
+          ...prev,
+          numberOfPax: Number(e.target.value),
+        }))
+      }
+      placeholder="Estimated Number of Pax"
+      min="1"
+      max="10000000"
+    />
+
+    {/* Volunteers Dropdown with Placeholder */}
     <select
       name="volunteers"
       value={newEvent.volunteers}
       onChange={handleVolunteerChange}
       required
     >
+      <option value="" disabled>Volunteers</option> {/* Placeholder option */}
       <option value="Anyone">Anyone</option>
       <option value="Others">Others</option>
     </select>
-    <input
-      type="number"
-      name="numberOfPax"
-      value={newEvent.numberOfPax || ""}
-      onChange={(e) => setNewEvent((prev) => ({ ...prev, numberOfPax: Number(e.target.value) }))}
-      placeholder="Estimated Number of Pax"
-      min="1"
-      max="10000000"
-    />
   </div>
 
   <div className="materials-list">
@@ -515,6 +525,7 @@ const submitVolunteers = () => {
     </button>
   )}
 </form>
+
 
         <div id="eventsList">
          <table className='table-auto w-full'>
