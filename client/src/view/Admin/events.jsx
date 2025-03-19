@@ -6,7 +6,6 @@ import 'jspdf-autotable';
 import './events.css';
 import logo2 from './logo2.png';
 
-
 function EventsA() {
   const [newEvent, setNewEvent] = useState({
     eventName: '',
@@ -30,6 +29,51 @@ function EventsA() {
   const [showCustomModal, setShowCustomModal] = useState(false);
 const [customMaterials, setCustomMaterials] = useState([]);
 const [customMaterialInput, setCustomMaterialInput] = useState("");
+const [volunteers, setVolunteers] = useState("Anyone");
+const [showVolunteersModal, setShowVolunteersModal] = useState(false);
+const [customVolunteers, setCustomVolunteers] = useState([]);
+const [volunteerInput, setVolunteerInput] = useState("");
+const closeModals = () => {
+  setShowCustomModal(false);
+  setShowVolunteersModal(false);
+  setShowModal(false);
+};
+
+const handleOpenCustomModal = () => {
+  closeModals();
+  setShowCustomModal(true);
+};
+
+const handleOpenVolunteersModal = () => {
+  closeModals();
+  setShowVolunteersModal(true);
+};
+
+const handleVolunteerChange = (e) => {
+  const value = e.target.value;
+  if (value === "Others") {
+    setShowVolunteersModal(true);
+  } else {
+    setNewEvent((prev) => ({ ...prev, volunteers: value }));
+  }
+};
+
+const addVolunteer = () => {
+  if (volunteerInput.trim() !== "" && !customVolunteers.includes(volunteerInput.trim())) {
+    setCustomVolunteers((prev) => [...prev, volunteerInput.trim()]);
+    setVolunteerInput("");
+  }
+};
+
+
+const removeVolunteer = (volunteer) => {
+  setCustomVolunteers((prev) => prev.filter((v) => v !== volunteer));
+};
+
+const submitVolunteers = () => {
+  setNewEvent((prev) => ({ ...prev, volunteers: customVolunteers.join(", ") }));
+  setShowVolunteersModal(false);
+};
 
   const materialsOptions = [
     'Plates',
@@ -104,25 +148,18 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
   useEffect(() => {
     axios.get(`/routes/accounts/events`)
       .then(response => {
-        const sortedEvents = response.data.sort((a, b) => {
-          const eventDateA = new Date(a.eventDate);
-          const eventDateB = new Date(b.eventDate);
-          const now = new Date();
-          if (eventDateA >= now && eventDateB < now) {
-            return -1; // Upcoming event first
-          }
-          if (eventDateA < now && eventDateB >= now) {
-            return 1; // Past event last
-          }
-          return eventDateA - eventDateB; // Sort by date for both past and upcoming events
-        });
-
+        const now = new Date();
+        const sortedEvents = response.data
+          .filter(event => new Date(event.eventDate) >= now)
+          .sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate));
+  
         setEvents(sortedEvents);
       })
       .catch(error => {
         console.error('Error fetching events:', error);
       });
   }, []);
+  
 
   useEffect(() => {
     let filteredEvents = [];
@@ -150,26 +187,11 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
       filteredEvents = events;
     }
 
-    // Uncheck all checkboxes when sorting
-    setSelectedEvents([]);
-    setSelectAll(false); // Reset "Select All" state
-
     setSelectedEvents(filteredEvents);
+    setSelectAll(false); 
   }, [filter, events]);
 
-  useEffect(() => {
-    axios.get(`/routes/accounts/events`)
-      .then(response => {
-        // Filter out past events for the "Upcoming Events" table
-        const upcomingEvents = response.data.filter(event => new Date(event.eventDate) >= new Date());
-        // Sort upcoming events by date
-        const sortedEvents = upcomingEvents.sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate));
-        setEvents(sortedEvents);
-      })
-      .catch(error => {
-        console.error('Error fetching events:', error);
-      });
-  }, []);
+
   
 
   const handleLogout = async () => {
@@ -211,34 +233,57 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    let formattedMaterials = [...newEvent.materialsNeeded];
+    if (formattedMaterials.includes("None")) {
+      formattedMaterials = ["None"];
+    }
+  
+    let formattedVolunteers = newEvent.volunteers;
+    if (formattedVolunteers === "Others") {
+      formattedVolunteers = customVolunteers.join(", ");
+    }
+  
     const eventToSubmit = {
-      ...newEvent,
-      materialsNeeded: Array.isArray(newEvent.materialsNeeded) ? newEvent.materialsNeeded : newEvent.materialsNeeded.split(', ')
+      eventName: newEvent.eventName,
+      eventDate: newEvent.eventDate,
+      volunteers: formattedVolunteers,
+      materialsNeeded: formattedMaterials,
+      numberOfPax: newEvent.numberOfPax,
     };
-
-    if (editingEventId) {
-      axios.put(`/routes/accounts/events/${editingEventId}`, eventToSubmit)
-        .then(response => {
-          setEvents(events.map(event => event._id === editingEventId ? response.data : event));
-          setNewEvent({ eventName: '', eventDate: '', volunteers: '', materialsNeeded: [], numberOfPax: '' });
-          setEditingEventId(null);
-        })
-        .catch(error => {
-          console.error('Error updating event:', error);
-        });
-    } else {
-      axios.post(`/routes/accounts/events/add`, eventToSubmit)
-        .then(response => {
-          setEvents([...events, response.data]);
-          setNewEvent({ eventName: '', eventDate: '', volunteers: '', materialsNeeded: [], numberOfPax: '' });
-        })
-        .catch(error => {
-          console.error('Error adding event:', error);
-        });
+  
+    try {
+      if (editingEventId) {
+        const response = await axios.put(`/routes/accounts/events/${editingEventId}`, eventToSubmit);
+        setEvents(events.map(event => (event._id === editingEventId ? response.data : event)));
+        alert("Event updated successfully!");
+      } else {
+        const response = await axios.post(`/routes/accounts/events/add`, eventToSubmit);
+        setEvents([...events, response.data]);
+        alert("Event added successfully!");
+      }
+  
+      // Reset form
+      setNewEvent({
+        eventName: '',
+        eventDate: '',
+        volunteers: 'Anyone',
+        materialsNeeded: [],
+        numberOfPax: '',
+      });
+  
+      setEditingEventId(null);
+      setCustomMaterials([]);
+      setCustomVolunteers([]);
+    } catch (error) {
+      console.error("Error submitting event:", error);
+      alert("Failed to submit event. Please try again.");
     }
   };
+  
+  
 
   const handleEdit = (event) => {
     setNewEvent(event);
@@ -263,41 +308,39 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
   const handleCheckboxChange1 = (e) => {
     const { value, checked } = e.target;
   
-    if (value === "None" && checked) {
-      setNewEvent((prevState) => ({
-        ...prevState,
-        materialsNeeded: ["None"], // Only "None" is selected
-      }));
-    } else if (value === "None" && !checked) {
-      setNewEvent((prevState) => ({
-        ...prevState,
-        materialsNeeded: [],
-      }));
-    } else if (value === "Others" && checked) {
-      setShowCustomModal(true); // Open modal when "Others" is checked
-    } else {
-      setNewEvent((prevState) => {
-        let updatedMaterials = checked
-          ? [...prevState.materialsNeeded, value]
-          : prevState.materialsNeeded.filter((material) => material !== value);
+    setNewEvent((prevState) => {
+      let updatedMaterials = checked
+        ? [...prevState.materialsNeeded, value]
+        : prevState.materialsNeeded.filter((material) => material !== value);
   
-        if (updatedMaterials.includes("None")) {
-          updatedMaterials = updatedMaterials.filter((m) => m !== "None");
-        }
+      // If "None" is selected, remove all other selections
+      if (value === "None" && checked) {
+        updatedMaterials = ["None"];
+      } else if (updatedMaterials.includes("None")) {
+        updatedMaterials = updatedMaterials.filter((m) => m !== "None");
+      }
   
-        return { ...prevState, materialsNeeded: updatedMaterials };
-      });
+      return { ...prevState, materialsNeeded: updatedMaterials };
+    });
+  
+    if (value === "Others" && checked) {
+      setShowCustomModal(true);
     }
   };
+  
+  
   
 
   const handleCheckboxChange = (event, isChecked) => {
-    if (isChecked) {
-      setSelectedEvents(prevSelectedEvents => [...prevSelectedEvents, event]);
-    } else {
-      setSelectedEvents(prevSelectedEvents => prevSelectedEvents.filter(e => e._id !== event._id));
-    }
+    setSelectedEvents((prevSelectedEvents) => {
+      if (isChecked) {
+        return [...prevSelectedEvents, event];
+      } else {
+        return prevSelectedEvents.filter((e) => e._id !== event._id);
+      }
+    });
   };
+  
 
 
   const downloadSelectedEvents = () => {
@@ -363,15 +406,14 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-   // Get the current date in YYYY-MM-DD format
+
    const today = new Date().toISOString().split('T')[0];
 
    const showModalHistory = () => {
-    // Fetch event history data here
     axios.get(`/routes/accounts/events/history`)
       .then(response => {
-        setEventHistory(response.data); // Store the event history data in state
-        setShowModal(true); // Show the modal
+        setEventHistory(response.data); 
+        setShowModal(true); 
       })
       .catch(error => {
         console.error('Error fetching event history:', error);
@@ -408,7 +450,7 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
         <h1 className='text-3xl font-bold mt-2 mb-4'>Events Management</h1>
         
         <form id="eventForm" onSubmit={handleSubmit}>
-          <div class="form-row">
+          <div className="form-row">
             <input
               type="text"
               name="eventName"
@@ -427,37 +469,36 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
               min={today}
               required
             />
-            <input
-              type="text"
-              name="volunteers"
-              value={newEvent.volunteers}
-              onChange={handleChange}
-              placeholder="Volunteers"
-               maxLength='50'
-              required
-            />
-            <input
-              type="number"
-              name="numberOfPax"
-              value={newEvent.numberOfPax}
-              onChange={handleChange}
-              placeholder="Number of Pax"
-           maxLength='4'
-            />
+<select name="volunteers" value={newEvent.volunteers} onChange={handleVolunteerChange} required>
+  <option value="Anyone">Anyone</option>
+  <option value="Others">Others</option>
+</select>
+
+
+<input
+  type="number"
+  name="numberOfPax"
+  value={newEvent.numberOfPax || ""}
+  onChange={(e) => setNewEvent((prev) => ({ ...prev, numberOfPax: Number(e.target.value) }))}
+  placeholder="Estimated Number of Pax"
+  min="1"
+  max="10000000"
+/>
+
+
+
           </div>
           <div className="materials-list">
   <span>Materials Needed:</span>
   {materialsOptions.map((option) => (
     <label key={option}>
       <input
-        type="checkbox"
-        value={option}
-        checked={newEvent.materialsNeeded.includes(option)}
-        onChange={handleCheckboxChange1}
-        disabled={
-          newEvent.materialsNeeded.includes("None") && option !== "None"
-        }
-      />
+  type="checkbox"
+  value={option}
+  checked={newEvent.materialsNeeded.includes(option)}
+  onChange={handleCheckboxChange1}
+  disabled={newEvent.materialsNeeded.includes("None") && option !== "None"} 
+/>
       {option}
     </label>
   ))}
@@ -488,7 +529,7 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
             </thead>
             <tbody>
   {events
-    .filter(event => new Date(event.eventDate) >= new Date()) // Only include events on or after today
+    .filter(event => new Date(event.eventDate) >= new Date()) 
     .map(event => {
       const eventDate = new Date(event.eventDate);
       return (
@@ -535,61 +576,127 @@ const [customMaterialInput, setCustomMaterialInput] = useState("");
         </div>
       </div>
 
-      {showCustomModal && (
+    {/* Custom Materials Modal */}
+{showCustomModal && (
   <div className="modal-overlay">
-    <div className="modalevents">
-      <span className="close-button" onClick={() => setShowCustomModal(false)}>
-        &times;
-      </span>
-      <h2 className="text-2xl mb-5"><strong>Add Materials</strong></h2>
+    <div className="modalevents p-5 w-[400px]">
+      <span className="close-button" onClick={() => setShowCustomModal(false)}>&times;</span>
+      <h2 className="text-2xl mb-5 font-bold">Add Materials</h2>
+      <div className="w-full">
+        <input
+          type="text"
+          value={customMaterialInput}
+          onChange={(e) => setCustomMaterialInput(e.target.value)}
+          placeholder="Enter Material"
+          className="w-full border border-gray-300 p-2 rounded-md mb-2"
+        />
+       <button
+  className="w-full px-4 py-2 bg-green-600 text-white rounded-md"
+  onClick={() => {
+    if (customMaterialInput.trim() !== "" && !customMaterials.includes(customMaterialInput.trim())) {
+      setCustomMaterials((prev) => [...prev, customMaterialInput.trim()]);
+      setCustomMaterialInput("");
+    }
+  }}
+>
+  Add Item
+</button>
 
-      <input
-        type="text"
-        value={customMaterialInput}
-        onChange={(e) => setCustomMaterialInput(e.target.value)}
-        placeholder="Enter Material"
-      />
-      <button
-        className="px-4 py-2 bg-green-600 text-white rounded-md mt-2"
-        onClick={() => {
-          if (customMaterialInput.trim() !== "") {
-            setCustomMaterials([...customMaterials, customMaterialInput.trim()]);
-            setCustomMaterialInput("");
-          }
-        }}
-      >
-        Add Item
-      </button>
+      </div>
 
       {customMaterials.length > 0 && (
         <>
-          <table className="table-auto w-full mt-3">
-            <thead className="bg-gray-300">
+         <table className='table-auto w-full'>
+         <thead className='bg-red-800 text-white'>
               <tr>
-                <th className="px-4 py-2">Custom Materials</th>
+                <th className='font-normal py-1.5 px-2'>Custom Materials</th>
               </tr>
             </thead>
             <tbody>
               {customMaterials.map((material, index) => (
                 <tr key={index} className="even:bg-gray-100">
-                  <td className="px-4 py-2">{material}</td>
+                  <td className='font-normal py-1.5 px-2'>{material}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
+          <div className="w-full flex justify-end mt-3">
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md mt-3"
-            onClick={() => {
-              setNewEvent((prevState) => ({
-                ...prevState,
-                materialsNeeded: [...prevState.materialsNeeded, ...customMaterials],
-              }));
-              setShowCustomModal(false);
-            }}
-          >
-            Submit 
-          </button>
+  className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md" 
+  onClick={() => {
+    setNewEvent((prevState) => ({
+      ...prevState,
+      materialsNeeded: Array.from(new Set([...prevState.materialsNeeded, ...customMaterials])), 
+    }));
+    setShowCustomModal(false);
+  }}
+>
+  Submit
+</button>
+
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
+{showVolunteersModal && (
+  <div className="modal-overlay">
+    <div className="modalevents p-5 w-[400px]">
+      <span className="close-button" onClick={() => setShowVolunteersModal(false)}>&times;</span>
+      <h2 className="text-2xl mb-5 font-bold">Add Volunteers</h2>
+      <div className="w-full">
+        <input
+          type="text"
+          value={volunteerInput}
+          onChange={(e) => setVolunteerInput(e.target.value)}
+          placeholder="Enter Volunteer Name"
+          className="w-full border border-gray-300 p-2 rounded-md mb-2"
+        />
+        <button
+          className="w-full px-4 py-2 bg-green-600 text-white rounded-md"
+          onClick={addVolunteer}
+        >
+          Add Volunteer
+        </button>
+      </div>
+
+      {customVolunteers.length > 0 && (
+        <>
+         <table className='table-auto w-full'>
+         <thead className='bg-red-800 text-white'>
+              <tr>
+                <th className='font-normal py-1.5 px-2'>Custom Volunteers</th>
+                <th className='font-normal py-1.5 px-2'>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customVolunteers.map((volunteer, index) => (
+                <tr key={index} className="even:bg-gray-100">
+                  <td className='font-normal py-1.5 px-2'>{volunteer}</td>
+                  <td className='font-normal py-1.5 px-2'>
+                    <button
+                      className="px-3 py-1 bg-red-600 text-white rounded-md"
+                      onClick={() => removeVolunteer(volunteer)}
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="w-full flex justify-end mt-3">
+            <button
+              className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md" 
+              onClick={submitVolunteers}
+            >
+              Submit
+            </button>
+          </div>
         </>
       )}
     </div>

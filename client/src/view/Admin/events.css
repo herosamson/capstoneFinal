@@ -86,7 +86,7 @@ body {
 #eventForm {
     display: flex;
     flex-direction: column;
-    width: 600px;
+    width: 900px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ddd;
@@ -96,7 +96,7 @@ body {
   #eventForm .form-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Space between input fields */
+    gap: 10px; 
   }
   #eventForm input[type="text"],
   #eventForm input[type="date"],
@@ -105,7 +105,7 @@ body {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: calc(25% - 20px); /* Adjust width to fit 4 in a row */
+    width: 100px; 
     box-sizing: border-box;
   }
   
