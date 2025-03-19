@@ -450,74 +450,81 @@ const submitVolunteers = () => {
         <h1 className='text-3xl font-bold mt-2 mb-4'>Events Management</h1>
         
         <form id="eventForm" onSubmit={handleSubmit}>
-  <div className="form-row">
-    <input
-      type="text"
-      name="eventName"
-      value={newEvent.eventName}
-      onChange={handleChange}
-      placeholder="Event Name"
-      maxLength="50"
-      required
-    />
-    
-    <input
-      type="date"
-      name="eventDate"
-      value={newEvent.eventDate}
-      onChange={handleChange}
-      min={today}
-      required
-    />
-    
-    {/* Number of Pax Field */}
-    <input
-      type="number"
-      name="numberOfPax"
-      value={newEvent.numberOfPax || ""}
-      onChange={(e) =>
-        setNewEvent((prev) => ({
-          ...prev,
-          numberOfPax: Number(e.target.value),
-        }))
-      }
-      placeholder="Estimated Number of Pax"
-      min="1"
-      max="10000000"
-    />
+  <div className="form-columns">
+    {/* Left side - Inputs */}
+    <div className="form-left">
+      <input
+        type="text"
+        name="eventName"
+        value={newEvent.eventName}
+        onChange={handleChange}
+        placeholder="Event Name"
+        maxLength="50"
+        required
+      />
+      
+      <input
+        type="date"
+        name="eventDate"
+        value={newEvent.eventDate}
+        onChange={handleChange}
+        min={today}
+        required
+      />
+      
+      <input
+        type="number"
+        name="numberOfPax"
+        value={newEvent.numberOfPax || ""}
+        onChange={(e) =>
+          setNewEvent((prev) => ({
+            ...prev,
+            numberOfPax: Number(e.target.value),
+          }))
+        }
+        placeholder="Estimated Number of Pax"
+        min="1"
+        max="10000000"
+      />
 
-    {/* Volunteers Dropdown with Placeholder */}
-    <select
-      name="volunteers"
-      value={newEvent.volunteers}
-      onChange={handleVolunteerChange}
-      required
-    >
-      <option value="" disabled>Volunteers</option> {/* Placeholder option */}
-      <option value="Anyone">Anyone</option>
-      <option value="Others">Others</option>
-    </select>
+      <select
+        name="volunteers"
+        value={newEvent.volunteers}
+        onChange={handleVolunteerChange}
+        required
+      >
+        <option value="" disabled>Volunteers</option>
+        <option value="Anyone">Anyone</option>
+        <option value="Others">Others</option>
+      </select>
+    </div>
+
+    {/* Right side - Materials Needed */}
+    <div className="form-right">
+      <div className="materials-list">
+        <span>Materials Needed:</span>
+        {materialsOptions.map((option) => (
+          <label key={option}>
+            <input
+              type="checkbox"
+              value={option}
+              checked={newEvent.materialsNeeded.includes(option)}
+              onChange={handleCheckboxChange1}
+              disabled={newEvent.materialsNeeded.includes("None") && option !== "None"}
+            />
+            {option}
+          </label>
+        ))}
+      </div>
+    </div>
   </div>
 
-  <div className="materials-list">
-    <span>Materials Needed:</span>
-    {materialsOptions.map((option) => (
-      <label key={option}>
-        <input
-          type="checkbox"
-          value={option}
-          checked={newEvent.materialsNeeded.includes(option)}
-          onChange={handleCheckboxChange1}
-          disabled={newEvent.materialsNeeded.includes("None") && option !== "None"}
-        />
-        {option}
-      </label>
-    ))}
+  {/* Centered Button Below */}
+  <div className="form-button">
+    <button className="eventsupdate" type="submit">
+      {editingEventId ? "Update Event" : "Add Event"}
+    </button>
   </div>
-
-  <button className="eventsupdate" type="submit">
-    {editingEventId ? "Update Event" : "Add Event"}
-  </button>
 
   {editingEventId && (
     <button className="deleteevents" type="button" onClick={handleCancelEdit}>
@@ -525,6 +532,7 @@ const submitVolunteers = () => {
     </button>
   )}
 </form>
+
 
 
         <div id="eventsList">
