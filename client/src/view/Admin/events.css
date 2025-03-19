@@ -254,7 +254,7 @@ body {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  min-height: 200px; /* Ensures the same height as left side */
+  min-height: 230px; /* Ensures the same height as left side */
 }
 
 /* Center the Add Event button */

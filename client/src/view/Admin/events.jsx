@@ -487,18 +487,31 @@ const submitVolunteers = () => {
         max="10000000"
       />
 
-      {/* Ensure select looks like input fields */}
-      <select
-        name="volunteers"
-        value={newEvent.volunteers}
-        onChange={handleVolunteerChange}
-        required
-        className="styled-dropdown"
-      >
-        <option value="" disabled>Volunteers</option>
-        <option value="Anyone">Anyone</option>
-        <option value="Others">Others</option>
-      </select>
+<div className="relative">
+  <select
+    name="volunteers"
+    value={newEvent.volunteers}
+    onChange={handleVolunteerChange}
+    required
+    className="w-full appearance-none bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-10 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+  >
+    <option value="" disabled>Volunteers</option>
+    <option value="Anyone">Anyone</option>
+    <option value="Others">Others</option>
+  </select>
+
+  {/* Dropdown Icon (Heroicons) */}
+  <svg 
+    className="absolute top-1/2 right-3 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none"
+    xmlns="http://www.w3.org/2000/svg" 
+    fill="none" 
+    viewBox="0 0 24 24" 
+    stroke="currentColor"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
+  </svg>
+</div>
+
     </div>
 
     {/* Right Side - Materials Needed */}
@@ -728,36 +741,49 @@ const submitVolunteers = () => {
 )}
 
 
-     {showModal && (
-        <div className="modal-overlay">
-          <div className="modalevents">
-          <span className="close-button" onClick={() => setShowModal(false)}>&times;</span>
-            <h2 className='text-2xl mb-5'> <strong>Events History</strong></h2>
-            <table className='table-auto w-full overflow-x-auto overflow-y-auto max-h-[500px]'>
-            <thead className='bg-red-800 text-white'>
-                <tr>
-                  <th className='font-normal py-1.5 px-2' >Event Name</th>
-                  <th className='font-normal py-1.5 px-2'>Event Date</th>
-                  <th className='font-normal py-1.5 px-2' >Volunteers</th>
-                  <th className='font-normal py-1.5 px-2'>Materials Needed</th>
-                  <th className='font-normal py-1.5 px-2'>Number of Pax</th>
-                </tr>
-              </thead>
-              <tbody>
-                {eventHistory.map(event => (
-                  <tr key={event._id}  className='even:bg-gray-100'>
-                    <td className='font-normal py-1.5 px-2'>{event.eventName}</td>
-                    <td className='font-normal py-1.5 px-2'>{new Date(event.eventDate).toLocaleDateString()}</td>
-                    <td className='font-normal py-1.5 px-2'>{event.volunteers}</td>
-                    <td className='font-normal py-1.5 px-2'>{event.materialsNeeded.join(', ')}</td>
-                    <td className='font-normal py-1.5 px-2'>{event.numberOfPax}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+{showModal && (
+  <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="modalevents bg-white p-5 rounded-md shadow-lg max-w-4xl w-full max-h-[80vh] overflow-hidden">
+      {/* Close Button */}
+      <span 
+        className="close-button absolute top-3 right-4 text-2xl cursor-pointer" 
+        onClick={() => setShowModal(false)}
+      >
+        &times;
+      </span>
+
+      {/* Title */}
+      <h2 className="text-2xl mb-5 font-bold">Events History</h2>
+
+      {/* Scrollable Table Container */}
+      <div className="overflow-y-auto max-h-[500px] border border-gray-300 rounded-md">
+        <table className="table-auto w-full">
+          <thead className="bg-red-800 text-white sticky top-0">
+            <tr>
+              <th className="font-normal py-2 px-4">Event Name</th>
+              <th className="font-normal py-2 px-4">Event Date</th>
+              <th className="font-normal py-2 px-4">Volunteers</th>
+              <th className="font-normal py-2 px-4">Materials Needed</th>
+              <th className="font-normal py-2 px-4">Number of Pax</th>
+            </tr>
+          </thead>
+          <tbody>
+            {eventHistory.map(event => (
+              <tr key={event._id} className="even:bg-gray-100">
+                <td className="py-2 px-4">{event.eventName}</td>
+                <td className="py-2 px-4">{new Date(event.eventDate).toLocaleDateString()}</td>
+                <td className="py-2 px-4">{event.volunteers}</td>
+                <td className="py-2 px-4">{event.materialsNeeded.join(', ')}</td>
+                <td className="py-2 px-4">{event.numberOfPax}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

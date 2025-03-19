@@ -3,9 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf'; 
 import 'jspdf-autotable'; 
-import './eventsA.css';
+import './events.css';
 import logo2 from './logo2.png';
-
 
 function EventsA() {
   const [newEvent, setNewEvent] = useState({
@@ -27,6 +26,55 @@ function EventsA() {
   const toggleDropdownA = () => {
     setIsDropdownOpenA(!isDropdownOpenA);
   };
+  const [showCustomModal, setShowCustomModal] = useState(false);
+const [customMaterials, setCustomMaterials] = useState([]);
+const [customMaterialInput, setCustomMaterialInput] = useState("");
+const [volunteers, setVolunteers] = useState("Anyone");
+const [showVolunteersModal, setShowVolunteersModal] = useState(false);
+const [customVolunteers, setCustomVolunteers] = useState([]);
+const [volunteerInput, setVolunteerInput] = useState("");
+const closeModals = () => {
+  setShowCustomModal(false);
+  setShowVolunteersModal(false);
+  setShowModal(false);
+};
+
+const handleOpenCustomModal = () => {
+  closeModals();
+  setShowCustomModal(true);
+};
+
+const handleOpenVolunteersModal = () => {
+  closeModals();
+  setShowVolunteersModal(true);
+};
+
+const handleVolunteerChange = (e) => {
+  const value = e.target.value;
+  if (value === "Others") {
+    setShowVolunteersModal(true);
+  } else {
+    setNewEvent((prev) => ({ ...prev, volunteers: value }));
+  }
+};
+
+const addVolunteer = () => {
+  if (volunteerInput.trim() !== "" && !customVolunteers.includes(volunteerInput.trim())) {
+    setCustomVolunteers((prev) => [...prev, volunteerInput.trim()]);
+    setVolunteerInput("");
+  }
+};
+
+
+const removeVolunteer = (volunteer) => {
+  setCustomVolunteers((prev) => prev.filter((v) => v !== volunteer));
+};
+
+const submitVolunteers = () => {
+  setNewEvent((prev) => ({ ...prev, volunteers: customVolunteers.join(", ") }));
+  setShowVolunteersModal(false);
+};
+
   const materialsOptions = [
     'Plates',
     'Plastic Cups',
@@ -92,32 +140,26 @@ function EventsA() {
     'Drink dispensers',
     'Catering supplies (for serving food)',
     'Food trays',
-    'Serving utensils'
+    'Serving utensils',
+    "None",  
+    "Others",  
   ];
   
   useEffect(() => {
     axios.get(`/routes/accounts/events`)
       .then(response => {
-        // Sorting events: Upcoming events at the top, past events at the bottom
-        const sortedEvents = response.data.sort((a, b) => {
-          const eventDateA = new Date(a.eventDate);
-          const eventDateB = new Date(b.eventDate);
-          const now = new Date();
-          if (eventDateA >= now && eventDateB < now) {
-            return -1; // Upcoming event first
-          }
-          if (eventDateA < now && eventDateB >= now) {
-            return 1; // Past event last
-          }
-          return eventDateA - eventDateB; // Sort by date for both past and upcoming events
-        });
-
+        const now = new Date();
+        const sortedEvents = response.data
+          .filter(event => new Date(event.eventDate) >= now)
+          .sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate));
+  
         setEvents(sortedEvents);
       })
       .catch(error => {
         console.error('Error fetching events:', error);
       });
   }, []);
+  
 
   useEffect(() => {
     let filteredEvents = [];
@@ -145,26 +187,11 @@ function EventsA() {
       filteredEvents = events;
     }
 
-    // Uncheck all checkboxes when sorting
-    setSelectedEvents([]);
-    setSelectAll(false); // Reset "Select All" state
-
     setSelectedEvents(filteredEvents);
+    setSelectAll(false); 
   }, [filter, events]);
 
-  useEffect(() => {
-    axios.get(`/routes/accounts/events`)
-      .then(response => {
-        // Filter out past events for the "Upcoming Events" table
-        const upcomingEvents = response.data.filter(event => new Date(event.eventDate) >= new Date());
-        // Sort upcoming events by date
-        const sortedEvents = upcomingEvents.sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate));
-        setEvents(sortedEvents);
-      })
-      .catch(error => {
-        console.error('Error fetching events:', error);
-      });
-  }, []);
+
   
 
   const handleLogout = async () => {
@@ -206,34 +233,57 @@ function EventsA() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    let formattedMaterials = [...newEvent.materialsNeeded];
+    if (formattedMaterials.includes("None")) {
+      formattedMaterials = ["None"];
+    }
+  
+    let formattedVolunteers = newEvent.volunteers;
+    if (formattedVolunteers === "Others") {
+      formattedVolunteers = customVolunteers.join(", ");
+    }
+  
     const eventToSubmit = {
-      ...newEvent,
-      materialsNeeded: Array.isArray(newEvent.materialsNeeded) ? newEvent.materialsNeeded : newEvent.materialsNeeded.split(', ')
+      eventName: newEvent.eventName,
+      eventDate: newEvent.eventDate,
+      volunteers: formattedVolunteers,
+      materialsNeeded: formattedMaterials,
+      numberOfPax: newEvent.numberOfPax,
     };
-
-    if (editingEventId) {
-      axios.put(`/routes/accounts/events/${editingEventId}`, eventToSubmit)
-        .then(response => {
-          setEvents(events.map(event => event._id === editingEventId ? response.data : event));
-          setNewEvent({ eventName: '', eventDate: '', volunteers: '', materialsNeeded: [], numberOfPax: '' });
-          setEditingEventId(null);
-        })
-        .catch(error => {
-          console.error('Error updating event:', error);
-        });
-    } else {
-      axios.post(`/routes/accounts/events/add`, eventToSubmit)
-        .then(response => {
-          setEvents([...events, response.data]);
-          setNewEvent({ eventName: '', eventDate: '', volunteers: '', materialsNeeded: [], numberOfPax: '' });
-        })
-        .catch(error => {
-          console.error('Error adding event:', error);
-        });
+  
+    try {
+      if (editingEventId) {
+        const response = await axios.put(`/routes/accounts/events/${editingEventId}`, eventToSubmit);
+        setEvents(events.map(event => (event._id === editingEventId ? response.data : event)));
+        alert("Event updated successfully!");
+      } else {
+        const response = await axios.post(`/routes/accounts/events/add`, eventToSubmit);
+        setEvents([...events, response.data]);
+        alert("Event added successfully!");
+      }
+  
+      // Reset form
+      setNewEvent({
+        eventName: '',
+        eventDate: '',
+        volunteers: 'Anyone',
+        materialsNeeded: [],
+        numberOfPax: '',
+      });
+  
+      setEditingEventId(null);
+      setCustomMaterials([]);
+      setCustomVolunteers([]);
+    } catch (error) {
+      console.error("Error submitting event:", error);
+      alert("Failed to submit event. Please try again.");
     }
   };
+  
+  
 
   const handleEdit = (event) => {
     setNewEvent(event);
@@ -257,22 +307,40 @@ function EventsA() {
 
   const handleCheckboxChange1 = (e) => {
     const { value, checked } = e.target;
-    setNewEvent(prevState => {
-      const updatedMaterials = checked
+  
+    setNewEvent((prevState) => {
+      let updatedMaterials = checked
         ? [...prevState.materialsNeeded, value]
-        : prevState.materialsNeeded.filter(material => material !== value);
-
+        : prevState.materialsNeeded.filter((material) => material !== value);
+  
+      // If "None" is selected, remove all other selections
+      if (value === "None" && checked) {
+        updatedMaterials = ["None"];
+      } else if (updatedMaterials.includes("None")) {
+        updatedMaterials = updatedMaterials.filter((m) => m !== "None");
+      }
+  
       return { ...prevState, materialsNeeded: updatedMaterials };
     });
-  };
-
-  const handleCheckboxChange = (event, isChecked) => {
-    if (isChecked) {
-      setSelectedEvents(prevSelectedEvents => [...prevSelectedEvents, event]);
-    } else {
-      setSelectedEvents(prevSelectedEvents => prevSelectedEvents.filter(e => e._id !== event._id));
+  
+    if (value === "Others" && checked) {
+      setShowCustomModal(true);
     }
   };
+  
+  
+  
+
+  const handleCheckboxChange = (event, isChecked) => {
+    setSelectedEvents((prevSelectedEvents) => {
+      if (isChecked) {
+        return [...prevSelectedEvents, event];
+      } else {
+        return prevSelectedEvents.filter((e) => e._id !== event._id);
+      }
+    });
+  };
+  
 
 
   const downloadSelectedEvents = () => {
@@ -338,15 +406,14 @@ function EventsA() {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-   // Get the current date in YYYY-MM-DD format
+
    const today = new Date().toISOString().split('T')[0];
 
    const showModalHistory = () => {
-    // Fetch event history data here
     axios.get(`/routes/accounts/events/history`)
       .then(response => {
-        setEventHistory(response.data); // Store the event history data in state
-        setShowModal(true); // Show the modal
+        setEventHistory(response.data); 
+        setShowModal(true); 
       })
       .catch(error => {
         console.error('Error fetching event history:', error);
@@ -357,7 +424,7 @@ function EventsA() {
   return (
     <div id="container">
       <div id="sidebar">
-     <ul>
+      <ul>
                <li><img className="logoU" src={logo2} alt="Logo" /></li>
                <br />
                 <li><Link to="/analyticsSA">Dashboard</Link></li>
@@ -381,63 +448,6 @@ function EventsA() {
 
       <div id="contentEvent">
         <h1 className='text-3xl font-bold mt-2 mb-4'>Events Management</h1>
-        
-        <form id="eventForm" onSubmit={handleSubmit}>
-          <div class="form-row">
-            <input
-              type="text"
-              name="eventName"
-              value={newEvent.eventName}
-              onChange={handleChange}
-              placeholder="Event Name"
-               maxLength='50'
-              required
-            />
-            <input
-              type="date"
-              name="eventDate"
-              value={newEvent.eventDate}
-              onChange={handleChange}
-              placeholder="Event Date"
-              min={today}
-              required
-            />
-            <input
-              type="text"
-              name="volunteers"
-              value={newEvent.volunteers}
-              onChange={handleChange}
-              placeholder="Volunteers"
-               maxLength='50'
-              required
-            />
-            <input
-              type="number"
-              name="numberOfPax"
-              value={newEvent.numberOfPax}
-              onChange={handleChange}
-              placeholder="Number of Pax"
-           maxLength='4'
-            />
-          </div>
-          <div className="materials-list">
-            <span>Materials Needed:</span>
-            {materialsOptions.map(option => (
-              <label key={option}>
-                <input
-                  type="checkbox"
-                  value={option}
-                  checked={newEvent.materialsNeeded.includes(option)}
-                  onChange={handleCheckboxChange1}
-                />
-                {option}
-              </label>
-            ))}
-          </div>
-          <button className="eventsupdate duration-200 rounded-md" type="submit">{editingEventId ? 'Update Event' : 'Add Event'}</button>
-
-          {editingEventId && <button className="deleteevents" type="button" onClick={handleCancelEdit}>Cancel</button>}
-        </form>
         <div id="eventsList">
          <table className='table-auto w-full'>
        <thead className='bg-red-800 text-white'>
@@ -459,7 +469,7 @@ function EventsA() {
             </thead>
             <tbody>
   {events
-    .filter(event => new Date(event.eventDate) >= new Date()) // Only include events on or after today
+    .filter(event => new Date(event.eventDate) >= new Date()) 
     .map(event => {
       const eventDate = new Date(event.eventDate);
       return (
@@ -499,43 +509,175 @@ function EventsA() {
 
           </table>
           {selectedEvents.length > 0 && (
-            <button type="button" className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md mr-3 my-3" onClick={downloadSelectedEvents}>Download Selected Events</button>
+            <button className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md mr-3 my-3" onClick={downloadSelectedEvents}>Download Selected Events</button>
             
           )}
           <button  className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md" onClick={showModalHistory}>View Events History</button>
         </div>
       </div>
 
-     {showModal && (
-        <div className="modal-overlay">
-          <div className="modalevents">
-          <span className="close-button" onClick={() => setShowModal(false)}>&times;</span>
-            <h2 className='text-2xl mb-5'> <strong>Events History</strong></h2>
-            <table className='table-auto w-full overflow-x-auto overflow-y-auto max-h-[500px]'>
-            <thead className='bg-red-800 text-white'>
-                <tr>
-                  <th className='font-normal py-1.5 px-2' >Event Name</th>
-                  <th className='font-normal py-1.5 px-2'>Event Date</th>
-                  <th className='font-normal py-1.5 px-2' >Volunteers</th>
-                  <th className='font-normal py-1.5 px-2'>Materials Needed</th>
-                  <th className='font-normal py-1.5 px-2'>Number of Pax</th>
+    {/* Custom Materials Modal */}
+{showCustomModal && (
+  <div className="modal-overlay">
+    <div className="modalevents p-5 w-[400px]">
+      <span className="close-button" onClick={() => setShowCustomModal(false)}>&times;</span>
+      <h2 className="text-2xl mb-5 font-bold">Add Materials</h2>
+      <div className="w-full">
+        <input
+          type="text"
+          value={customMaterialInput}
+          onChange={(e) => setCustomMaterialInput(e.target.value)}
+          placeholder="Enter Material"
+          className="w-full border border-gray-300 p-2 rounded-md mb-2"
+        />
+       <button
+  className="w-full px-4 py-2 bg-green-600 text-white rounded-md mb-7"
+  onClick={() => {
+    if (customMaterialInput.trim() !== "" && !customMaterials.includes(customMaterialInput.trim())) {
+      setCustomMaterials((prev) => [...prev, customMaterialInput.trim()]);
+      setCustomMaterialInput("");
+    }
+  }}
+>
+  Add Item
+</button>
+
+      </div>
+
+      {customMaterials.length > 0 && (
+        <>
+         <table className='table-auto w-full'>
+         <thead className='bg-red-800 text-white'>
+              <tr>
+                <th className='font-normal py-1.5 px-2'>Custom Materials</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customMaterials.map((material, index) => (
+                <tr key={index} className="even:bg-gray-100">
+                  <td className='font-normal py-1.5 px-2'>{material}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {eventHistory.map(event => (
-                  <tr key={event._id}  className='even:bg-gray-100'>
-                    <td className='font-normal py-1.5 px-2'>{event.eventName}</td>
-                    <td className='font-normal py-1.5 px-2'>{new Date(event.eventDate).toLocaleDateString()}</td>
-                    <td className='font-normal py-1.5 px-2'>{event.volunteers}</td>
-                    <td className='font-normal py-1.5 px-2'>{event.materialsNeeded.join(', ')}</td>
-                    <td className='font-normal py-1.5 px-2'>{event.numberOfPax}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="w-full flex justify-end mt-3">
+          <button
+  className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md" 
+  onClick={() => {
+    setNewEvent((prevState) => ({
+      ...prevState,
+      materialsNeeded: Array.from(new Set([...prevState.materialsNeeded, ...customMaterials])), 
+    }));
+    setShowCustomModal(false);
+  }}
+>
+  Submit
+</button>
+
           </div>
-        </div>
+        </>
       )}
+    </div>
+  </div>
+)}
+
+{showVolunteersModal && (
+  <div className="modal-overlay">
+    <div className="modalevents p-5 w-[400px]">
+      <span className="close-button" onClick={() => setShowVolunteersModal(false)}>&times;</span>
+      <h2 className="text-2xl mb-5 font-bold">Add Volunteers</h2>
+      <div className="w-full">
+        <input
+          type="text"
+          value={volunteerInput}
+          onChange={(e) => setVolunteerInput(e.target.value)}
+          placeholder="Enter Volunteer Name"
+          className="w-full border border-gray-300 p-2 rounded-md mb-2"
+        />
+        <button
+          className="w-full px-4 py-2 bg-green-600 text-white rounded-md mb-7"
+          onClick={addVolunteer}
+        >
+          Add Volunteer
+        </button>
+      </div>
+
+      {customVolunteers.length > 0 && (
+        <>
+         <table className='table-auto w-full'>
+         <thead className='bg-red-800 text-white'>
+              <tr>
+                <th className='font-normal py-1.5 px-2'>Custom Volunteers</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customVolunteers.map((volunteer, index) => (
+                <tr key={index} className="even:bg-gray-100">
+                  <td className='font-normal py-1.5 px-2'>{volunteer}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="w-full flex justify-end mt-7">
+            <button
+              className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md" 
+              onClick={submitVolunteers}
+            >
+              Submit
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
+
+{showModal && (
+  <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="modalevents bg-white p-5 rounded-md shadow-lg max-w-4xl w-full max-h-[80vh] overflow-hidden">
+      {/* Close Button */}
+      <span 
+        className="close-button absolute top-3 right-4 text-2xl cursor-pointer" 
+        onClick={() => setShowModal(false)}
+      >
+        &times;
+      </span>
+
+      {/* Title */}
+      <h2 className="text-2xl mb-5 font-bold">Events History</h2>
+
+      {/* Scrollable Table Container */}
+      <div className="overflow-y-auto max-h-[500px] border border-gray-300 rounded-md">
+        <table className="table-auto w-full">
+          <thead className="bg-red-800 text-white sticky top-0">
+            <tr>
+              <th className="font-normal py-2 px-4">Event Name</th>
+              <th className="font-normal py-2 px-4">Event Date</th>
+              <th className="font-normal py-2 px-4">Volunteers</th>
+              <th className="font-normal py-2 px-4">Materials Needed</th>
+              <th className="font-normal py-2 px-4">Number of Pax</th>
+            </tr>
+          </thead>
+          <tbody>
+            {eventHistory.map(event => (
+              <tr key={event._id} className="even:bg-gray-100">
+                <td className="py-2 px-4">{event.eventName}</td>
+                <td className="py-2 px-4">{new Date(event.eventDate).toLocaleDateString()}</td>
+                <td className="py-2 px-4">{event.volunteers}</td>
+                <td className="py-2 px-4">{event.materialsNeeded.join(', ')}</td>
+                <td className="py-2 px-4">{event.numberOfPax}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
