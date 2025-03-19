@@ -103,18 +103,17 @@ body {
     gap: 15px;
   }
   
-/* Style input fields and dropdown to match */
-#eventForm input[type="text"],
-#eventForm input[type="date"],
-#eventForm input[type="number"],
-#eventForm select {
-    width: 100%;
-    padding: 8px;
+  #eventForm input[type="text"],
+  #eventForm input[type="date"],
+  #eventForm input[type="number"],
+  #eventForm select [name="volunteers"] {
+    flex: 1; /* Make all inputs expand equally */
+    min-width: 300px; /* Ensure good width */
+    padding: 4px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-    background-color: white;
-}
+  }
   
   @media (max-width: 768px) {
     #eventForm .form-row {
@@ -254,7 +253,7 @@ body {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  min-height: 170px; /* Ensures the same height as left side */
+  min-height: 200px; /* Ensures the same height as left side */
 }
 
 /* Center the Add Event button */
@@ -263,6 +262,7 @@ body {
   justify-content: center;
   width: 100%;
   margin-top: 20px;
+  margin-right: 50px;
 }
 
 /* Responsive design for small screens */
