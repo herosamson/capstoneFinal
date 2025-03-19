@@ -450,64 +450,72 @@ const submitVolunteers = () => {
         <h1 className='text-3xl font-bold mt-2 mb-4'>Events Management</h1>
         
         <form id="eventForm" onSubmit={handleSubmit}>
-          <div className="form-row">
-            <input
-              type="text"
-              name="eventName"
-              value={newEvent.eventName}
-              onChange={handleChange}
-              placeholder="Event Name"
-               maxLength='50'
-              required
-            />
-            <input
-              type="date"
-              name="eventDate"
-              value={newEvent.eventDate}
-              onChange={handleChange}
-              placeholder="Event Date"
-              min={today}
-              required
-            />
-<select name="volunteers" value={newEvent.volunteers} onChange={handleVolunteerChange} required>
-  <option value="Anyone">Anyone</option>
-  <option value="Others">Others</option>
-</select>
+  <div className="form-row">
+    <input
+      type="text"
+      name="eventName"
+      value={newEvent.eventName}
+      onChange={handleChange}
+      placeholder="Event Name"
+      maxLength="50"
+      required
+    />
+    <input
+      type="date"
+      name="eventDate"
+      value={newEvent.eventDate}
+      onChange={handleChange}
+      placeholder="Event Date"
+      min={today}
+      required
+    />
+    <select
+      name="volunteers"
+      value={newEvent.volunteers}
+      onChange={handleVolunteerChange}
+      required
+    >
+      <option value="Anyone">Anyone</option>
+      <option value="Others">Others</option>
+    </select>
+    <input
+      type="number"
+      name="numberOfPax"
+      value={newEvent.numberOfPax || ""}
+      onChange={(e) => setNewEvent((prev) => ({ ...prev, numberOfPax: Number(e.target.value) }))}
+      placeholder="Estimated Number of Pax"
+      min="1"
+      max="10000000"
+    />
+  </div>
 
+  <div className="materials-list">
+    <span>Materials Needed:</span>
+    {materialsOptions.map((option) => (
+      <label key={option}>
+        <input
+          type="checkbox"
+          value={option}
+          checked={newEvent.materialsNeeded.includes(option)}
+          onChange={handleCheckboxChange1}
+          disabled={newEvent.materialsNeeded.includes("None") && option !== "None"}
+        />
+        {option}
+      </label>
+    ))}
+  </div>
 
-<input
-  type="number"
-  name="numberOfPax"
-  value={newEvent.numberOfPax || ""}
-  onChange={(e) => setNewEvent((prev) => ({ ...prev, numberOfPax: Number(e.target.value) }))}
-  placeholder="Estimated Number of Pax"
-  min="1"
-  max="10000000"
-/>
+  <button className="eventsupdate" type="submit">
+    {editingEventId ? "Update Event" : "Add Event"}
+  </button>
 
+  {editingEventId && (
+    <button className="deleteevents" type="button" onClick={handleCancelEdit}>
+      Cancel
+    </button>
+  )}
+</form>
 
-
-          </div>
-          <div className="materials-list">
-  <span>Materials Needed:</span>
-  {materialsOptions.map((option) => (
-    <label key={option}>
-      <input
-  type="checkbox"
-  value={option}
-  checked={newEvent.materialsNeeded.includes(option)}
-  onChange={handleCheckboxChange1}
-  disabled={newEvent.materialsNeeded.includes("None") && option !== "None"} 
-/>
-      {option}
-    </label>
-  ))}
-</div>
-
-          <button className="eventsupdate duration-200 rounded-md" type="submit">{editingEventId ? 'Update Event' : 'Add Event'}</button>
-
-          {editingEventId && <button className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 duration-200 rounded-md mr-2" type="button" onClick={handleCancelEdit}>Cancel</button>}
-        </form>
         <div id="eventsList">
          <table className='table-auto w-full'>
        <thead className='bg-red-800 text-white'>
@@ -591,7 +599,7 @@ const submitVolunteers = () => {
           className="w-full border border-gray-300 p-2 rounded-md mb-2"
         />
        <button
-  className="w-full px-4 py-2 bg-green-600 text-white rounded-md"
+  className="w-full px-4 py-2 bg-green-600 text-white rounded-md mb-7"
   onClick={() => {
     if (customMaterialInput.trim() !== "" && !customMaterials.includes(customMaterialInput.trim())) {
       setCustomMaterials((prev) => [...prev, customMaterialInput.trim()]);
@@ -656,7 +664,7 @@ const submitVolunteers = () => {
           className="w-full border border-gray-300 p-2 rounded-md mb-2"
         />
         <button
-          className="w-full px-4 py-2 bg-green-600 text-white rounded-md"
+          className="w-full px-4 py-2 bg-green-600 text-white rounded-md mb-7"
           onClick={addVolunteer}
         >
           Add Volunteer
@@ -669,27 +677,18 @@ const submitVolunteers = () => {
          <thead className='bg-red-800 text-white'>
               <tr>
                 <th className='font-normal py-1.5 px-2'>Custom Volunteers</th>
-                <th className='font-normal py-1.5 px-2'>Action</th>
               </tr>
             </thead>
             <tbody>
               {customVolunteers.map((volunteer, index) => (
                 <tr key={index} className="even:bg-gray-100">
                   <td className='font-normal py-1.5 px-2'>{volunteer}</td>
-                  <td className='font-normal py-1.5 px-2'>
-                    <button
-                      className="px-3 py-1 bg-red-600 text-white rounded-md"
-                      onClick={() => removeVolunteer(volunteer)}
-                    >
-                      Remove
-                    </button>
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <div className="w-full flex justify-end mt-3">
+          <div className="w-full flex justify-end mt-7">
             <button
               className="px-10 py-1.5 text-white bg-red-900 hover:bg-red-950 duration-200 rounded-md" 
               onClick={submitVolunteers}
