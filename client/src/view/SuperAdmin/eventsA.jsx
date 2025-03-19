@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf'; 
 import 'jspdf-autotable'; 
-import './events.css';
+import './eventsA.css';
 import logo2 from './logo2.png';
 
 function EventsA() {
