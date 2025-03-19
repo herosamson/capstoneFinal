@@ -451,7 +451,7 @@ const submitVolunteers = () => {
         
         <form id="eventForm" onSubmit={handleSubmit}>
   <div className="form-columns">
-    {/* Left side - Inputs */}
+    {/* Left Side - Inputs */}
     <div className="form-left">
       <input
         type="text"
@@ -462,7 +462,7 @@ const submitVolunteers = () => {
         maxLength="50"
         required
       />
-      
+
       <input
         type="date"
         name="eventDate"
@@ -471,7 +471,7 @@ const submitVolunteers = () => {
         min={today}
         required
       />
-      
+
       <input
         type="number"
         name="numberOfPax"
@@ -487,11 +487,13 @@ const submitVolunteers = () => {
         max="10000000"
       />
 
+      {/* Ensure select looks like input fields */}
       <select
         name="volunteers"
         value={newEvent.volunteers}
         onChange={handleVolunteerChange}
         required
+        className="styled-dropdown"
       >
         <option value="" disabled>Volunteers</option>
         <option value="Anyone">Anyone</option>
@@ -499,12 +501,12 @@ const submitVolunteers = () => {
       </select>
     </div>
 
-    {/* Right side - Materials Needed */}
+    {/* Right Side - Materials Needed */}
     <div className="form-right">
       <div className="materials-list">
         <span>Materials Needed:</span>
         {materialsOptions.map((option) => (
-          <label key={option}>
+          <label key={option} className="checkbox-label">
             <input
               type="checkbox"
               value={option}
