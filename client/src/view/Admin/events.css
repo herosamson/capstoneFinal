@@ -106,10 +106,11 @@ body {
   #eventForm input[type="text"],
   #eventForm input[type="date"],
   #eventForm input[type="number"],
-  #eventForm select [name="volunteers"] {
+  #eventForm input[type="volunteers"],
+  #eventForm select {
     flex: 1; /* Make all inputs expand equally */
     min-width: 300px; /* Ensure good width */
-    padding: 4px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;

@@ -522,11 +522,15 @@ const submitVolunteers = () => {
   </div>
 
   {/* Centered Button Below */}
-  <div className="form-button">
-    <button className="eventsupdate" type="submit">
-      {editingEventId ? "Update Event" : "Add Event"}
-    </button>
-  </div>
+  <div className="flex justify-center mt-4">
+  <button 
+    type="submit" 
+    className="w-full max-w-[300px] bg-green-600 text-white text-lg font-semibold py-3 rounded-md hover:bg-green-800 transition duration-200"
+  >
+    {editingEventId ? "Update Event" : "Add Event"}
+  </button>
+</div>
+
 
   {editingEventId && (
     <button className="deleteevents" type="button" onClick={handleCancelEdit}>
